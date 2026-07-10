@@ -1,6 +1,6 @@
 'use client'
 
-import { motion, useMotionValue, useSpring, useTransform, type Variants } from 'motion/react'
+import { useMotionValue, useSpring, useTransform, type Variants } from 'motion/react'
 import type { PointerEvent, ReactNode } from 'react'
 import { motionTags, type MotionTag } from './tags'
 import useReducedMotionSSR from './useReducedMotionSSR'

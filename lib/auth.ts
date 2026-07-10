@@ -1,37 +1,35 @@
 import { betterAuth } from 'better-auth'
 import { magicLink } from 'better-auth/plugins'
-import { createClient } from '@libsql/client'
 import { Resend } from 'resend'
+import { getDatabaseClient } from '@/lib/server-db'
+import { requireServerEnv } from '@/lib/server-env'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+function createAuth() {
+  const resend = new Resend(requireServerEnv('RESEND_API_KEY'))
+  const db = getDatabaseClient()
 
-const db = createClient({
-  url: process.env.DATABASE_URL!,
-  authToken: process.env.DATABASE_AUTH_TOKEN,
-})
-
-export const auth = betterAuth({
-  database: {
-    db,
-    type: 'sqlite',
-  },
-  user: {
-    additionalFields: {
-      profesi: {
-        type: 'string',
-        required: false,
-        input: true,
+  return betterAuth({
+    database: {
+      db,
+      type: 'sqlite',
+    },
+    user: {
+      additionalFields: {
+        profesi: {
+          type: 'string',
+          required: false,
+          input: true,
+        },
       },
     },
-  },
-  plugins: [
-    magicLink({
-      sendMagicLink: async ({ email, url }) => {
-        await resend.emails.send({
-          from: 'Sentra Assist <noreply@sentraai.id>',
-          to: email,
-          subject: 'Tautan masuk ke Sentra Assist',
-          html: `
+    plugins: [
+      magicLink({
+        sendMagicLink: async ({ email, url }) => {
+          await resend.emails.send({
+            from: 'Sentra Assist <noreply@sentraai.id>',
+            to: email,
+            subject: 'Tautan masuk ke Sentra Assist',
+            html: `
             <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:40px 24px;background:#F4F2EC;">
               <p style="font-family:monospace;font-size:10px;letter-spacing:0.25em;color:#4A4944;margin-bottom:32px;">SENTRA ASSIST</p>
               <h2 style="font-family:sans-serif;font-size:20px;font-weight:600;color:#1A1A18;margin-bottom:12px;">Masuk ke Sentra Assist</h2>
@@ -44,8 +42,18 @@ export const auth = betterAuth({
               </p>
             </div>
           `,
-        })
-      },
-    }),
-  ],
-})
+          })
+        },
+      }),
+    ],
+  })
+}
+
+let authInstance: ReturnType<typeof createAuth> | undefined
+
+export function getAuth() {
+  if (authInstance) return authInstance
+
+  authInstance = createAuth()
+  return authInstance
+}

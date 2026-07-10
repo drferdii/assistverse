@@ -7,10 +7,6 @@ import {
   DISEASES,
   CATEGORIES,
   stats,
-  nationalSources,
-  professionalSources,
-  internationalSources,
-  methodologySteps,
   type Disease,
 } from '@/components/sentrapedia/data'
 import './sentrapedia.css'
@@ -174,7 +170,6 @@ export default function SentrapediaPage() {
           </div>
           <div className="sp-disease-list">
             {filtered.map((d) => {
-              const catName = CATEGORIES.find((c) => c.id === d.kategori)?.name || d.kategori
               return (
                 <div key={d.id} className="sp-disease-row" onClick={() => openSidebar(d)}>
                   <div className="sp-disease-indicator" />

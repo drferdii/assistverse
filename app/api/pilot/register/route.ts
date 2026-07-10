@@ -2,16 +2,21 @@ export const dynamic = 'force-dynamic'
 
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
-import { createClient } from '@libsql/client'
-
-const db = createClient({
-  url: process.env.DATABASE_URL!,
-  authToken: process.env.DATABASE_AUTH_TOKEN,
-})
+import { getDatabaseClient } from '@/lib/server-db'
+import { getMissingServerEnv } from '@/lib/server-env'
 
 const ALLOWED_PROFESI = ['Dokter', 'Perawat', 'Bidan'] as const
+const REQUIRED_ENV = ['DATABASE_URL', 'RESEND_API_KEY'] as const
 
 export async function POST(request: NextRequest) {
+  const missingEnv = getMissingServerEnv(REQUIRED_ENV)
+  if (missingEnv.length > 0) {
+    return NextResponse.json(
+      { error: `Server belum dikonfigurasi: ${missingEnv.join(', ')}` },
+      { status: 503 }
+    )
+  }
+
   let body: unknown
   try {
     body = await request.json()
@@ -30,6 +35,7 @@ export async function POST(request: NextRequest) {
   }
 
   const normalizedEmail = email.trim().toLowerCase()
+  const db = getDatabaseClient()
 
   // Cek apakah user sudah ada
   const existing = await db.execute({
@@ -48,7 +54,7 @@ export async function POST(request: NextRequest) {
   }
 
   // Trigger magic link via Better Auth
-  const baseUrl = process.env.BETTER_AUTH_URL || 'http://localhost:3000'
+  const baseUrl = process.env.BETTER_AUTH_URL?.trim() || request.nextUrl.origin
   const mlRes = await fetch(`${baseUrl}/api/auth/sign-in/magic-link`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

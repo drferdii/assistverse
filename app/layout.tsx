@@ -1,8 +1,29 @@
 import type { Metadata, Viewport } from 'next'
+import { Hanken_Grotesk, IBM_Plex_Mono, Newsreader } from 'next/font/google'
 import type { ReactNode } from 'react'
 import MotionProvider from '@/components/motion/MotionProvider'
 import SmoothScroll from '@/components/SmoothScroll'
 import './globals.css'
+
+const fontDisplay = Hanken_Grotesk({
+  subsets: ['latin'],
+  variable: '--font-display',
+  display: 'swap',
+})
+
+const fontEditorial = Newsreader({
+  subsets: ['latin'],
+  variable: '--font-editorial',
+  style: ['normal', 'italic'],
+  display: 'swap',
+})
+
+const fontMono = IBM_Plex_Mono({
+  subsets: ['latin'],
+  variable: '--font-mono',
+  weight: ['400', '500'],
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://sentraassist.id'),
@@ -54,16 +75,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en" suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1, shrink-to-fit=no, viewport-fit=cover"
-        />
-        <link rel="preconnect" href="https://fonts.googleapis.com/" />
-        <link rel="preconnect" href="https://fonts.gstatic.com/" crossOrigin="" />
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600;800&amp;family=Newsreader:ital,wght@1,400&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap"
-        />
         <noscript>
           <style
             dangerouslySetInnerHTML={{
@@ -72,7 +83,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           />
         </noscript>
       </head>
-      <body suppressHydrationWarning>
+      <body
+        suppressHydrationWarning
+        className={`${fontDisplay.variable} ${fontEditorial.variable} ${fontMono.variable}`}
+      >
         <a className="skip-link" href="#main">
           Lewati ke konten
         </a>

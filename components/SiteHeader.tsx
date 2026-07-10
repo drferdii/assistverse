@@ -25,6 +25,8 @@ const NAV_ITEMS: { key: NonNullable<HeaderProps['current']>; label: string; href
 ]
 
 export default function SiteHeader({ current, dark = false }: HeaderProps) {
+  void dark
+
   return (
     <header className="site-header">
       <Link className="wordmark flex items-center gap-2" href="/">

@@ -1,6 +1,6 @@
 'use client'
 
-import { motion, type Variants } from 'motion/react'
+import type { Variants } from 'motion/react'
 import type { ReactNode } from 'react'
 import { motionTags, type MotionTag } from './tags'
 import useReducedMotionSSR from './useReducedMotionSSR'
