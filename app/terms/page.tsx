@@ -7,24 +7,27 @@ import SplitText from '@/components/motion/SplitText'
 import Reveal from '@/components/motion/Reveal'
 import MaskWipe from '@/components/motion/MaskWipe'
 import { Stagger, StaggerItem } from '@/components/motion/Stagger'
+import { siteUrl } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: 'Terms',
   description:
     'Ketentuan penggunaan situs Sentra Assist dan ringkasan bagaimana layanan Sentra Assist diakses oleh fasilitas kesehatan.',
-  alternates: { canonical: 'https://sentraassist.id/terms' },
+  alternates: { canonical: siteUrl('/terms') },
   robots: { index: true, follow: true },
   openGraph: {
     title: 'Terms — Sentra Assist',
     description: 'Ketentuan penggunaan situs dan ringkasan layanan Sentra Assist.',
-    url: 'https://sentraassist.id/terms',
+    url: siteUrl('/terms'),
     type: 'article',
-    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Terms Sentra Assist' }],
+    images: [
+      { url: siteUrl('/og-image.png'), width: 1200, height: 630, alt: 'Terms Sentra Assist' },
+    ],
   },
   twitter: {
     title: 'Terms — Sentra Assist',
     description: 'Ketentuan penggunaan situs dan ringkasan layanan Sentra Assist.',
-    images: ['/og-image.png'],
+    images: [siteUrl('/og-image.png')],
   },
 }
 
@@ -146,8 +149,8 @@ export default function TermsPage() {
               Wordmark, logotype, dan identitas visual Sentra Assist adalah merek dagang dari Sentra
               Assist. Konten tertulis di situs ini adalah hak cipta dan tidak dapat dipublikasikan
               ulang tanpa atribusi. Untuk permintaan penggunaan ulang, hubungi{' '}
-              <Link className="emphasis" href="mailto:press@sentraassist.id">
-                press@sentraassist.id
+              <Link className="emphasis" href="mailto:drferdiiskandar@sentrahai.com">
+                drferdiiskandar@sentrahai.com
               </Link>
               .
             </StaggerItem>
@@ -183,8 +186,8 @@ export default function TermsPage() {
             </StaggerItem>
             <StaggerItem as="p" className="prose">
               Untuk pertanyaan terkait ketentuan, hubungi{' '}
-              <Link className="emphasis" href="mailto:legal@sentraassist.id">
-                legal@sentraassist.id
+              <Link className="emphasis" href="mailto:drferdiiskandar@sentrahai.com">
+                drferdiiskandar@sentrahai.com
               </Link>
               .
             </StaggerItem>

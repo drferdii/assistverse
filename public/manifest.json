@@ -2,8 +2,8 @@
   "name": "Main Labs",
   "short_name": "Main Labs",
   "description": "Human intent infrastructure for AI.",
-  "start_url": "/",
-  "scope": "/",
+  "start_url": "/asisten-medis/",
+  "scope": "/asisten-medis/",
   "display": "standalone",
   "orientation": "portrait",
   "theme_color": "#F4F2EC",
@@ -11,13 +11,13 @@
   "lang": "en-US",
   "icons": [
     {
-      "src": "/favicon.svg",
+      "src": "/asisten-medis/favicon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"
     },
     {
-      "src": "/og-image.png",
+      "src": "/asisten-medis/og-image.png",
       "sizes": "1200x630",
       "type": "image/png",
       "purpose": "any"

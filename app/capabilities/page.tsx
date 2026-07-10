@@ -8,23 +8,31 @@ import Reveal from '@/components/motion/Reveal'
 import MaskWipe from '@/components/motion/MaskWipe'
 import { Stagger, StaggerItem } from '@/components/motion/Stagger'
 import TiltCard from '@/components/motion/TiltCard'
+import { siteUrl } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: 'Capabilities',
   description:
     'Enam kapabilitas Sentra Assist: workflow-native assist, non-disruptive integration, Indonesian primary care calibration, safety-first decision logic, adaptive document extraction, dan clinician authority layer.',
-  alternates: { canonical: 'https://sentraassist.id/capabilities' },
+  alternates: { canonical: siteUrl('/capabilities') },
   openGraph: {
     title: 'Capabilities — Sentra Assist',
     description: 'Enam kapabilitas yang menyusun assist intelligence Sentra.',
-    url: 'https://sentraassist.id/capabilities',
+    url: siteUrl('/capabilities'),
     type: 'article',
-    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Capabilities Sentra Assist' }],
+    images: [
+      {
+        url: siteUrl('/og-image.png'),
+        width: 1200,
+        height: 630,
+        alt: 'Capabilities Sentra Assist',
+      },
+    ],
   },
   twitter: {
     title: 'Capabilities — Sentra Assist',
     description: 'Enam kapabilitas yang menyusun assist intelligence Sentra.',
-    images: ['/og-image.png'],
+    images: [siteUrl('/og-image.png')],
   },
 }
 

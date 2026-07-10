@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /*.bak$
 
-Sitemap: https://sentraassist.id/sitemap.xml
+Sitemap: https://sentrahai.com/asisten-medis/sitemap.xml

@@ -8,23 +8,26 @@ import Reveal from '@/components/motion/Reveal'
 import MaskWipe from '@/components/motion/MaskWipe'
 import { Stagger, StaggerItem } from '@/components/motion/Stagger'
 import SubmitButton from '@/components/SubmitButton'
+import { siteUrl } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: 'Contact',
   description:
     'Hubungi Sentra Assist untuk pilot trial puskesmas, riset kolaboratif, atau partnership institusional. Kami menjawab dalam lima hari kerja.',
-  alternates: { canonical: 'https://sentraassist.id/contact' },
+  alternates: { canonical: siteUrl('/contact') },
   openGraph: {
     title: 'Contact — Sentra Assist',
     description: 'Pilot trial, riset, atau partnership untuk layanan primer Indonesia.',
-    url: 'https://sentraassist.id/contact',
+    url: siteUrl('/contact'),
     type: 'website',
-    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Contact Sentra Assist' }],
+    images: [
+      { url: siteUrl('/og-image.png'), width: 1200, height: 630, alt: 'Contact Sentra Assist' },
+    ],
   },
   twitter: {
     title: 'Contact — Sentra Assist',
     description: 'Pilot trial, riset, atau partnership untuk layanan primer Indonesia.',
-    images: ['/og-image.png'],
+    images: [siteUrl('/og-image.png')],
   },
 }
 

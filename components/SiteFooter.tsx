@@ -24,7 +24,7 @@ const SECTIONS: Section[] = [
     items: [
       { label: 'Privacy', href: '/privacy' },
       { label: 'Terms', href: '/terms' },
-      { label: 'Press', href: 'mailto:press@sentraassist.id' },
+      { label: 'Press', href: 'mailto:drferdiiskandar@sentrahai.com' },
     ],
   },
   {

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { assetPath } from '@/lib/site'
 
 type State = 'idle' | 'loading' | 'sent' | 'error'
 
@@ -20,7 +21,7 @@ export default function RegisterForm() {
     setErrorMsg('')
 
     try {
-      const res = await fetch('/api/pilot/register', {
+      const res = await fetch(assetPath('/api/pilot/register'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: name.trim(), email: email.trim(), profesi }),

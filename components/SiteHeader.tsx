@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { assetPath } from '@/lib/site'
 
 type HeaderProps = {
   current?:
@@ -30,7 +31,7 @@ export default function SiteHeader({ current, dark = false }: HeaderProps) {
   return (
     <header className="site-header">
       <Link className="wordmark flex items-center gap-2" href="/">
-        <img src="/sentralogo.png" alt="" className="w-6 h-6" />
+        <img src={assetPath('/sentralogo.png')} alt="" className="w-6 h-6" />
         <span>SENTRA ARTIFICIAL INTELLIGENCE</span>
       </Link>
       <nav aria-label="Primary">

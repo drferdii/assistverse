@@ -7,23 +7,26 @@ import SplitText from '@/components/motion/SplitText'
 import Reveal from '@/components/motion/Reveal'
 import MaskWipe from '@/components/motion/MaskWipe'
 import { Stagger, StaggerItem } from '@/components/motion/Stagger'
+import { siteUrl } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: 'Principles',
   description:
     'Empat prinsip yang menaungi desain Sentra Assist: keselamatan klinis mendahului performa, explainability non-negotiable, otoritas klinisi final, dan local fit beats generic abstraction.',
-  alternates: { canonical: 'https://sentraassist.id/principles' },
+  alternates: { canonical: siteUrl('/principles') },
   openGraph: {
     title: 'Principles — Sentra Assist',
     description: 'Empat prinsip desain Sentra Assist.',
-    url: 'https://sentraassist.id/principles',
+    url: siteUrl('/principles'),
     type: 'article',
-    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Principles Sentra Assist' }],
+    images: [
+      { url: siteUrl('/og-image.png'), width: 1200, height: 630, alt: 'Principles Sentra Assist' },
+    ],
   },
   twitter: {
     title: 'Principles — Sentra Assist',
     description: 'Empat prinsip desain Sentra Assist.',
-    images: ['/og-image.png'],
+    images: [siteUrl('/og-image.png')],
   },
 }
 

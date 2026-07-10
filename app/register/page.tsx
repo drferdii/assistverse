@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import RegisterForm from '@/components/auth/RegisterForm'
+import { assetPath } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: 'Daftar Pilot — Sentra Assist',
@@ -15,7 +16,7 @@ export default function RegisterPage() {
         <p className="auth-sub">Isi formulir di bawah. Kami kirim tautan aktivasi ke email Anda.</p>
         <RegisterForm />
         <p className="auth-footer-link">
-          Sudah punya akun? <a href="/login">Masuk</a>
+          Sudah punya akun? <a href={assetPath('/login')}>Masuk</a>
         </p>
       </div>
     </main>

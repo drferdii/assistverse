@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import MagicLinkForm from '@/components/auth/MagicLinkForm'
+import { assetPath } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: 'Masuk — Sentra Assist',
@@ -13,9 +14,9 @@ export default function LoginPage() {
         <div className="auth-wordmark">SENTRA ASSIST</div>
         <h1 className="auth-heading">Masuk</h1>
         <p className="auth-sub">Kami kirim tautan ke email Anda. Tidak perlu password.</p>
-        <MagicLinkForm callbackURL="/pilot" />
+        <MagicLinkForm callbackURL={assetPath('/pilot')} />
         <p className="auth-footer-link">
-          Belum punya akun? <a href="/register">Daftar sebagai pilot</a>
+          Belum punya akun? <a href={assetPath('/register')}>Daftar sebagai pilot</a>
         </p>
       </div>
     </main>

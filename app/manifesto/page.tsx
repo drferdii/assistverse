@@ -7,23 +7,26 @@ import SplitText from '@/components/motion/SplitText'
 import Reveal from '@/components/motion/Reveal'
 import MaskWipe from '@/components/motion/MaskWipe'
 import { Stagger, StaggerItem } from '@/components/motion/Stagger'
+import { siteUrl } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: 'Manifesto',
   description:
     'Mengapa Sentra Assist dibangun: lapisan kecerdasan klinis yang hidup di titik kerja dokter Indonesia, bukan AI terpisah yang meminta dokter pindah kerja.',
-  alternates: { canonical: 'https://sentraassist.id/manifesto' },
+  alternates: { canonical: siteUrl('/manifesto') },
   openGraph: {
     title: 'Manifesto — Sentra Assist',
     description: 'Mengapa Sentra Assist dibangun.',
-    url: 'https://sentraassist.id/manifesto',
+    url: siteUrl('/manifesto'),
     type: 'article',
-    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Manifesto Sentra Assist' }],
+    images: [
+      { url: siteUrl('/og-image.png'), width: 1200, height: 630, alt: 'Manifesto Sentra Assist' },
+    ],
   },
   twitter: {
     title: 'Manifesto — Sentra Assist',
     description: 'Mengapa Sentra Assist dibangun.',
-    images: ['/og-image.png'],
+    images: [siteUrl('/og-image.png')],
   },
 }
 
@@ -34,9 +37,9 @@ const ARTICLE_JSONLD = {
   datePublished: '2026-01-01',
   dateModified: '2026-06-01',
   inLanguage: 'id-ID',
-  url: 'https://sentraassist.id/manifesto',
-  author: { '@type': 'Organization', name: 'Sentra Assist', url: 'https://sentraassist.id/' },
-  publisher: { '@type': 'Organization', name: 'Sentra Assist', url: 'https://sentraassist.id/' },
+  url: siteUrl('/manifesto'),
+  author: { '@type': 'Organization', name: 'Sentra Assist', url: siteUrl('/') },
+  publisher: { '@type': 'Organization', name: 'Sentra Assist', url: siteUrl('/') },
 }
 
 export default function ManifestoPage() {

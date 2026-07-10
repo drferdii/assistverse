@@ -4,6 +4,7 @@ import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 import { getDatabaseClient } from '@/lib/server-db'
 import { getMissingServerEnv } from '@/lib/server-env'
+import { assetPath, ensureBasePathUrl, SITE_BASE_PATH } from '@/lib/site'
 
 const ALLOWED_PROFESI = ['Dokter', 'Perawat', 'Bidan'] as const
 const REQUIRED_ENV = ['DATABASE_URL', 'RESEND_API_KEY'] as const
@@ -54,11 +55,13 @@ export async function POST(request: NextRequest) {
   }
 
   // Trigger magic link via Better Auth
-  const baseUrl = process.env.BETTER_AUTH_URL?.trim() || request.nextUrl.origin
+  const baseUrl = ensureBasePathUrl(
+    process.env.BETTER_AUTH_URL?.trim() || request.nextUrl.origin || `http://localhost:3000${SITE_BASE_PATH}`
+  )
   const mlRes = await fetch(`${baseUrl}/api/auth/sign-in/magic-link`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email: normalizedEmail, callbackURL: '/pilot' }),
+    body: JSON.stringify({ email: normalizedEmail, callbackURL: assetPath('/pilot') }),
   })
 
   if (!mlRes.ok) {

@@ -7,24 +7,27 @@ import SplitText from '@/components/motion/SplitText'
 import Reveal from '@/components/motion/Reveal'
 import MaskWipe from '@/components/motion/MaskWipe'
 import { Stagger, StaggerItem } from '@/components/motion/Stagger'
+import { siteUrl } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: 'Privacy',
   description:
     'Bagaimana Sentra Assist menangani data klinis: apa yang dikumpulkan, apa yang tidak, bagaimana consent dan otoritas klinisi dijaga, dan hak subjek data sesuai UU PDP.',
-  alternates: { canonical: 'https://sentraassist.id/privacy' },
+  alternates: { canonical: siteUrl('/privacy') },
   robots: { index: true, follow: true },
   openGraph: {
     title: 'Privacy — Sentra Assist',
     description: 'Bagaimana Sentra Assist menangani data klinis.',
-    url: 'https://sentraassist.id/privacy',
+    url: siteUrl('/privacy'),
     type: 'article',
-    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Privacy Sentra Assist' }],
+    images: [
+      { url: siteUrl('/og-image.png'), width: 1200, height: 630, alt: 'Privacy Sentra Assist' },
+    ],
   },
   twitter: {
     title: 'Privacy — Sentra Assist',
     description: 'Bagaimana Sentra Assist menangani data klinis.',
-    images: ['/og-image.png'],
+    images: [siteUrl('/og-image.png')],
   },
 }
 
@@ -139,8 +142,8 @@ export default function PrivacyPage() {
             </StaggerItem>
             <StaggerItem as="p" className="prose">
               Untuk pertanyaan terkait privasi dan data klinis, hubungi{' '}
-              <Link className="emphasis" href="mailto:privacy@sentraassist.id">
-                privacy@sentraassist.id
+              <Link className="emphasis" href="mailto:drferdiiskandar@sentrahai.com">
+                drferdiiskandar@sentrahai.com
               </Link>
               . Untuk hal lainnya,{' '}
               <Link className="emphasis" href="/contact">

@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { siteUrl } from '@/lib/site'
 
 type View = 'dashboard' | 'logbook' | 'report'
 
@@ -40,7 +41,7 @@ export default function AcarsHeader({ view, onView }: Props) {
               Laporan Performa
             </button>
             <a
-              href="#spatial"
+              href={siteUrl('/acars#spatial')}
               className="inline-flex items-center justify-center border border-line px-4 py-3 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-ink-soft transition-all duration-300 hover:border-ink hover:text-ink"
             >
               Node Spasial

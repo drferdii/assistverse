@@ -8,20 +8,21 @@ import Parallax from '@/components/motion/Parallax'
 import MouseParallax from '@/components/motion/MouseParallax'
 import Magnetic from '@/components/motion/Magnetic'
 import HeroStructuralGrid from '@/components/motion/HeroStructuralGrid'
+import { assetPath, siteUrl } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: 'Sentra Assist — Clinical intelligence untuk layanan primer Indonesia',
   description:
     'Lapisan clinical decision support yang menempel pada workflow ePuskesmas untuk membantu triage, dokumentasi, dan keselamatan klinis — tanpa memaksa fasilitas mengganti sistem existing.',
-  alternates: { canonical: 'https://sentraassist.id/' },
+  alternates: { canonical: siteUrl('/') },
   openGraph: {
     title: 'Sentra Assist — Clinical intelligence untuk layanan primer Indonesia',
     description: 'Lapisan clinical decision support untuk ePuskesmas tanpa migrasi.',
-    url: 'https://sentraassist.id/',
+    url: siteUrl('/'),
     type: 'website',
     images: [
       {
-        url: '/og-image.png',
+        url: siteUrl('/og-image.png'),
         width: 1200,
         height: 630,
         alt: 'SENTRA ASSIST — Clinical intelligence untuk layanan primer Indonesia',
@@ -31,7 +32,7 @@ export const metadata: Metadata = {
   twitter: {
     title: 'Sentra Assist — Clinical intelligence untuk layanan primer Indonesia',
     description: 'Lapisan clinical decision support untuk ePuskesmas tanpa migrasi.',
-    images: ['/og-image.png'],
+    images: [siteUrl('/og-image.png')],
   },
 }
 
@@ -40,53 +41,61 @@ const ORG_JSONLD = {
   '@graph': [
     {
       '@type': 'Organization',
-      '@id': 'https://sentraassist.id/#org',
+      '@id': `${siteUrl('/')}#org`,
       name: 'Sentra Assist',
-      url: 'https://sentraassist.id/',
-      logo: 'https://sentraassist.id/og-image.png',
+      url: siteUrl('/'),
+      logo: siteUrl('/og-image.png'),
       email: 'drferdiiskandar@sentrahai.com',
       sameAs: [],
     },
     {
       '@type': 'WebSite',
-      '@id': 'https://sentraassist.id/#site',
-      url: 'https://sentraassist.id/',
+      '@id': `${siteUrl('/')}#site`,
+      url: siteUrl('/'),
       name: 'Sentra Assist',
-      publisher: { '@id': 'https://sentraassist.id/#org' },
+      publisher: { '@id': `${siteUrl('/')}#org` },
       inLanguage: 'id-ID',
     },
   ],
 }
 
 const SOCIALS = [
-  { label: 'Website', href: 'https://ferdiiskandar.com', icon: '/social/globe.svg' },
-  { label: 'Medium', href: 'https://medium.com/@codieverse', icon: '/social/medium.svg' },
+  { label: 'Website', href: 'https://ferdiiskandar.com', icon: assetPath('/social/globe.svg') },
+  {
+    label: 'Medium',
+    href: 'https://medium.com/@codieverse',
+    icon: assetPath('/social/medium.svg'),
+  },
   {
     label: 'ORCID',
     href: 'https://orcid.org/my-orcid?orcid=0009-0003-3788-1307',
-    icon: '/social/orcid.svg',
+    icon: assetPath('/social/orcid.svg'),
   },
-  { label: 'X', href: 'https://x.com/ClaudesyI81047', icon: '/social/x.svg' },
+  { label: 'X', href: 'https://x.com/ClaudesyI81047', icon: assetPath('/social/x.svg') },
   {
     label: 'Substack',
     href: 'https://substack.com/@drferdiiskandar',
-    icon: '/social/substack.svg',
+    icon: assetPath('/social/substack.svg'),
   },
-  { label: 'Kaggle', href: 'https://www.kaggle.com/drferdiiskandar', icon: '/social/kaggle.svg' },
+  {
+    label: 'Kaggle',
+    href: 'https://www.kaggle.com/drferdiiskandar',
+    icon: assetPath('/social/kaggle.svg'),
+  },
   {
     label: 'Reddit',
     href: 'https://www.reddit.com/user/SixCupaCoffee/',
-    icon: '/social/reddit.svg',
+    icon: assetPath('/social/reddit.svg'),
   },
   {
     label: 'LinkedIn',
     href: 'https://www.linkedin.com/in/dr-ferdi-iskandar-1b620a3b5',
-    icon: '/social/linkedin.svg',
+    icon: assetPath('/social/linkedin.svg'),
   },
   {
     label: 'Hugging Face',
     href: 'https://huggingface.co/dr-Ferdi',
-    icon: '/social/huggingface.svg',
+    icon: assetPath('/social/huggingface.svg'),
   },
 ]
 
@@ -109,7 +118,7 @@ export default function HomePage() {
               href="#hero"
               aria-label="Sentra Artificial Intelligence"
             >
-              <img src="/sentralogo.png" alt="" className="w-8 h-8" />
+              <img src={assetPath('/sentralogo.png')} alt="" className="w-8 h-8" />
               <span>SENTRA ARTIFICIAL INTELLIGENCE</span>
             </Link>
             <nav style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
@@ -208,7 +217,7 @@ export default function HomePage() {
                         Assist dikembangkan di lab technology Melinda DHAI 2025-2026
                       </span>
                       <img
-                        src="/melinda.avif"
+                        src={assetPath('/melinda.avif')}
                         alt="RSIA Melinda"
                         className="h-10 w-auto object-contain"
                         style={{ filter: 'grayscale(1) brightness(0) opacity(0.4)' }}
@@ -263,7 +272,7 @@ export default function HomePage() {
               href="#hero"
               aria-label="Sentra Artificial Intelligence home"
             >
-              <img src="/sentralogo.png" alt="" className="w-6 h-6" />
+              <img src={assetPath('/sentralogo.png')} alt="" className="w-6 h-6" />
               <span>SENTRA ARTIFICIAL INTELLIGENCE</span>
             </Link>
             <nav style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>

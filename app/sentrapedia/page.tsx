@@ -9,6 +9,7 @@ import {
   stats,
   type Disease,
 } from '@/components/sentrapedia/data'
+import { assetPath } from '@/lib/site'
 import './sentrapedia.css'
 
 export default function SentrapediaPage() {
@@ -59,7 +60,7 @@ export default function SentrapediaPage() {
         <section className="sp-hero relative overflow-hidden">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[45vw] max-w-[550px] opacity-60 pointer-events-none mix-blend-multiply z-0">
             <img
-              src="/images/sentrapedia_sketch.jpg"
+              src={assetPath('/images/sentrapedia_sketch.jpg')}
               alt="Sentrapedia sketch"
               className="w-full h-auto grayscale contrast-125"
             />

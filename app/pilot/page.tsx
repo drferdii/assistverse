@@ -5,8 +5,8 @@ import { redirect } from 'next/navigation'
 import SiteFooter from '@/components/SiteFooter'
 import PilotApp from '@/components/pilot/PilotApp'
 import { getAuth } from '@/lib/auth'
-
 export const dynamic = 'force-dynamic'
+import { assetPath } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: 'Assist Pilot — Logbook Klinis',
@@ -32,7 +32,7 @@ export default async function PilotPage() {
           {user.name}
           {profesi ? ` — ${profesi}` : ''}
         </span>
-        <Link href="/api/auth/sign-out" className="pilot-auth-signout">
+        <Link href={assetPath('/api/auth/sign-out')} className="pilot-auth-signout">
           Keluar
         </Link>
       </header>

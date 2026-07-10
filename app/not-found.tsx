@@ -3,23 +3,24 @@ import Link from 'next/link'
 import SiteHeader from '@/components/SiteHeader'
 import SiteFooter from '@/components/SiteFooter'
 import { Stagger, StaggerItem } from '@/components/motion/Stagger'
+import { siteUrl } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: '404 — Halaman tidak ditemukan',
   description: 'Halaman yang Anda cari tidak ditemukan di Sentra Assist.',
-  alternates: { canonical: 'https://sentraassist.id/404' },
+  alternates: { canonical: siteUrl('/404') },
   robots: { index: false, follow: true },
   openGraph: {
     title: '404 — Sentra Assist',
     description: 'Halaman yang Anda cari tidak ditemukan.',
-    url: 'https://sentraassist.id/404',
+    url: siteUrl('/404'),
     type: 'website',
-    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: '404 Sentra Assist' }],
+    images: [{ url: siteUrl('/og-image.png'), width: 1200, height: 630, alt: '404 Sentra Assist' }],
   },
   twitter: {
     title: '404 — Sentra Assist',
     description: 'Halaman yang Anda cari tidak ditemukan.',
-    images: ['/og-image.png'],
+    images: [siteUrl('/og-image.png')],
   },
 }
 

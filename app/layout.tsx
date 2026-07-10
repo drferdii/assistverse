@@ -3,6 +3,7 @@ import { Hanken_Grotesk, IBM_Plex_Mono, Newsreader } from 'next/font/google'
 import type { ReactNode } from 'react'
 import MotionProvider from '@/components/motion/MotionProvider'
 import SmoothScroll from '@/components/SmoothScroll'
+import { assetPath, siteUrl, SITE_ORIGIN } from '@/lib/site'
 import './globals.css'
 
 const fontDisplay = Hanken_Grotesk({
@@ -26,7 +27,7 @@ const fontMono = IBM_Plex_Mono({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://sentraassist.id'),
+  metadataBase: new URL(SITE_ORIGIN),
   title: {
     default: 'Sentra Assist — Clinical intelligence untuk layanan primer Indonesia',
     template: '%s — Sentra Assist',
@@ -39,11 +40,11 @@ export const metadata: Metadata = {
   referrer: 'strict-origin-when-cross-origin',
   robots: { index: true, follow: true },
   icons: {
-    icon: [{ url: '/sentra.png', type: 'image/png', sizes: '1024x1024' }],
-    apple: [{ url: '/sentra.png', sizes: '1024x1024' }],
-    shortcut: '/sentra.png',
+    icon: [{ url: assetPath('/sentra.png'), type: 'image/png', sizes: '1024x1024' }],
+    apple: [{ url: assetPath('/sentra.png'), sizes: '1024x1024' }],
+    shortcut: assetPath('/sentra.png'),
   },
-  manifest: '/manifest.json',
+  manifest: assetPath('/manifest.json'),
   openGraph: {
     type: 'website',
     siteName: 'Sentra Assist',
@@ -51,16 +52,16 @@ export const metadata: Metadata = {
     alternateLocale: ['en_US'],
     title: 'Sentra Assist — Clinical intelligence untuk layanan primer Indonesia',
     description: 'Lapisan clinical decision support untuk ePuskesmas tanpa migrasi.',
-    url: 'https://sentraassist.id/',
-    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'SENTRA ASSIST' }],
+    url: siteUrl('/'),
+    images: [{ url: siteUrl('/og-image.png'), width: 1200, height: 630, alt: 'SENTRA ASSIST' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Sentra Assist — Clinical intelligence untuk layanan primer Indonesia',
     description: 'Lapisan clinical decision support untuk ePuskesmas tanpa migrasi.',
-    images: ['/og-image.png'],
+    images: [siteUrl('/og-image.png')],
   },
-  alternates: { canonical: 'https://sentraassist.id/' },
+  alternates: { canonical: siteUrl('/') },
   formatDetection: { email: false, address: false, telephone: false },
 }
 
