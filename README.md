@@ -4,8 +4,11 @@
   GitHub-compatible README — Sentra opening-box style
 -->
 
-> [!WARNING]
-> **Active prototype — not production-ready.** Content, routes, interfaces, and deployment assumptions may change without notice. This repository must not be treated as a clinical system, patient-care application, or production deployment without formal technical, security, legal, and governance review.
+> [!WARNING] **Active prototype — not production-ready.** Content, routes,
+> interfaces, and deployment assumptions may change without notice. This
+> repository must not be treated as a clinical system, patient-care application,
+> or production deployment without formal technical, security, legal, and
+> governance review.
 
 <table width="100%">
   <tr>
@@ -68,7 +71,6 @@
   <a href="#contribution-contract">Contributing</a>
 </p>
 
-
 ## Command Index
 
 <details>
@@ -107,42 +109,52 @@
 
 ## 01 — Executive Brief
 
-**ASSIST-SITE** is the official public website repository for **Assistverse**, a clinical intelligence product environment developed by **Sentra Artificial Intelligence** for Indonesian primary-care settings, including **FKTP** and **Puskesmas**.
+**ASSIST-SITE** is the official public website repository for **Assistverse**, a
+clinical intelligence product environment developed by **Sentra Artificial
+Intelligence** for Indonesian primary-care settings, including **FKTP** and
+**Puskesmas**.
 
-The repository provides the public product narrative, capability architecture, ACARS intelligence experience, manifesto, operating principles, institutional contact surface, and legal pages for Assistverse.
+The repository provides the public product narrative, capability architecture,
+ACARS intelligence experience, manifesto, operating principles, institutional
+contact surface, and legal pages for Assistverse.
 
-The application uses **Next.js 16 App Router** and is built as a **fully static export**. The deployable artifact is generated in `out/` and can be hosted on a CDN or static hosting service without a persistent Node.js production runtime.
+The application uses **Next.js 16 App Router** and is built as a **fully static
+export**. The deployable artifact is generated in `out/` and can be hosted on a
+CDN or static hosting service without a persistent Node.js production runtime.
 
 ### Primary repository outcomes
 
-| Outcome | Repository responsibility |
-|---|---|
-| Product understanding | Explain what Assistverse is, why it exists, and where its authority stops |
+| Outcome                  | Repository responsibility                                                                                   |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------- |
+| Product understanding    | Explain what Assistverse is, why it exists, and where its authority stops                                   |
 | Capability communication | Present the product’s six capability pillars to clinical, institutional, technical, and policy stakeholders |
-| Operational visibility | Demonstrate ACARS alert, audit, reporting, performance, and geospatial intelligence concepts |
-| Governance communication | Publish the product manifesto, principles, privacy position, and terms |
-| Institutional engagement | Provide a clear public contact and partnership pathway |
-| Deployability | Produce a portable static artifact suitable for CDN distribution |
+| Operational visibility   | Demonstrate ACARS alert, audit, reporting, performance, and geospatial intelligence concepts                |
+| Governance communication | Publish the product manifesto, principles, privacy position, and terms                                      |
+| Institutional engagement | Provide a clear public contact and partnership pathway                                                      |
+| Deployability            | Produce a portable static artifact suitable for CDN distribution                                            |
 
 ### One-line position
 
-> **Assistverse is the public face of Sentra’s workflow-native clinical intelligence architecture: designed to surface risk, strengthen operational awareness, and preserve clinician authority.**
+> **Assistverse is the public face of Sentra’s workflow-native clinical
+> intelligence architecture: designed to surface risk, strengthen operational
+> awareness, and preserve clinician authority.**
 
 ---
 
 ## 02 — Identity Architecture
 
-The names in this repository refer to different layers and must not be used interchangeably.
+The names in this repository refer to different layers and must not be used
+interchangeably.
 
-| Layer | Canonical name | Meaning |
-|---|---|---|
-| Product | **Assistverse** | The clinical intelligence product environment and public product identity |
-| Developer | **Sentra Artificial Intelligence** | The organization responsible for product architecture, research, engineering, and governance |
-| Repository | **ASSIST-SITE** | The source repository for the public Assistverse website |
-| Repository slug | `assist-site` | Git clone and local working-directory identifier |
-| Public domain | Indonesian primary care | FKTP, Puskesmas, and related healthcare stakeholders |
-| Intelligence surface | **ACARS** | Automatic Clinical Alert and Reporting System experience |
-| Delivery model | Static web export | CDN-ready output generated in `out/` |
+| Layer                | Canonical name                     | Meaning                                                                                      |
+| -------------------- | ---------------------------------- | -------------------------------------------------------------------------------------------- |
+| Product              | **Assistverse**                    | The clinical intelligence product environment and public product identity                    |
+| Developer            | **Sentra Artificial Intelligence** | The organization responsible for product architecture, research, engineering, and governance |
+| Repository           | **ASSIST-SITE**                    | The source repository for the public Assistverse website                                     |
+| Repository slug      | `assist-site`                      | Git clone and local working-directory identifier                                             |
+| Public domain        | Indonesian primary care            | FKTP, Puskesmas, and related healthcare stakeholders                                         |
+| Intelligence surface | **ACARS**                          | Automatic Clinical Alert and Reporting System experience                                     |
+| Delivery model       | Static web export                  | CDN-ready output generated in `out/`                                                         |
 
 ### Naming rules
 
@@ -168,41 +180,50 @@ Autonomous doctor                  Incorrect and unsafe positioning
 
 ## 03 — Mission and Product Doctrine
 
-Primary-care teams operate under constrained consultation time, heterogeneous data quality, fragmented digital workflows, and uneven access to structured clinical intelligence. Assistverse exists to communicate and support a product direction in which important clinical and operational signals become easier to see, interpret, audit, and escalate.
+Primary-care teams operate under constrained consultation time, heterogeneous
+data quality, fragmented digital workflows, and uneven access to structured
+clinical intelligence. Assistverse exists to communicate and support a product
+direction in which important clinical and operational signals become easier to
+see, interpret, audit, and escalate.
 
 ### Mission
 
 Assistverse is designed around five outcomes:
 
-1. **Surface clinical risk earlier** by making red flags and escalation signals more visible.
-2. **Reduce cognitive and administrative friction** through structured, workflow-aware intelligence.
-3. **Support timely escalation and referral** without transferring professional authority to software.
-4. **Improve operational visibility** through audit-oriented reporting and geospatial intelligence.
-5. **Preserve trust and sovereignty** through explicit governance, evidence discipline, and controlled deployment.
+1. **Surface clinical risk earlier** by making red flags and escalation signals
+   more visible.
+2. **Reduce cognitive and administrative friction** through structured,
+   workflow-aware intelligence.
+3. **Support timely escalation and referral** without transferring professional
+   authority to software.
+4. **Improve operational visibility** through audit-oriented reporting and
+   geospatial intelligence.
+5. **Preserve trust and sovereignty** through explicit governance, evidence
+   discipline, and controlled deployment.
 
 ### Product doctrine
 
-| Principle | Operational meaning |
-|---|---|
-| **Do no harm** | Safety outranks speed, convenience, visual novelty, and feature count |
-| **Clinicians decide** | Licensed professionals retain authority over diagnosis, treatment, referral, and escalation |
-| **Evidence before assertion** | Clinical claims must be grounded, traceable, and appropriately qualified |
-| **Fail closed** | Missing evidence must not be transformed into fabricated certainty |
-| **Workflow native** | Intelligence should reduce friction inside the real operational workflow |
-| **Minimum necessary scope** | Collect, process, and display only what the defined purpose requires |
-| **Audit first** | Important outputs, state changes, and escalation events should remain reviewable |
-| **Accessibility by default** | Motion, contrast, language, and interaction patterns must remain usable |
-| **Sovereign deployment** | Architecture should preserve institutional control and local governance |
+| Principle                     | Operational meaning                                                                         |
+| ----------------------------- | ------------------------------------------------------------------------------------------- |
+| **Do no harm**                | Safety outranks speed, convenience, visual novelty, and feature count                       |
+| **Clinicians decide**         | Licensed professionals retain authority over diagnosis, treatment, referral, and escalation |
+| **Evidence before assertion** | Clinical claims must be grounded, traceable, and appropriately qualified                    |
+| **Fail closed**               | Missing evidence must not be transformed into fabricated certainty                          |
+| **Workflow native**           | Intelligence should reduce friction inside the real operational workflow                    |
+| **Minimum necessary scope**   | Collect, process, and display only what the defined purpose requires                        |
+| **Audit first**               | Important outputs, state changes, and escalation events should remain reviewable            |
+| **Accessibility by default**  | Motion, contrast, language, and interaction patterns must remain usable                     |
+| **Sovereign deployment**      | Architecture should preserve institutional control and local governance                     |
 
 ### Product boundary
 
-| Assistverse is | Assistverse is not |
-|---|---|
-| A clinical decision-support and operational intelligence environment | An autonomous physician replacement |
-| A mechanism for surfacing risk and escalation signals | A source of unsupervised clinical orders |
-| A public product and governance communication layer | A guarantee of diagnosis, prognosis, or treatment outcome |
-| An audit-oriented visibility surface | A substitute for institutional policy or professional accountability |
-| Designed for Indonesian primary-care realities | A generic consumer-health chatbot |
+| Assistverse is                                                       | Assistverse is not                                                   |
+| -------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| A clinical decision-support and operational intelligence environment | An autonomous physician replacement                                  |
+| A mechanism for surfacing risk and escalation signals                | A source of unsupervised clinical orders                             |
+| A public product and governance communication layer                  | A guarantee of diagnosis, prognosis, or treatment outcome            |
+| An audit-oriented visibility surface                                 | A substitute for institutional policy or professional accountability |
+| Designed for Indonesian primary-care realities                       | A generic consumer-health chatbot                                    |
 
 ---
 
@@ -212,15 +233,18 @@ ASSIST-SITE communicates Assistverse through six major experience areas.
 
 ### 4.1 Product landing experience
 
-A motion-led introduction to Assistverse, its clinical purpose, value proposition, and relationship to Sentra Artificial Intelligence.
+A motion-led introduction to Assistverse, its clinical purpose, value
+proposition, and relationship to Sentra Artificial Intelligence.
 
 ### 4.2 Capability architecture
 
-A structured presentation of the product’s six capability pillars for clinical, institutional, technical, and policy audiences.
+A structured presentation of the product’s six capability pillars for clinical,
+institutional, technical, and policy audiences.
 
 ### 4.3 ACARS intelligence dashboard
 
-The **Automatic Clinical Alert and Reporting System** experience communicates operational intelligence concepts such as:
+The **Automatic Clinical Alert and Reporting System** experience communicates
+operational intelligence concepts such as:
 
 - clinical alert visibility,
 - audit-oriented event presentation,
@@ -230,34 +254,39 @@ The **Automatic Clinical Alert and Reporting System** experience communicates op
 
 ### 4.4 Product manifesto
 
-A public statement of why Assistverse exists, the healthcare problems it addresses, and the boundaries it must not cross.
+A public statement of why Assistverse exists, the healthcare problems it
+addresses, and the boundaries it must not cross.
 
 ### 4.5 Operating principles
 
-A governance-oriented explanation of the safety, accountability, evidence, accessibility, and engineering principles behind the product.
+A governance-oriented explanation of the safety, accountability, evidence,
+accessibility, and engineering principles behind the product.
 
 ### 4.6 Institutional communication
 
-Contact, privacy, and terms pages provide the public interface for stakeholders evaluating or engaging with Assistverse.
+Contact, privacy, and terms pages provide the public interface for stakeholders
+evaluating or engaging with Assistverse.
 
 ---
 
 ## 05 — Route Map
 
-| Route | Experience | Purpose |
-|---|---|---|
-| `/` | Home | Motion-driven product introduction and strategic overview |
-| `/capabilities` | Capabilities | Presentation of the six Assistverse capability pillars |
-| `/acars` | ACARS | Alert, audit, reporting, performance, and geospatial intelligence experience |
-| `/manifesto` | Manifesto | Product mission, philosophy, and strategic intent |
-| `/principles` | Principles | Clinical AI operating doctrine and governance boundaries |
-| `/contact` | Contact | Inquiry, partnership, and institutional engagement interface |
-| `/privacy` | Privacy Policy | Public explanation of data-handling commitments |
-| `/terms` | Terms of Service | Terms, limitations, and usage conditions |
+| Route           | Experience       | Purpose                                                                      |
+| --------------- | ---------------- | ---------------------------------------------------------------------------- |
+| `/`             | Home             | Motion-driven product introduction and strategic overview                    |
+| `/capabilities` | Capabilities     | Presentation of the six Assistverse capability pillars                       |
+| `/acars`        | ACARS            | Alert, audit, reporting, performance, and geospatial intelligence experience |
+| `/manifesto`    | Manifesto        | Product mission, philosophy, and strategic intent                            |
+| `/principles`   | Principles       | Clinical AI operating doctrine and governance boundaries                     |
+| `/contact`      | Contact          | Inquiry, partnership, and institutional engagement interface                 |
+| `/privacy`      | Privacy Policy   | Public explanation of data-handling commitments                              |
+| `/terms`        | Terms of Service | Terms, limitations, and usage conditions                                     |
 
 ### Route ownership rule
 
-Every page must have one clear responsibility. New routes should not duplicate an existing page’s purpose merely to accommodate alternate copy, experimental visual treatments, or agent-generated ideas.
+Every page must have one clear responsibility. New routes should not duplicate
+an existing page’s purpose merely to accommodate alternate copy, experimental
+visual treatments, or agent-generated ideas.
 
 ---
 
@@ -332,27 +361,31 @@ The production artifact is a static export. Therefore:
 - production API routes are not available within the exported application,
 - runtime secrets must not be embedded in client-side bundles,
 - dynamic form submission requires an approved external endpoint,
-- and environment-dependent behavior must remain compatible with static generation.
+- and environment-dependent behavior must remain compatible with static
+  generation.
 
 ---
 
 ## 07 — Technology Stack
 
-| Concern | Technology | Responsibility |
-|---|---|---|
-| Framework | **Next.js 16 — App Router** | Routing, metadata, static generation, and application composition |
-| Interface | **React 19** | Component rendering and interactive behavior |
-| Language | **TypeScript 5** | Static type safety and maintainable contracts |
-| Styling | **Tailwind CSS 3** | Utility-first layout, responsive styling, and design consistency |
-| Motion | **Motion / Framer Motion** | Reveal, transition, stagger, mask, and parallax behavior |
-| Smooth scrolling | **Lenis** | Controlled native-feel scrolling experience |
-| Maps | **MapLibre GL** | Geospatial presentation for the ACARS intelligence layer |
-| Output | **Next.js static export** | Generation of the deployable `out/` directory |
-| Hosting model | **CDN / static host** | Runtime-independent distribution of the exported site |
+| Concern          | Technology                  | Responsibility                                                    |
+| ---------------- | --------------------------- | ----------------------------------------------------------------- |
+| Framework        | **Next.js 16 — App Router** | Routing, metadata, static generation, and application composition |
+| Interface        | **React 19**                | Component rendering and interactive behavior                      |
+| Language         | **TypeScript 5**            | Static type safety and maintainable contracts                     |
+| Styling          | **Tailwind CSS 3**          | Utility-first layout, responsive styling, and design consistency  |
+| Motion           | **Motion / Framer Motion**  | Reveal, transition, stagger, mask, and parallax behavior          |
+| Smooth scrolling | **Lenis**                   | Controlled native-feel scrolling experience                       |
+| Maps             | **MapLibre GL**             | Geospatial presentation for the ACARS intelligence layer          |
+| Output           | **Next.js static export**   | Generation of the deployable `out/` directory                     |
+| Hosting model    | **CDN / static host**       | Runtime-independent distribution of the exported site             |
 
 ### Technology selection principle
 
-A dependency must solve a repository-level requirement that cannot be met safely and clearly with the current stack. New packages require explicit review because every dependency adds maintenance, security, bundle-size, and compatibility cost.
+A dependency must solve a repository-level requirement that cannot be met safely
+and clearly with the current stack. New packages require explicit review because
+every dependency adds maintenance, security, bundle-size, and compatibility
+cost.
 
 ---
 
@@ -411,7 +444,8 @@ assist-site/
 - Keep ACARS-specific components inside `components/acars/`.
 - Do not create a new abstraction until at least two real consumers require it.
 - Do not move files solely to satisfy aesthetic preferences.
-- Do not introduce cross-product code into ASSIST-SITE without an explicit architecture decision.
+- Do not introduce cross-product code into ASSIST-SITE without an explicit
+  architecture decision.
 
 ---
 
@@ -419,7 +453,8 @@ assist-site/
 
 ### Prerequisites
 
-Use a supported Node.js environment compatible with the repository’s declared Next.js version and package lock.
+Use a supported Node.js environment compatible with the repository’s declared
+Next.js version and package lock.
 
 Recommended local tools:
 
@@ -437,7 +472,8 @@ cd assist-site
 npm install
 ```
 
-For a reproducible clean installation in environments where the lockfile is authoritative:
+For a reproducible clean installation in environments where the lockfile is
+authoritative:
 
 ```bash
 npm ci
@@ -445,7 +481,8 @@ npm ci
 
 ### Environment file
 
-Create a local environment file only when the repository requires local configuration.
+Create a local environment file only when the repository requires local
+configuration.
 
 #### macOS / Linux
 
@@ -516,7 +553,8 @@ npm run lint
 npm run build
 ```
 
-A completion claim is invalid when one of these commands has not been run, fails, or is silently skipped.
+A completion claim is invalid when one of these commands has not been run,
+fails, or is silently skipped.
 
 ### Recommended working loop
 
@@ -544,7 +582,8 @@ The canonical deployment artifact is:
 out/
 ```
 
-Deploy the contents of `out/` to a static host or CDN. Do not deploy the source directory as though it were the final production artifact.
+Deploy the contents of `out/` to a static host or CDN. Do not deploy the source
+directory as though it were the final production artifact.
 
 ### Deployment model
 
@@ -585,22 +624,26 @@ Before deployment, confirm:
 
 ### Contact form boundary
 
-The current site does not provide an internal production backend for contact submission. A working contact flow requires an explicitly approved external endpoint or service. Never place private service credentials in public client-side code.
+The current site does not provide an internal production backend for contact
+submission. A working contact flow requires an explicitly approved external
+endpoint or service. Never place private service credentials in public
+client-side code.
 
 ---
 
 ## 12 — Motion System
 
-All reusable animation primitives live in `components/motion/` and wrap Motion / Framer Motion behavior.
+All reusable animation primitives live in `components/motion/` and wrap Motion /
+Framer Motion behavior.
 
-| Component | Behavior | Appropriate use |
-|---|---|---|
-| `Reveal` | Fade and positional reveal on entry | Section titles, cards, supporting copy |
-| `SplitText` | Character-level or word-level stagger | High-emphasis display typography only |
-| `Stagger` / `StaggerItem` | Sequenced reveal for grouped content | Capability lists and card collections |
-| `Parallax` | Scroll-driven positional offset | Decorative layers with strict restraint |
-| `MaskWipe` | Clip-path or mask reveal | Hero imagery and intentional transitions |
-| `MotionProvider` | Application-level motion context | Shared motion configuration and lifecycle |
+| Component                 | Behavior                              | Appropriate use                           |
+| ------------------------- | ------------------------------------- | ----------------------------------------- |
+| `Reveal`                  | Fade and positional reveal on entry   | Section titles, cards, supporting copy    |
+| `SplitText`               | Character-level or word-level stagger | High-emphasis display typography only     |
+| `Stagger` / `StaggerItem` | Sequenced reveal for grouped content  | Capability lists and card collections     |
+| `Parallax`                | Scroll-driven positional offset       | Decorative layers with strict restraint   |
+| `MaskWipe`                | Clip-path or mask reveal              | Hero imagery and intentional transitions  |
+| `MotionProvider`          | Application-level motion context      | Shared motion configuration and lifecycle |
 
 ### Motion doctrine
 
@@ -622,55 +665,63 @@ Motion must not:
 
 ### Reduced motion
 
-The application respects `prefers-reduced-motion` through the existing reduced-motion handling. New animation work must preserve that behavior.
+The application respects `prefers-reduced-motion` through the existing
+reduced-motion handling. New animation work must preserve that behavior.
 
 ---
 
 ## 13 — ACARS Intelligence Surface
 
-**ACARS — Automatic Clinical Alert and Reporting System** is the operational intelligence surface presented by ASSIST-SITE.
+**ACARS — Automatic Clinical Alert and Reporting System** is the operational
+intelligence surface presented by ASSIST-SITE.
 
 ### Communication scope
 
 The public experience may communicate:
 
-| Domain | Public-facing representation |
-|---|---|
-| Alerts | Visibility of clinically relevant or operationally important events |
-| Audit | Reviewable activity and event chronology |
-| Reporting | Structured performance and operational summaries |
-| Geospatial intelligence | Geographic and facility-level views using MapLibre GL |
-| Situational awareness | System-level patterns and service visibility |
+| Domain                  | Public-facing representation                                        |
+| ----------------------- | ------------------------------------------------------------------- |
+| Alerts                  | Visibility of clinically relevant or operationally important events |
+| Audit                   | Reviewable activity and event chronology                            |
+| Reporting               | Structured performance and operational summaries                    |
+| Geospatial intelligence | Geographic and facility-level views using MapLibre GL               |
+| Situational awareness   | System-level patterns and service visibility                        |
 
 ### Non-negotiable boundary
 
-The public ACARS presentation must never imply that a demonstration dashboard is a validated production clinical system. Mock, synthetic, or demonstration data must be clearly distinguishable from real patient or facility data.
+The public ACARS presentation must never imply that a demonstration dashboard is
+a validated production clinical system. Mock, synthetic, or demonstration data
+must be clearly distinguishable from real patient or facility data.
 
 ### Data handling rule
 
-Do not introduce patient-identifiable, confidential institutional, or real operational data into the public repository or exported website.
+Do not introduce patient-identifiable, confidential institutional, or real
+operational data into the public repository or exported website.
 
 ---
 
 ## 14 — Design and Content Doctrine
 
-The README and website should feel like a Sentra system: disciplined, high-signal, operational, and unmistakably authored rather than template-generated.
+The README and website should feel like a Sentra system: disciplined,
+high-signal, operational, and unmistakably authored rather than
+template-generated.
 
 ### Visual language
 
-| Signal | Meaning |
-|---|---|
+| Signal                 | Meaning                                                       |
+| ---------------------- | ------------------------------------------------------------- |
 | Deep navy / near-black | System authority, technical depth, and command-center framing |
-| White | Clarity and readable foreground hierarchy |
-| Red orange | Strategic emphasis and clinical urgency |
-| Blue | Clinical intelligence and system structure |
-| Green | Verified, available, or healthy state |
-| Purple | Audit, governance, or controlled intelligence mode |
-| Grey | Metadata labels and secondary operational context |
+| White                  | Clarity and readable foreground hierarchy                     |
+| Red orange             | Strategic emphasis and clinical urgency                       |
+| Blue                   | Clinical intelligence and system structure                    |
+| Green                  | Verified, available, or healthy state                         |
+| Purple                 | Audit, governance, or controlled intelligence mode            |
+| Grey                   | Metadata labels and secondary operational context             |
 
 ### Opening-box rule
 
-Every major Sentra repository README should begin with a strong identity frame containing:
+Every major Sentra repository README should begin with a strong identity frame
+containing:
 
 - product or system identity,
 - developer or origin identity,
@@ -678,7 +729,8 @@ Every major Sentra repository README should begin with a strong identity frame c
 - an operational signal,
 - and compact status metadata.
 
-A generic centered logo followed by badges is not a substitute for the opening box.
+A generic centered logo followed by badges is not a substitute for the opening
+box.
 
 ### Content hierarchy
 
@@ -691,8 +743,10 @@ Identity → purpose → boundaries → capabilities → architecture → operat
 ### Copy rules
 
 - Prefer specific nouns and verbs over generic AI language.
-- Do not call a feature “intelligent” unless the mechanism and purpose are clear.
-- Do not overstate clinical validation, production status, or regulatory readiness.
+- Do not call a feature “intelligent” unless the mechanism and purpose are
+  clear.
+- Do not overstate clinical validation, production status, or regulatory
+  readiness.
 - Keep clinical boundary language visible, not hidden in legal pages.
 - Distinguish shipped behavior from concept, prototype, and future direction.
 - Use **Assistverse** consistently as the product name.
@@ -742,7 +796,8 @@ High zoom or enlarged text
 
 ## 16 — Performance
 
-The site should remain visually expressive without turning presentation into operational cost.
+The site should remain visually expressive without turning presentation into
+operational cost.
 
 ### Performance priorities
 
@@ -756,7 +811,9 @@ The site should remain visually expressive without turning presentation into ope
 
 ### MapLibre boundary
 
-MapLibre GL adds meaningful bundle weight to the ACARS route. Changes to map features should be evaluated for route-specific loading, asset weight, interaction cost, and mobile behavior.
+MapLibre GL adds meaningful bundle weight to the ACARS route. Changes to map
+features should be evaluated for route-specific loading, asset weight,
+interaction cost, and mobile behavior.
 
 ### Performance review questions
 
@@ -786,11 +843,13 @@ Public pages should provide accurate and consistent metadata.
 
 ### Metadata doctrine
 
-Metadata must describe the page that actually exists. Do not use exaggerated medical, regulatory, or product claims to improve click-through rate.
+Metadata must describe the page that actually exists. Do not use exaggerated
+medical, regulatory, or product claims to improve click-through rate.
 
 ### Asset ownership
 
-Static metadata assets belong in `public/`. Keep filenames stable when external previews or institutional materials depend on them.
+Static metadata assets belong in `public/`. Keep filenames stable when external
+previews or institutional materials depend on them.
 
 ---
 
@@ -798,33 +857,37 @@ Static metadata assets belong in `public/`. Keep filenames stable when external 
 
 ### Security baseline
 
-- Never commit credentials, API keys, tokens, private endpoints, or production secrets.
+- Never commit credentials, API keys, tokens, private endpoints, or production
+  secrets.
 - Assume all static client assets and bundles are publicly inspectable.
 - Review third-party dependencies before introduction.
 - Do not render unsanitized external HTML.
-- Do not expose internal repository paths, staff-only notes, or confidential architecture details.
+- Do not expose internal repository paths, staff-only notes, or confidential
+  architecture details.
 - Keep public forms behind approved endpoints with appropriate abuse protection.
 
 ### Privacy baseline
 
-- Do not place real patient data in source code, examples, screenshots, fixtures, or static JSON.
+- Do not place real patient data in source code, examples, screenshots,
+  fixtures, or static JSON.
 - Do not publish personally identifiable health information.
 - Use clearly marked synthetic or demonstration data for public visualization.
-- Collect only the minimum data required for a defined contact or analytics purpose.
+- Collect only the minimum data required for a defined contact or analytics
+  purpose.
 - Document any external data processor before deployment.
 
 ### Clinical-governance baseline
 
 Any public clinical claim should be reviewed for:
 
-| Review dimension | Required question |
-|---|---|
-| Evidence | Is the statement supported and appropriately qualified? |
-| Authority | Does the wording preserve clinician accountability? |
-| Scope | Is the claim limited to the actual product behavior? |
-| Safety | Could a reader interpret the copy as direct medical advice? |
-| Validation | Does the statement imply testing or certification that has not occurred? |
-| Audit | Can the origin and approval of the statement be traced? |
+| Review dimension | Required question                                                        |
+| ---------------- | ------------------------------------------------------------------------ |
+| Evidence         | Is the statement supported and appropriately qualified?                  |
+| Authority        | Does the wording preserve clinician accountability?                      |
+| Scope            | Is the claim limited to the actual product behavior?                     |
+| Safety           | Could a reader interpret the copy as direct medical advice?              |
+| Validation       | Does the statement imply testing or certification that has not occurred? |
+| Audit            | Can the origin and approval of the statement be traced?                  |
 
 ### Public-release prohibition
 
@@ -841,7 +904,8 @@ Do not publish:
 
 ## 19 — Contributor and Agent Contract
 
-This repository may be edited by human contributors and AI-assisted engineering agents. The same scope, evidence, and validation requirements apply to both.
+This repository may be edited by human contributors and AI-assisted engineering
+agents. The same scope, evidence, and validation requirements apply to both.
 
 ### Core contract
 
@@ -894,20 +958,20 @@ Do not claim completion without validation evidence.
 
 ## 20 — Validation Matrix
 
-| Validation | Command or method | Required before completion |
-|---|---|---|
-| Type safety | `npm run typecheck` | Yes |
-| Lint quality | `npm run lint` | Yes |
-| Production build | `npm run build` | Yes |
-| Static artifact | Inspect `out/` | Yes for release work |
-| Route integrity | Open affected routes in browser | Yes |
-| Responsive behavior | Desktop and mobile viewport review | Yes for UI changes |
-| Motion behavior | Normal and reduced-motion review | Yes for animation changes |
-| Accessibility | Keyboard, focus, labels, contrast | Yes for interaction changes |
-| Asset integrity | Verify images, icons, OG assets, and relative paths | Yes |
-| Clinical copy | Governance review of clinical claims | Yes when clinical wording changes |
-| Privacy | Confirm absence of real sensitive data | Always |
-| Diff scope | Review changed files against authorization | Always |
+| Validation          | Command or method                                   | Required before completion        |
+| ------------------- | --------------------------------------------------- | --------------------------------- |
+| Type safety         | `npm run typecheck`                                 | Yes                               |
+| Lint quality        | `npm run lint`                                      | Yes                               |
+| Production build    | `npm run build`                                     | Yes                               |
+| Static artifact     | Inspect `out/`                                      | Yes for release work              |
+| Route integrity     | Open affected routes in browser                     | Yes                               |
+| Responsive behavior | Desktop and mobile viewport review                  | Yes for UI changes                |
+| Motion behavior     | Normal and reduced-motion review                    | Yes for animation changes         |
+| Accessibility       | Keyboard, focus, labels, contrast                   | Yes for interaction changes       |
+| Asset integrity     | Verify images, icons, OG assets, and relative paths | Yes                               |
+| Clinical copy       | Governance review of clinical claims                | Yes when clinical wording changes |
+| Privacy             | Confirm absence of real sensitive data              | Always                            |
+| Diff scope          | Review changed files against authorization          | Always                            |
 
 ### Completion evidence format
 
@@ -964,18 +1028,19 @@ A task is done only when all applicable conditions are true.
 
 ## 22 — Known Constraints
 
-| Constraint | Current implication |
-|---|---|
-| Static export only | No server-side rendering or production API routes inside the exported site |
-| MapLibre GL bundle weight | ACARS mapping adds significant route-specific client weight |
-| No internal contact backend | Contact submission requires an approved external endpoint |
-| Indonesian-first content | Most public copy is designed primarily for Indonesian stakeholders |
-| Prototype status | Product narrative, routes, and interfaces may still evolve |
-| Public repository boundary | Real patient and confidential institutional data are prohibited |
+| Constraint                  | Current implication                                                        |
+| --------------------------- | -------------------------------------------------------------------------- |
+| Static export only          | No server-side rendering or production API routes inside the exported site |
+| MapLibre GL bundle weight   | ACARS mapping adds significant route-specific client weight                |
+| No internal contact backend | Contact submission requires an approved external endpoint                  |
+| Indonesian-first content    | Most public copy is designed primarily for Indonesian stakeholders         |
+| Prototype status            | Product narrative, routes, and interfaces may still evolve                 |
+| Public repository boundary  | Real patient and confidential institutional data are prohibited            |
 
 ### Constraint handling principle
 
-Do not hide a constraint with fragile workarounds. Document it, isolate it, and resolve it only through an explicit architecture decision.
+Do not hide a constraint with fragile workarounds. Document it, isolate it, and
+resolve it only through an explicit architecture decision.
 
 ---
 
@@ -1075,20 +1140,24 @@ Documentation must be:
 
 ### Stewardship
 
-| Responsibility | Steward |
-|---|---|
-| Product direction | Sentra Artificial Intelligence |
-| Clinical product boundary | Authorized clinical leadership and governance reviewers |
-| Repository architecture | ASSIST-SITE maintainers |
-| Public release approval | Designated technical, clinical, privacy, and governance reviewers |
+| Responsibility            | Steward                                                           |
+| ------------------------- | ----------------------------------------------------------------- |
+| Product direction         | Sentra Artificial Intelligence                                    |
+| Clinical product boundary | Authorized clinical leadership and governance reviewers           |
+| Repository architecture   | ASSIST-SITE maintainers                                           |
+| Public release approval   | Designated technical, clinical, privacy, and governance reviewers |
 
 ---
 
 ## 26 — License
 
-This repository is distributed under the **MIT License**, subject to the repository’s included license file and any separate restrictions that apply to protected trademarks, confidential assets, clinical data, or third-party materials.
+This repository is distributed under the **MIT License**, subject to the
+repository’s included license file and any separate restrictions that apply to
+protected trademarks, confidential assets, clinical data, or third-party
+materials.
 
-The MIT license does not convert a prototype into a clinically validated, regulated, or production-ready system.
+The MIT license does not convert a prototype into a clinically validated,
+regulated, or production-ready system.
 
 ---
 
