@@ -138,7 +138,8 @@ assist-site/
 │   │   ├── Reveal.tsx
 │   │   ├── SplitText.tsx
 │   │   └── Stagger.tsx
-│   └── terminal/                 # Terminal UI components
+│   ├── sentrapedia/              # Sentrapedia data and view helpers
+│   └── wiki/                     # Wiki layout and markdown rendering
 ├── public/                       # Static assets (favicon, OG image, manifest)
 ├── docs/                         # Internal documentation
 ├── next.config.ts                # Static export config
