@@ -1,6 +1,7 @@
 node_modules/
 .next/
 out/
+package-lock.json
 .env
 .env.local
 .env*.local
@@ -8,5 +9,6 @@ tsconfig.tsbuildinfo
 _build.log
 docs/superpowers/
 *.log
+extract.txt
 .DS_Store
 Thumbs.db
