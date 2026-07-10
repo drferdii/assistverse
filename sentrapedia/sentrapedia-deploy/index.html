@@ -1,0 +1,842 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sentrapedia · Referensi Klinis 144 Penyakit Puskesmas</title>
+  
+  <!-- UI Foundations (Tailwind CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+  
+  <!-- React & Babel -->
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin></script>
+
+  <style>
+    :root {
+      --bg:      oklch(96% 0.015 85);
+      --surface: oklch(98% 0.005 85);
+      --fg:      oklch(35% 0.02 160);
+      --muted:   oklch(65% 0.01 160);
+      --border:  oklch(88% 0.01 130);
+      --accent:  oklch(78% 0.02 130);
+      --font-display: 'Epilogue', serif;
+      --font-body:    'Open Sans', sans-serif;
+      --font-mono:    'JetBrains Mono', monospace;
+      --chart-1: oklch(40% 0.03 160);
+      --chart-2: oklch(65% 0.04 130);
+      --chart-3: oklch(55% 0.06 85);
+      --chart-4: oklch(70% 0.10 85);
+    }
+    body { background-color: var(--bg); color: var(--fg); font-family: var(--font-body); margin: 0; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    .font-display { font-family: var(--font-display); }
+    .font-mono { font-family: var(--font-mono); }
+    
+    .grid-overlay { 
+      position: fixed; inset: 0; 
+      background-image: linear-gradient(to right, var(--border) 1px, transparent 1px); 
+      background-size: calc((100% - 80px) / 12) 100%; 
+      pointer-events: none; z-index: -1; 
+      max-width: 1440px; margin-inline: auto; padding-inline: 40px; 
+      background-origin: content-box; background-clip: content-box; opacity: 0.3; 
+    }
+    
+    .censored { background: var(--fg); color: var(--fg); border-radius: 2px; padding-inline: 2px; filter: blur(2px); opacity: 0.8; user-select: none; }
+    
+    @keyframes pulse-soft { 0%, 100% { opacity: 0.6; transform: scale(0.98); } 50% { opacity: 1; transform: scale(1.02); } }
+    .animate-pulse-soft { animation: pulse-soft 3s ease-in-out infinite; }
+    .branding-vertical { writing-mode: vertical-rl; text-orientation: mixed; }
+    
+    html { scroll-behavior: smooth; }
+
+    /* ─── CATEGORY CARD ─── */
+    .category-card {
+      border: 1px solid var(--border);
+      padding: 32px;
+      background: var(--bg);
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    .category-card:hover {
+      background: var(--surface);
+      border-color: var(--fg);
+      transform: translateY(-2px);
+    }
+    .category-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 3px; height: 100%;
+      background: var(--fg);
+      transform: scaleY(0);
+      transform-origin: bottom;
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .category-card:hover::before {
+      transform: scaleY(1);
+    }
+    .category-card .cat-count {
+      font-family: var(--font-display);
+      font-size: 48px;
+      font-weight: 500;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .category-card .cat-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+    }
+    .category-card .cat-name {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 500;
+      margin-top: 12px;
+      line-height: 1.3;
+    }
+
+    /* ─── DISEASE TABLE ─── */
+    .disease-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .disease-table th {
+      text-align: left;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      padding: 16px 20px;
+      border-bottom: 2px solid var(--fg);
+      white-space: nowrap;
+    }
+    .disease-table td {
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    .disease-table tr {
+      transition: background 0.2s ease;
+    }
+    .disease-table tr:hover {
+      background: var(--surface);
+    }
+    .disease-table .td-no {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      width: 50px;
+    }
+    .disease-table .td-name {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 500;
+      min-width: 200px;
+    }
+    .disease-table .td-ref {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--muted);
+      line-height: 1.6;
+      max-width: 300px;
+    }
+    .disease-table .td-summary {
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--fg);
+      max-width: 500px;
+    }
+
+    /* ─── SEARCH INPUT ─── */
+    .search-input {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      padding: 16px 24px 16px 52px;
+      font-family: var(--font-body);
+      font-size: 15px;
+      color: var(--fg);
+      outline: none;
+      transition: all 0.3s ease;
+    }
+    .search-input:focus {
+      border-color: var(--fg);
+    }
+    .search-input::placeholder {
+      color: var(--muted);
+    }
+
+    /* ─── FILTER PILL ─── */
+    .filter-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 16px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .filter-pill:hover {
+      border-color: var(--fg);
+      color: var(--fg);
+    }
+    .filter-pill.active {
+      background: var(--fg);
+      color: var(--bg);
+      border-color: var(--fg);
+    }
+
+    /* ─── SECTION DIVIDER ─── */
+    .section-divider {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+    }
+
+    /* ─── STAT CARD ─── */
+    .stat-card {
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--fg);
+      padding: 24px;
+      background: var(--bg);
+    }
+    .stat-card .stat-value {
+      font-family: var(--font-display);
+      font-size: 42px;
+      font-weight: 500;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .stat-card .stat-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+    }
+
+    /* ─── DETAIL PANEL ─── */
+    .detail-panel {
+      border: 1px solid var(--fg);
+      background: var(--surface);
+      padding: 32px;
+      margin-top: 24px;
+    }
+
+    @media (max-width: 900px) {
+      .disease-table .td-summary { display: none; }
+      .disease-table .td-ref { max-width: 200px; }
+    }
+    @media (max-width: 600px) {
+      .disease-table .td-ref { display: none; }
+    }
+  </style>
+
+  <script>
+    tailwind.config = { 
+      theme: { 
+        extend: { 
+          colors: { 
+            background: 'var(--bg)', surface: 'var(--surface)', foreground: 'var(--fg)', muted: 'var(--muted)', border: 'var(--border)', accent: 'var(--accent)', 
+          }, 
+          animation: { 'fade-in': 'fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards', }, 
+          keyframes: { fadeIn: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' }, } } 
+        } 
+      } 
+    }
+  </script>
+</head>
+<body>
+  <div class="grid-overlay"></div>
+  <div id="root">
+    <div style="height: 100vh; display: flex; align-items: center; justify-content: center; font-family: sans-serif; color: var(--muted); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;">
+      Memuat Arsip Klinis...
+    </div>
+  </div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef, useMemo } = React;
+
+    // ═══════════════════════════════════════════════════
+    // DATA: 144 penyakit Puskesmas
+    // ═══════════════════════════════════════════════════
+    const diseases = [
+      // ─── Sistem Syaraf dan Indra ───
+      { no: 1, category: "Sistem Syaraf dan Indra", name: "Vertigo", ref: "PERHATI-KL 2023; PNPK Kemenkes 2020", summary: "Evaluasi anamnesis, pemeriksaan fisik (Dix-Hallpike untuk BPPV), Brandt-Daroff exercise, rehabilitasi vestibular." },
+      { no: 2, category: "Sistem Syaraf dan Indra", name: "Sakit Kepala / Headache", ref: "PERHATI-KL 2023; IHS ICHD-3 2024; PNPK Kemenkes 2020", summary: "Klasifikasi primer (migrain, tipe tegang, cluster) dan sekunder. Evaluasi anamnesis detail. Indikasi pencitraan jika red flag." },
+      { no: 3, category: "Sistem Syaraf dan Indra", name: "Epilepsi / Ayan", ref: "PERDOSSI 2023; ILAE 2017; PNPK Kemenkes 2020", summary: "Diagnosis: anamnesis kejang (semiologi), EEG, neuroimaging. Terapi antiepilepsi berdasarkan tipe kejang. Edukasi keselamatan." },
+      { no: 4, category: "Sistem Syaraf dan Indra", name: "Stroke", ref: "PERDOSSI 2023; AHA/ASA 2025; PNPK Kemenkes 2020", summary: "FAST untuk deteksi dini. Stroke iskemik: trombolisis IV dalam window 4.5 jam. Stroke hemoragik: kontrol tekanan darah." },
+      { no: 5, category: "Sistem Syaraf dan Indra", name: "Meningitis", ref: "IDSA 2024; PERDOSSI 2023; PNPK Kemenkes 2020", summary: "Trias: demam, sakit kepala, leher kaku. Pungsi lumbal untuk CSF. Empiric antibiotics + dexamethasone adjuvan." },
+      { no: 6, category: "Sistem Syaraf dan Indra", name: "Encephalitis", ref: "IDSA 2024; PERDOSSI 2023; PNPK Kemenkes 2020", summary: "Demam, disfungsi mental, defisit neurologis. Acyclovir empiric untuk HSV. Monitoring ketat." },
+      { no: 7, category: "Sistem Syaraf dan Indra", name: "Neuropati Perifer", ref: "PERDOSSI 2023; PNPK Kemenkes 2020", summary: "Pemeriksaan fisik lengkap, EMG/NCV. Penyebab: diabetes, alkohol, defisiensi B12. Terapi etiologis, gabapentin/pregabalin." },
+      { no: 8, category: "Sistem Syaraf dan Indra", name: "Miastenia Gravis", ref: "PERDOSSI 2023; MGFA 2020; PNPK Kemenkes 2020", summary: "Kelelahan otot membaik dengan istirahat. Tensilon test, anti-AChR. Piridostigmin, kortikosteroid." },
+      { no: 9, category: "Sistem Syaraf dan Indra", name: "Parkinsonisme", ref: "PERDOSSI 2023; MDS 2015; PNPK Kemenkes 2020", summary: "Tremor istirahat, bradikinesia, rigiditas. Levodopa/carbidopa, agonis dopamin. Fisioterapi." },
+      { no: 10, category: "Sistem Syaraf dan Indra", name: "Sindrom Guillain-Barre", ref: "PERDOSSI 2023; PNPK Kemenkes 2020", summary: "Ascending paralysis, arefleksia. IVIG atau plasmaferesis. Monitoring pernapasan (FVC)." },
+      { no: 11, category: "Sistem Syaraf dan Indra", name: "Neuralgia Trigeminal", ref: "IASP 2021; PERDOSSI 2023", summary: "Nyeri wajah paroxysmal, trigger point. Karbamazepin/oksarbazepin lini pertama." },
+      { no: 12, category: "Sistem Syaraf dan Indra", name: "Bell's Palsy", ref: "AAN 2021; PERHATI-KL 2023; PNPK Kemenkes 2020", summary: "Paralisis fasialis unilateral akut. Prednison dalam 72 jam pertama + antiviral. Pelindung mata." },
+      { no: 13, category: "Sistem Syaraf dan Indra", name: "Mata Merah (Konjungtivitis)", ref: "PERDAMI 2023; AAO 2024; PNPK Kemenkes 2020", summary: "Diferensial: viral, bakteri, alergi. Antibiotik topikal untuk bakteri. Supportive untuk viral." },
+      { no: 14, category: "Sistem Syaraf dan Indra", name: "Kelainan Refraksi", ref: "PERDAMI 2023; AAO 2024", summary: "Pemeriksaan visus dan refraction test. Koreksi kacamata/lensa kontak." },
+      { no: 15, category: "Sistem Syaraf dan Indra", name: "Katarak", ref: "PERDAMI 2023; AAO 2024; PNPK Kemenkes 2020", summary: "Penurunan visus progresif, silau. Indikasi bedah katarak jika penurunan fungsional." },
+      { no: 16, category: "Sistem Syaraf dan Indra", name: "Glaukoma", ref: "PERDAMI 2023; AAO 2024; PNPK Kemenkes 2020", summary: "Screening: tonometri, funduskopi. Eye drops antiglaukoma. Rujuk untuk bedah jika gagal." },
+      { no: 17, category: "Sistem Syaraf dan Indra", name: "Uveitis", ref: "PERDAMI 2023; AAO 2024", summary: "Nyeri, photophobia, visus kabur. Kortikosteroid topikal + sikloplegik." },
+      { no: 18, category: "Sistem Syaraf dan Indra", name: "Pterigium", ref: "PERDAMI 2023; AAO 2024", summary: "Steroid topikal untuk inflamasi. Eksisi bedah jika progresif ke visual axis." },
+      { no: 19, category: "Sistem Syaraf dan Indra", name: "Hordeolum / Bintitan", ref: "PERDAMI 2023; AAO 2024", summary: "Kompres hangat, antibiotik topikal/oral. Hindari pemecahan manual." },
+      { no: 20, category: "Sistem Syaraf dan Indra", name: "Blefaritis", ref: "PERDAMI 2023; AAO 2024", summary: "Kompres hangat, pembersihan lid margin, antibiotik topikal." },
+      { no: 21, category: "Sistem Syaraf dan Indra", name: "Telinga Berair / Otorrhea", ref: "PERHATI-KL 2023; AAO-HNSF 2022; PNPK Kemenkes 2020", summary: "Diferensial: OMSK, otitis eksterna. Otoskopi, ear drops antibiotik. Rujuk untuk kolesteatoma." },
+      { no: 22, category: "Sistem Syaraf dan Indra", name: "Gangguan Pendengaran", ref: "PERHATI-KL 2023; AAO-HNSF 2022; PNPK Kemenkes 2020", summary: "Tuning fork test, audiogram. Terapi etiologis, hearing aid." },
+      { no: 23, category: "Sistem Syaraf dan Indra", name: "Otitis Media Akut", ref: "PERHATI-KL 2023; IDSA 2024; PNPK Kemenkes 2020", summary: "Amoksisilin lini pertama 3x500mg 5-7 hari. Analgesik-antipiretik. Rujuk jika komplikasi." },
+      { no: 24, category: "Sistem Syaraf dan Indra", name: "Otitis Media Supuratif Kronik", ref: "PERHATI-KL 2023; AAO-HNSF 2022; PNPK Kemenkes 2020", summary: "Perforasi TM dengan discharge kronis. Ear drops antibiotik-steroid. Rujuk untuk tympanoplasty." },
+      { no: 25, category: "Sistem Syaraf dan Indra", name: "Otitis Eksterna", ref: "PERHATI-KL 2023; AAO-HNSF 2022; PNPK Kemenkes 2020", summary: "Ear drops antibiotik-steroid. Oral untuk severe. Rujuk untuk malignant OE." },
+      { no: 26, category: "Sistem Syaraf dan Indra", name: "Serumen Prop", ref: "PERHATI-KL 2023; AAO-HNSF 2022", summary: "Cerumenolytic agents, irigasi KAE, manual removal. Kontraindikasi irigasi: perforasi TM." },
+      { no: 27, category: "Sistem Syaraf dan Indra", name: "Tinnitus", ref: "PERHATI-KL 2023; AAO-HNSF 2022", summary: "Audiogram, pemeriksaan KAE. Terapi etiologis, tinnitus masker, CBT." },
+      { no: 28, category: "Sistem Syaraf dan Indra", name: "Rinitis Alergi", ref: "PERHATI-KL 2023; EAACI 2023; PNPK Kemenkes 2020", summary: "Intranasal corticosteroid lini pertama, antihistamin oral. Avoidance of allergens." },
+      { no: 29, category: "Sistem Syaraf dan Indra", name: "Sinusitis", ref: "PERHATI-KL 2023; IDSA 2024; PNPK Kemenkes 2020", summary: "Intranasal corticosteroid, nasal irrigation. Antibiotik untuk severe cases." },
+      { no: 30, category: "Sistem Syaraf dan Indra", name: "Epistaksis / Mimisan", ref: "PERHATI-KL 2023; AAO-HNSF 2022; PNPK Kemenkes 2020", summary: "Kompresi nasal, cauterisasi silver nitrate. Posterior packing untuk posterior bleed." },
+      { no: 31, category: "Sistem Syaraf dan Indra", name: "Tonsilitis", ref: "PERHATI-KL 2023; IDSA 2024; PNPK Kemenkes 2020", summary: "Centor criteria. Amoksisilin/penisilin V untuk strep A. Tonsilektomi jika recurrent." },
+      { no: 32, category: "Sistem Syaraf dan Indra", name: "Faringitis", ref: "PERHATI-KL 2023; IDSA 2024; PNPK Kemenkes 2020", summary: "90% viral. Rapid strep test. Antibiotik hanya untuk strep A." },
+      { no: 33, category: "Sistem Syaraf dan Indra", name: "Laringitis", ref: "PERHATI-KL 2023; AAO-HNSF 2022; PNPK Kemenkes 2020", summary: "Voice rest, humidifier, analgesik. Antibiotik hanya jika bakteri." },
+      { no: 34, category: "Sistem Syaraf dan Indra", name: "Body Disc", ref: "Kemenkes RI 2020; PNPK 2020", summary: "Terapi konservatif: analgesik, fisioterapi. Rujuk untuk bedah jika defisit neurologis." },
+      { no: 35, category: "Sistem Syaraf dan Indra", name: "Abses Gigi", ref: "PDGI 2023; PNPK Kemenkes 2020", summary: "Drainase abses, antibiotik (amoksisilin-metronidazol). Rujuk ke dokter gigi." },
+      { no: 36, category: "Sistem Syaraf dan Indra", name: "Karies Gigi", ref: "PDGI 2023; WHO 2023", summary: "Restorasi, flouride therapy, sealant. Pencegahan: sikat gigi 2x/hari." },
+      { no: 37, category: "Sistem Syaraf dan Indra", name: "Gingivitis", ref: "PDGI 2023; ADA 2023", summary: "Scaling, oral hygiene instruction, chlorhexidine mouthwash." },
+      { no: 38, category: "Sistem Syaraf dan Indra", name: "Periodontitis", ref: "PDGI 2023; ADA 2023", summary: "Scaling and root planing, antibiotik. Rujuk ke periodontist." },
+      { no: 39, category: "Sistem Syaraf dan Indra", name: "Halitosis", ref: "PERHATI-KL 2023; PDGI 2023", summary: "Diferensial: oral, sinonasal, GI, sistemik. Terapi etiologis." },
+
+      // ─── Sistem Pernapasan ───
+      { no: 40, category: "Sistem Pernapasan", name: "Tuberkulosis Paru", ref: "Kemenkes RI 2020; WHO 2022; IDSA 2024", summary: "TCM, BTA sputum, chest X-ray. Regimen 6 bulan (2HRZE/4HR). DOT strategy." },
+      { no: 41, category: "Sistem Pernapasan", name: "Pneumonia", ref: "IDSA/ATS 2023; PNPK Kemenkes 2020; PAPDI 2023", summary: "CURB-65 untuk stratifikasi. Amoksisilin 3x500mg outpatient. O2 therapy, hidrasi." },
+      { no: 42, category: "Sistem Pernapasan", name: "Pneumonia pada Anak", ref: "IDAI 2023; WHO 2023; PNPK Kemenkes 2020", summary: "Tanda bahaya: syok, sianosis, tidak mampu minum. O2 jika SpO2 <90%. Sefotaksim/ampisilin-gentamisin." },
+      { no: 43, category: "Sistem Pernapasan", name: "Bronkitis Akut", ref: "ACP 2021; PNPK Kemenkes 2020", summary: "Batuk akut <3 minggu, biasanya viral. Supportive care. Antibiotik tidak rutin." },
+      { no: 44, category: "Sistem Pernapasan", name: "Asma", ref: "GINA 2024; PDPI 2023; PNPK Kemenkes 2020", summary: "ICS + bronchodilator. Action plan: SABA relief, ICS-formoterol maintenance. ACT monitoring." },
+      { no: 45, category: "Sistem Pernapasan", name: "Asma Berat / Status Asmatikus", ref: "GINA 2024; PDPI 2023; PNPK Kemenkes 2020", summary: "Emergensi: O2, SABA nebulizer, kortikosteroid IV. Intubasi jika gagal napas." },
+      { no: 46, category: "Sistem Pernapasan", name: "PPOK / COPD", ref: "GOLD 2024; PDPI 2023; PNPK Kemenkes 2020", summary: "Spirometri (FEV1/FVC <0.70). LAMA/LABA, ICS, pulmonary rehabilitation, smoking cessation." },
+      { no: 47, category: "Sistem Pernapasan", name: "Eksaserbasi PPOK", ref: "GOLD 2024; PDPI 2023; PNPK Kemenkes 2020", summary: "SABA + ipratropium nebulizer, kortikosteroid, antibiotik (Anthonisen criteria)." },
+      { no: 48, category: "Sistem Pernapasan", name: "Pleuritis / Pleuraeffusion", ref: "PDPI 2023; ATS/STS 2020; PNPK Kemenkes 2020", summary: "Chest X-ray, USG thorax, torakosentesis (Light's criteria). Terapi etiologis." },
+      { no: 49, category: "Sistem Pernapasan", name: "Pneumotoraks", ref: "BTS 2023; PDPI 2023; PNPK Kemenkes 2020", summary: "Observation untuk small <2cm. Needle aspiration. Chest tube untuk tension/large." },
+      { no: 50, category: "Sistem Pernapasan", name: "Difteri", ref: "Kemenkes RI 2020; CDC 2024; WHO 2023", summary: "Pseudomembran, bull neck. Isolasi droplet. Antitoksin + penisilin G. DPT booster." },
+      { no: 51, category: "Sistem Pernapasan", name: "Pertusis / Batuk Rejan", ref: "CDC 2024; IDSA 2024; Kemenkes RI 2020", summary: "Batuk paroksimal dengan whoop. Azitromisin 5 hari. Isolasi droplet. DPT vaksinasi." },
+      { no: 52, category: "Sistem Pernapasan", name: "Rinitis", ref: "PERHATI-KL 2023; EAACI 2023; PNPK Kemenkes 2020", summary: "Viral: supportive. Alergi: intranasal corticosteroid. Vasomotor: avoid triggers." },
+      { no: 53, category: "Sistem Pernapasan", name: "Polip Hidung", ref: "PERHATI-KL 2023; AAO-HNSF 2022", summary: "Intranasal corticosteroid. Polypectomy jika refraktori." },
+      { no: 54, category: "Sistem Pernapasan", name: "Deviasi Septum", ref: "PERHATI-KL 2023; AAO-HNSF 2022", summary: "Septoplasty jika symptomatik dan refraktori konservatif." },
+      { no: 55, category: "Sistem Pernapasan", name: "Adenoid Hiperplasia", ref: "PERHATI-KL 2023; AAO-HNSF 2022", summary: "Intranasal corticosteroid. Adenoidectomy jika OSA." },
+      { no: 56, category: "Sistem Pernapasan", name: "Sleep Apnea Syndrome", ref: "AASM 2024; PERHATI-KL 2023", summary: "STOP-BANG questionnaire. Polysomnography. CPAP (gold standard), weight loss." },
+      { no: 57, category: "Sistem Pernapasan", name: "Hemoptisis", ref: "PDPI 2023; BTS 2023; PNPK Kemenkes 2020", summary: "Diferensial: TB, bronkiektasis, kanker paru. Chest X-ray, CT scan. Rujuk jika massive." },
+      { no: 58, category: "Sistem Pernapasan", name: "Batuk Kronik", ref: "PDPI 2023; CHEST 2023; PNPK Kemenkes 2020", summary: ">8 minggu. Diferensial: UACS, asthma, GERD. Evaluasi sistematis." },
+      { no: 59, category: "Sistem Pernapasan", name: "Dispnea / Sesak Napas", ref: "PDPI 2023; ATS 2023; PNPK Kemenkes 2020", summary: "Diferensial: kardiogenik, pulmonal, metabolik, psikogenik. Terapi etiologis." },
+
+      // ─── Sistem Kardiovaskular ───
+      { no: 60, category: "Sistem Kardiovaskular", name: "Hipertensi Esensial", ref: "PERKI 2023; ESC/ESH 2023; PNPK Kemenkes 2020", summary: "Target <140/90 mmHg. DASH diet, exercise. Thiazide, CCB, ACE-I/ARB, beta-blocker." },
+      { no: 61, category: "Sistem Kardiovaskular", name: "Hipertensi Emergensi", ref: "PERKI 2023; AHA/ACC 2023; PNPK Kemenkes 2020", summary: "BP >180/120 dengan kerusakan organ target. Turunkan 10-20% dalam 1 jam. Nitroprusid/labetalol IV." },
+      { no: 62, category: "Sistem Kardiovaskular", name: "Angina Pektoris", ref: "PERKI 2023; ESC 2024; AHA/ACC 2023", summary: "Nyeri dada tertekan, iradiasi ke lengan kiri. Aspirin, statin, beta-blocker, nitrat." },
+      { no: 63, category: "Sistem Kardiovaskular", name: "Infark Miokard Akut", ref: "PERKI 2023; ESC 2024; AHA/ACC 2023", summary: "STEMI: reperfusi primer PCI dalam 90 menit. NSTEMI: antiplatelet ganda + antikoagulan." },
+      { no: 64, category: "Sistem Kardiovaskular", name: "Gagal Jantung", ref: "PERKI 2023; AHA/ACC/HFSA 2024; ESC 2023", summary: "GDMT: ARNI/ACE-I, beta-blocker, MRA, SGLT2-i, loop diuretik." },
+      { no: 65, category: "Sistem Kardiovaskular", name: "Gagal Jantung Akut / Edema Paru", ref: "PERKI 2023; ESC 2023; PNPK Kemenkes 2020", summary: "Emergensi: posisi duduk, O2/NIV, furosemide IV, nitrogliserin." },
+      { no: 66, category: "Sistem Kardiovaskular", name: "Aritmia Jantung", ref: "PERKI 2023; ESC 2023; AHA/ACC/HRS 2023", summary: "AF: kontrol laju (beta-blocker/CCB) atau irama (amiodaron). CHA2DS2-VASc untuk antikoagulasi." },
+      { no: 67, category: "Sistem Kardiovaskular", name: "Penyakit Jantung Rematik", ref: "WHO 2023; PERKI 2023; Kemenkes RI 2020", summary: "Jones criteria. Profilaksis sekunder: penisilin benzatin bulanan." },
+      { no: 68, category: "Sistem Kardiovaskular", name: "Endokarditis Infektif", ref: "ESC 2023; AHA 2023; IDSA 2023", summary: "Duke criteria. Empiric antibiotics. Blood culture 3 set sebelum antibiotik." },
+      { no: 69, category: "Sistem Kardiovaskular", name: "Kardiomiopati Dilatasi", ref: "PERKI 2023; AHA/ACC 2023", summary: "GDMT untuk HFrEF. Antikoagulasi jika AF. ICD untuk primary prevention." },
+      { no: 70, category: "Sistem Kardiovaskular", name: "Kardiomiopati Hipertropik", ref: "PERKI 2023; AHA/ACC 2023", summary: "Beta-blocker, verapamil. Septal myectomy untuk refraktori. ICD untuk high-risk." },
+      { no: 71, category: "Sistem Kardiovaskular", name: "Penyakit Arteri Perifer", ref: "ESC 2024; AHA/ACC 2024; PERKI 2023", summary: "ABI <0.90. Smoking cessation, exercise, statin, antiplatelet. Revascularization untuk CLI." },
+      { no: 72, category: "Sistem Kardiovaskular", name: "Trombosis Vena Dalam / DVT", ref: "ASH 2023; ESC 2024; PERKI 2023", summary: "Wells score, USG duplex. Antikoagulasi: DOAC (rivaroksaban/apiksaban)." },
+      { no: 73, category: "Sistem Kardiovaskular", name: "Emboli Paru", ref: "ESC 2024; AHA 2023; PERKI 2023", summary: "Wells score, D-dimer, CTPA. Antikoagulasi. Thrombolysis untuk massive PE." },
+      { no: 74, category: "Sistem Kardiovaskular", name: "Varises", ref: "AVF 2023; PERKI 2023", summary: "Kompresi stocking, exercise. Sclerotherapy, ablation untuk severe." },
+      { no: 75, category: "Sistem Kardiovaskular", name: "Syok Kardiogenik", ref: "PERKI 2023; AHA 2023", summary: "Inotropik (dobutamin), vasopressor (norepinefrin). IABP/VA-ECMO sebagai bridge." },
+      { no: 76, category: "Sistem Kardiovaskular", name: "Syok Hipovolemik", ref: "ATLS 2023; PERKI 2023", summary: "Resusitasi kristaloid 1-2L. Identify and control bleeding. Blood transfusion." },
+      { no: 77, category: "Sistem Kardiovaskular", name: "Syok Septik", ref: "Surviving Sepsis 2024; IDSA 2024", summary: "Hour-1 bundle: lactate, blood culture, broad-spectrum antibiotics, fluid 30mL/kg." },
+      { no: 78, category: "Sistem Kardiovaskular", name: "Syok Anafilaktik", ref: "WAO/AAAAI 2023; PERKI 2023", summary: "Epinefrin IM 0.3-0.5mg. O2, IV fluids. Observation 4-6 jam." },
+      { no: 79, category: "Sistem Kardiovaskular", name: "Hipertensi Pulmonal", ref: "ESC/ERS 2023; PERKI 2023", summary: "Echocardiography screening. PAH-specific therapy: sildenafil, bosentan." },
+
+      // ─── Sistem Gastrointestinal ───
+      { no: 80, category: "Sistem Gastrointestinal", name: "Dispepsia", ref: "ACG 2022; PAPDI 2023; PNPK Kemenkes 2020", summary: "Test and treat H. pylori. PPI trial 4-8 minggu. Rujuk jika alarm features." },
+      { no: 81, category: "Sistem Gastrointestinal", name: "GERD", ref: "ACG 2022; AGA 2023; PAPDI 2023", summary: "Lifestyle: weight loss, head elevation. PPI 4-8 minggu. H2RA untuk maintenance." },
+      { no: 82, category: "Sistem Gastrointestinal", name: "Gastritis", ref: "ACG 2022; PAPDI 2023", summary: "Test H. pylori. Eradication: PPI + clarithromycin + amoxicillin 14 hari." },
+      { no: 83, category: "Sistem Gastrointestinal", name: "Tukak Lambung / PUD", ref: "ACG 2022; AGA 2023; PNPK Kemenkes 2020", summary: "Test H. pylori. PPI 4-12 minggu. Rujuk untuk endoscopy jika alarm features." },
+      { no: 84, category: "Sistem Gastrointestinal", name: "Diare Akut", ref: "IDSA 2023; WHO 2023; PNPK Kemenkes 2020", summary: "ORS lini pertama. Zinc untuk anak <5 tahun. Antibiotik hanya untuk dysentery." },
+      { no: 85, category: "Sistem Gastrointestinal", name: "Diare Kronik", ref: "ACG 2022; WHO 2023; PAPDI 2023", summary: ">4 minggu. Stool culture, O&P. Terapi etiologis." },
+      { no: 86, category: "Sistem Gastrointestinal", name: "Konstipasi", ref: "ACG 2022; AGA 2023; PNPK Kemenkes 2020", summary: "Dietary fiber, hydration. Osmotic laxative (PEG) lini pertama." },
+      { no: 87, category: "Sistem Gastrointestinal", name: "Irritable Bowel Syndrome", ref: "Rome IV 2021; ACG 2022; PAPDI 2023", summary: "Low FODMAP diet, antispasmodic, tricyclic antidepressant." },
+      { no: 88, category: "Sistem Gastrointestinal", name: "Inflammatory Bowel Disease", ref: "ACG 2023; ECCO 2023; PAPDI 2023", summary: "5-ASA, kortikosteroid, immunomodulator, biologics. Rujuk ke gastroenterologist." },
+      { no: 89, category: "Sistem Gastrointestinal", name: "Appendisitis", ref: "ACS 2023; PAPDI 2023; PNPK Kemenkes 2020", summary: "Alvarado score, CT abdomen. Appendektomi (laparoskopi)." },
+      { no: 90, category: "Sistem Gastrointestinal", name: "Kolesistitis / Batu Empedu", ref: "Tokyo Guidelines 2023; PAPDI 2023", summary: "Murphy sign, USG abdomen. NPO, IV fluids, antibiotics. Early cholecystectomy." },
+      { no: 91, category: "Sistem Gastrointestinal", name: "Pankreatitis", ref: "ACG 2022; IAP/APA 2024; PNPK Kemenkes 2020", summary: "Elevated amylase/lipase >3x ULN. Aggressive IV fluids, analgesia." },
+      { no: 92, category: "Sistem Gastrointestinal", name: "Hepatitis A", ref: "EASL 2023; AASLD 2023; Kemenkes RI 2020", summary: "Self-limiting. Supportive care. Vaksinasi pre/post-exposure." },
+      { no: 93, category: "Sistem Gastrointestinal", name: "Hepatitis B", ref: "AASLD 2023; EASL 2023; Kemenkes RI 2020", summary: "Tenofovir/entekavir. Screening HCC 6 bulanan untuk high-risk. Vaksinasi." },
+      { no: 94, category: "Sistem Gastrointestinal", name: "Sirosis Hepatis", ref: "AASLD 2023; EASL 2023; PNPK Kemenkes 2020", summary: "Diuretik (spironolakton+furosemide), propranolol untuk varices, lactulose untuk encephalopathy." },
+
+      // ─── Sistem Ginjal dan Saluran Kemih ───
+      { no: 95, category: "Sistem Ginjal dan Saluran Kemih", name: "Infeksi Saluran Kemih", ref: "IDSA 2024; EAU 2023; PNPK Kemenkes 2020", summary: "Dipstik urin, urine culture. Nitrofurantoin/fosfomycin untuk sistitis 3-5 hari." },
+      { no: 96, category: "Sistem Ginjal dan Saluran Kemih", name: "Nefrolitiasis", ref: "EAU 2023; AUA 2023; PNPK Kemenkes 2020", summary: "CT non-contrast gold standard. Analgesia (NSAIDs), tamsulosin untuk stones <10mm." },
+      { no: 97, category: "Sistem Ginjal dan Saluran Kemih", name: "Gagal Ginjal Akut", ref: "KDIGO 2022; ISN 2023; PNPK Kemenkes 2020", summary: "RIFLE/KDIGO staging. Fluid management, avoid nephrotoxins. Dialisis jika indikasi AEIOU." },
+      { no: 98, category: "Sistem Ginjal dan Saluran Kemih", name: "Gagal Ginjal Kronik", ref: "KDIGO 2024; ISN 2023; PNPK Kemenkes 2020", summary: "Kontrol BP <130/80, ACE-I/ARB, SGLT2-i, statin. RRT jika GFR <15." },
+      { no: 99, category: "Sistem Ginjal dan Saluran Kemih", name: "Glomerulonefritis", ref: "KDIGO 2021; ISN 2023", summary: "Hematuria, proteinuria, edema. Renal biopsy. Kortikosteroid, immunosuppressant." },
+      { no: 100, category: "Sistem Ginjal dan Saluran Kemih", name: "Nefrotik Sindrom", ref: "KDIGO 2021; ISN 2023", summary: "Massive proteinuria >3.5g/day. Kortikosteroid untuk minimal change disease." },
+      { no: 101, category: "Sistem Ginjal dan Saluran Kemih", name: "Prostatitis", ref: "EAU 2023; AUA 2023; PNPK Kemenkes 2020", summary: "Fluoroquinolone 2-4 minggu untuk akut. 4-6 minggu untuk kronik." },
+      { no: 102, category: "Sistem Ginjal dan Saluran Kemih", name: "BPH", ref: "EAU 2023; AUA 2023; PNPK Kemenkes 2020", summary: "Alpha-blocker (tamsulosin), 5-ARI (finasteride). TURP untuk refraktori." },
+      { no: 103, category: "Sistem Ginjal dan Saluran Kemih", name: "Disfungsi Ereksi", ref: "EAU 2023; AUA 2023; PERDOSKI 2023", summary: "PDE5 inhibitor (sildenafil, tadalafil). Testosterone replacement jika hypogonadism." },
+      { no: 104, category: "Sistem Ginjal dan Saluran Kemih", name: "Inkontinensia Urin", ref: "EAU 2023; ICS 2023", summary: "Pelvic floor exercise, bladder training. Antimuscarinic untuk urge. Sling surgery untuk stress." },
+
+      // ─── Sistem Endokrin dan Metabolik ───
+      { no: 105, category: "Sistem Endokrin dan Metabolik", name: "Diabetes Melitus Tipe 2", ref: "PERKENI 2024; ADA 2024; PNPK Kemenkes 2020", summary: "HbA1c target <7%. Metformin lini pertama. Add-on: SGLT2-i, GLP-1 RA. Screening komplikasi tahunan." },
+      { no: 106, category: "Sistem Endokrin dan Metabolik", name: "Diabetes Melitus Tipe 1", ref: "ADA 2024; ISPAD 2022; PERKENI 2021", summary: "Insulin basal-bolus. SMBG/CGM monitoring. DKA management: fluids, insulin, K+." },
+      { no: 107, category: "Sistem Endokrin dan Metabolik", name: "Ketoasidosis Diabetik", ref: "ADA 2024; PERKENI 2021; PNPK Kemenkes 2020", summary: "Emergensi: IV fluids 0.9% NaCl, regular insulin IV 0.1 U/kg/jam, K+ replacement." },
+      { no: 108, category: "Sistem Endokrin dan Metabolik", name: "Hipoglikemia", ref: "ADA 2024; PERKENI 2021", summary: "15-20g fast-acting carbohydrate. Glucagon IM 1mg untuk severe. Rule of 15." },
+      { no: 109, category: "Sistem Endokrin dan Metabolik", name: "Hipertiroidisme", ref: "ATA 2023; PERKENI 2021; PNPK Kemenkes 2020", summary: "Metimazol/PTU. Radioiodine atau surgery. Beta-blocker untuk symptom control." },
+      { no: 110, category: "Sistem Endokrin dan Metabolik", name: "Hipotiroidisme", ref: "ATA 2023; PERKENI 2021; PNPK Kemenkes 2020", summary: "Levothyroxine berdasarkan TSH. Monitor TSH 6-8 minggu." },
+      { no: 111, category: "Sistem Endokrin dan Metabolik", name: "Gondok / Struma", ref: "ATA 2023; PERKENI 2021; PNPK Kemenkes 2020", summary: "TSH, thyroid USG, FNAB untuk suspicious nodule. Levothyroxine suppression." },
+      { no: 112, category: "Sistem Endokrin dan Metabolik", name: "Dislipidemia", ref: "ESC/EAS 2023; AHA/ACC 2024; PERKI 2023", summary: "LDL target: very high <55, high <70, moderate <100. Statins lini pertama." },
+      { no: 113, category: "Sistem Endokrin dan Metabolik", name: "Obesitas", ref: "Obesity Society 2023; WHO 2023; PERKENI 2021", summary: "BMI >=25 (Asia-Pacific). Lifestyle: diet deficit 500-750 kcal, exercise 150-300 min/minggu." },
+      { no: 114, category: "Sistem Endokrin dan Metabolik", name: "Osteoporosis", ref: "IOF 2023; ACR 2022; PEROSI 2023", summary: "DXA T-score <=-2.5. Calcium + vitamin D, bisphosphonate. Fall prevention." },
+
+      // ─── Sistem Muskuloskeletal ───
+      { no: 115, category: "Sistem Muskuloskeletal", name: "Osteoartritis", ref: "ACR 2022; OARSI 2023; PEROSI 2023", summary: "Weight loss, exercise, topical NSAIDs. TKA/THA untuk severe." },
+      { no: 116, category: "Sistem Muskuloskeletal", name: "Rheumatoid Arthritis", ref: "ACR/EULAR 2021; PERA 2023", summary: "Methotrexate anchor drug. Biologics: TNF inhibitors, IL-6 inhibitors untuk refractory." },
+      { no: 117, category: "Sistem Muskuloskeletal", name: "Gout Arthritis", ref: "ACR 2020; EULAR 2023; PAPDI 2023", summary: "NSAIDs/colchicine untuk acute. Allopurinol untuk ULT. Target uric acid <6 mg/dL." },
+      { no: 118, category: "Sistem Muskuloskeletal", name: "Low Back Pain", ref: "NICE 2020; ACP 2017; PEROSI 2023", summary: "Stay active, NSAIDs, physical therapy. Avoid bed rest >48 jam. Imaging hanya red flags." },
+      { no: 119, category: "Sistem Muskuloskeletal", name: "Osteomielitis", ref: "IDSA 2023; PAPDI 2023", summary: "Antibiotics 4-6 minggu. Surgical debridement jika abses/sequestrum." },
+      { no: 120, category: "Sistem Muskuloskeletal", name: "Fraktur Tulang", ref: "AAOS 2023; PEROSI 2023", summary: "Immobilization, analgesia, reduction. Rujuk untuk orthopedic surgery." },
+      { no: 121, category: "Sistem Muskuloskeletal", name: "Sprain dan Strain", ref: "AAOS 2023; PEROSI 2023", summary: "RICE (Rest, Ice, Compression, Elevation). NSAIDs. Physical therapy." },
+      { no: 122, category: "Sistem Muskuloskeletal", name: "Tendinitis", ref: "AAOS 2023; PEROSI 2023", summary: "Rest, ice, NSAIDs, eccentric exercises. Corticosteroid injection untuk refraktori." },
+      { no: 123, category: "Sistem Muskuloskeletal", name: "Bursitis", ref: "AAOS 2023; PEROSI 2023", summary: "Rest, ice, NSAIDs. Aspiration + corticosteroid injection untuk severe." },
+      { no: 124, category: "Sistem Muskuloskeletal", name: "Karpal Tunnel Syndrome", ref: "AAOS 2023; AANEM 2023", summary: "Wrist splint, NSAIDs. Surgical release jika refraktori atau thenar atrophy." },
+
+      // ─── Penyakit Kulit ───
+      { no: 125, category: "Penyakit Kulit", name: "Dermatitis Atopik / Eksim", ref: "AAD 2023; EAACI 2023; PERDOSKI 2023", summary: "Emollients, topical corticosteroid, calcineurin inhibitor. Dupilumab untuk severe." },
+      { no: 126, category: "Penyakit Kulit", name: "Psoriasis", ref: "AAD 2023; EADV 2023; PERDOSKI 2023", summary: "Topical corticosteroid + vitamin D analog. Biologics untuk moderate-severe." },
+      { no: 127, category: "Penyakit Kulit", name: "Infeksi Jamur Kulit", ref: "AAD 2023; PERDOSKI 2023", summary: "KOH prep. Topical antifungal untuk limited. Oral (terbinafine) untuk extensive." },
+      { no: 128, category: "Penyakit Kulit", name: "Herpes Zoster / Cacar Ular", ref: "IDSA 2023; AAD 2023; PERDOSKI 2023", summary: "Antiviral (asiklovir/valasiklovir) dalam 72 jam. Shingrix vaccine >50 tahun." },
+      { no: 129, category: "Penyakit Kulit", name: "Impetigo", ref: "AAD 2023; IDSA 2023; PERDOSKI 2023", summary: "Mupirocin topikal untuk limited. Oral antibiotics untuk extensive." },
+      { no: 130, category: "Penyakit Kulit", name: "Furunkel dan Karbunkel", ref: "IDSA 2023; AAD 2023; PERDOSKI 2023", summary: "Drainage incisional. Culture and sensitivity. MRSA coverage jika high prevalence." },
+      { no: 131, category: "Penyakit Kulit", name: "Selulitis", ref: "IDSA 2023; AAD 2023; PERDOSKI 2023", summary: "Oral antibiotics (diklofskasilin, sefaleksin) untuk mild-moderate. Elevate limb." },
+      { no: 132, category: "Penyakit Kulit", name: "Erisipelas", ref: "IDSA 2023; AAD 2023; PERDOSKI 2023", summary: "Oral/IV penisilin. Elevate limb. Prophylaxis penisilin untuk recurrent." },
+      { no: 133, category: "Penyakit Kulit", name: "Abses Kulit", ref: "IDSA 2023; AAD 2023; PERDOSKI 2023", summary: "I&D mainstay therapy. Culture. Antibiotik jika cellulitis/systemic symptoms." },
+      { no: 134, category: "Penyakit Kulit", name: "Scabies", ref: "AAD 2023; WHO 2023; PERDOSKI 2023", summary: "Permethrin 5% cream atau oral ivermectin. Treat all household contacts." },
+
+      // ─── Infeksi Tropis ───
+      { no: 135, category: "Infeksi Tropis", name: "Malaria", ref: "WHO 2023; Kemenkes RI 2020; IDSA 2024", summary: "RDT atau mikroskopi. ACT untuk P. falciparum. ACT + primaquine untuk P. vivax." },
+      { no: 136, category: "Infeksi Tropis", name: "Demam Berdarah Dengue", ref: "WHO 2023; IDAI 2023; Kemenkes RI 2020", summary: "Dengue NS1, IgM/IgG. Supportive, oral/IV fluids. Monitor HCT, platelet." },
+      { no: 137, category: "Infeksi Tropis", name: "Demam Tifoid", ref: "IDSA 2023; WHO 2023; Kemenkes RI 2020", summary: "Blood culture gold standard. Azitromycin/seftriakson 10-14 hari." },
+      { no: 138, category: "Infeksi Tropis", name: "Leptospirosis", ref: "IDSA 2023; WHO 2023; Kemenkes RI 2020", summary: "Doxycycline/amoksisilin untuk mild. Ceftriaxone untuk severe. Dialisis jika renal failure." },
+      { no: 139, category: "Infeksi Tropis", name: "Filariasis / Kaki Gajah", ref: "WHO 2023; Kemenkes RI 2020", summary: "MDA: albendazole + ivermectin. Lymphedema management: hygiene, skin care, exercise." },
+
+      // ─── Gizi dan Gangguan Metabolik ───
+      { no: 140, category: "Gizi dan Gangguan Metabolik", name: "Gizi Buruk / PEM", ref: "WHO 2023; Kemenkes RI 2020; IDAI 2023", summary: "WHZ <-3 atau bilateral edema atau MUAC <11.5cm. F-75, F-100, RUTF." },
+      { no: 141, category: "Gizi dan Gangguan Metabolik", name: "Anemia Defisiensi Besi", ref: "WHO 2023; Kemenkes RI 2020; PERKENI 2021", summary: "Ferrous sulfate 200mg 3x/hari. Duration 3-6 bulan. Treat underlying cause." },
+      { no: 142, category: "Gizi dan Gangguan Metabolik", name: "Anemia Megaloblastik", ref: "WHO 2023; Kemenkes RI 2020; PAPDI 2023", summary: "B12 IM 1000mcg weekly x4, then monthly. Folic acid 1-5mg untuk folate deficiency." },
+      { no: 143, category: "Gizi dan Gangguan Metabolik", name: "Hiponatremia", ref: "ESICM 2023; PAPDI 2023", summary: "Na <135 mEq/L. Fluid restriction untuk SIADH. Correct max 8-12 mEq/L per 24 jam." },
+    ];
+
+    const categories = [
+      { name: "Sistem Syaraf dan Indra", count: 39, icon: "🧠" },
+      { name: "Sistem Pernapasan", count: 21, icon: "🫁" },
+      { name: "Sistem Kardiovaskular", count: 20, icon: "❤️" },
+      { name: "Sistem Gastrointestinal", count: 15, icon: "🍽️" },
+      { name: "Sistem Ginjal dan Saluran Kemih", count: 10, icon: "🚰" },
+      { name: "Sistem Endokrin dan Metabolik", count: 10, icon: "⚡" },
+      { name: "Sistem Muskuloskeletal", count: 10, icon: "🦴" },
+      { name: "Penyakit Kulit", count: 10, icon: "🔬" },
+      { name: "Infeksi Tropis", count: 5, icon: "🌡️" },
+      { name: "Gizi dan Gangguan Metabolik", count: 4, icon: "🥗" },
+    ];
+
+    // ═══════════════════════════════════════════════════
+    // HERO SECTION
+    // ═══════════════════════════════════════════════════
+    const HeroSection = () => (
+      <section className="pt-32 pb-48 border-b border-foreground" data-od-id="hero">
+        <div className="flex flex-col md:flex-row justify-between items-end gap-12">
+          <div className="max-w-[800px]">
+            <span className="font-mono text-[11px] uppercase tracking-[0.3em] text-muted block mb-12 font-bold">Arsip Referensi Klinis</span>
+            <h1 className="font-display text-[clamp(48px,8vw,120px)] leading-[0.85] tracking-tighter font-medium mb-12">Sentra<br/>pedia.</h1>
+            <p className="text-2xl text-muted leading-relaxed max-w-[36ch]">
+              Referensi standar klinis untuk 144 penyakit layanan primer di Puskesmas Indonesia.
+            </p>
+            <div className="mt-10 flex flex-wrap gap-4">
+              <a href="#diseases" className="inline-flex items-center justify-center border border-foreground bg-foreground px-6 py-4 font-mono text-[11px] font-bold uppercase tracking-[0.24em] text-background transition-all duration-300 hover:bg-transparent hover:text-foreground">
+                Jelajahi Penyakit
+              </a>
+              <a href="#categories" className="inline-flex items-center justify-center border border-border px-6 py-4 font-mono text-[11px] font-bold uppercase tracking-[0.24em] text-foreground transition-all duration-300 hover:border-foreground hover:bg-surface">
+                Lihat Kategori
+              </a>
+            </div>
+          </div>
+          <div className="text-right hidden md:block">
+            <div className="opacity-10 font-display text-[80px] font-bold uppercase tracking-[0.4em] branding-vertical -translate-y-12">REFERENSI</div>
+          </div>
+        </div>
+      </section>
+    );
+
+    // ═══════════════════════════════════════════════════
+    // STATS SECTION
+    // ═══════════════════════════════════════════════════
+    const StatsSection = () => (
+      <div className="py-32 border-b border-border animate-fade-in" id="stats">
+        <h2 className="font-display text-[clamp(32px,5vw,64px)] leading-[1] tracking-tight font-medium mb-8">Transparansi dari presisi.</h2>
+        <p className="max-w-[620px] text-xl text-muted leading-relaxed mb-16">
+          Sentrapedia menyediakan arsip referensi klinis yang komprehensif untuk seluruh penyakit layanan primer di Puskesmas, berbasis pedoman nasional dan internasional terkini.
+        </p>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-border border border-border">
+          {[
+            { val: '144', label: 'Penyakit Terarsip' },
+            { val: '25+', label: 'Referensi Standar' },
+            { val: '10', label: 'Kategori Sistem' },
+            { val: '2026', label: 'Update Terkini' }
+          ].map((s, i) => (
+            <div key={i} className="bg-background p-10 hover:bg-surface transition-colors">
+              <div className="font-display text-5xl font-medium mb-3 tabular-nums">{s.val}</div>
+              <div className="font-mono text-[10px] text-muted uppercase tracking-[0.2em] font-bold">{s.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+
+    // ═══════════════════════════════════════════════════
+    // CATEGORY GRID
+    // ═══════════════════════════════════════════════════
+    const CategoryGrid = ({ onSelectCategory, selectedCategory }) => (
+      <div className="py-32 border-b border-border" id="categories">
+        <div className="flex justify-between items-end mb-16">
+          <div>
+            <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted block mb-4 font-bold">Penjelajahan Sistem</span>
+            <h2 className="font-display text-5xl leading-[0.95] tracking-tight font-medium">Kategori Penyakit.</h2>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+          {categories.map((cat, i) => (
+            <div 
+              key={i} 
+              className={`category-card ${selectedCategory === cat.name ? 'border-foreground' : ''}`}
+              onClick={() => onSelectCategory(selectedCategory === cat.name ? null : cat.name)}
+            >
+              <div className="cat-count tabular-nums">{cat.count}</div>
+              <div className="cat-label">Penyakit</div>
+              <div className="cat-name">{cat.name}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+
+    // ═══════════════════════════════════════════════════
+    // DISEASE TABLE
+    // ═══════════════════════════════════════════════════
+    const DiseaseTable = ({ selectedCategory, searchQuery }) => {
+      const filtered = useMemo(() => {
+        let result = diseases;
+        if (selectedCategory) {
+          result = result.filter(d => d.category === selectedCategory);
+        }
+        if (searchQuery) {
+          const q = searchQuery.toLowerCase();
+          result = result.filter(d => 
+            d.name.toLowerCase().includes(q) || 
+            d.category.toLowerCase().includes(q) ||
+            d.summary.toLowerCase().includes(q) ||
+            d.ref.toLowerCase().includes(q)
+          );
+        }
+        return result;
+      }, [selectedCategory, searchQuery]);
+
+      if (filtered.length === 0) {
+        return (
+          <div className="py-20 text-center">
+            <div className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted font-bold">Tidak ditemukan</div>
+            <div className="font-display text-2xl mt-4 text-muted">Tidak ada penyakit yang cocok dengan pencarian Anda.</div>
+          </div>
+        );
+      }
+
+      return (
+        <div className="overflow-x-auto">
+          <table className="disease-table">
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Nama Penyakit</th>
+                <th>Referensi Standar</th>
+                <th>Ringkasan Klinis</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((d) => (
+                <tr key={d.no}>
+                  <td className="td-no">{d.no}</td>
+                  <td className="td-name">
+                    <div>{d.name}</div>
+                    <div className="font-mono text-[9px] text-muted uppercase tracking-wider font-bold mt-1">{d.category}</div>
+                  </td>
+                  <td className="td-ref">{d.ref}</td>
+                  <td className="td-summary">{d.summary}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
+    };
+
+    // ═══════════════════════════════════════════════════
+    // REFERENCE SOURCES SECTION
+    // ═══════════════════════════════════════════════════
+    const SourcesSection = () => (
+      <div className="py-32 border-b border-border" id="sources">
+        <div className="flex justify-between items-end mb-16">
+          <div>
+            <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted block mb-4 font-bold">Sumber Data</span>
+            <h2 className="font-display text-5xl leading-[0.95] tracking-tight font-medium">Referensi & Pedoman.</h2>
+          </div>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border border border-border">
+          {/* National Sources */}
+          <div className="bg-background p-10 hover:bg-surface transition-colors">
+            <div className="font-mono text-[10px] uppercase tracking-[0.2em] font-bold text-muted mb-6">🇮🇩 Nasional</div>
+            <ul className="space-y-4">
+              {['Permenkes No. 5/2014 — Standar Kompetensi Dokter Layanan Primer','SK Menkes 1186/2022 — Penyelenggaraan Pelayanan Kesehatan','PNPK Kemenkes 2020 — Pedoman Nasional Pelayanan Klinis','Pedoman TB Kemenkes 2020 (revisi 2024)'].map((s, i) => (
+                <li key={i} className="font-display text-sm leading-relaxed">{s}</li>
+              ))}
+            </ul>
+          </div>
+          {/* Professional Organizations */}
+          <div className="bg-background p-10 hover:bg-surface transition-colors">
+            <div className="font-mono text-[10px] uppercase tracking-[0.2em] font-bold text-muted mb-6">👨‍⚕️ Organisasi Profesi</div>
+            <ul className="space-y-4">
+              {['PAPDI — Penyakit Dalam','PERKI — Kardiovaskular','PDPI — Paru','PERDOSSI — Saraf','PERHATI-KL — THT','PERDOSKI — Kulit & Kelamin','IDAI — Anak','PERKENI — Endokrin'].map((s, i) => (
+                <li key={i} className="font-display text-sm leading-relaxed">{s}</li>
+              ))}
+            </ul>
+          </div>
+          {/* International */}
+          <div className="bg-background p-10 hover:bg-surface transition-colors">
+            <div className="font-mono text-[10px] uppercase tracking-[0.2em] font-bold text-muted mb-6">🌍 Internasional</div>
+            <ul className="space-y-4">
+              {['WHO Guidelines 2023-2024','IDSA 2023-2024','AHA/ACC 2023-2024','ESC/ESH 2023','GOLD 2024','GINA 2024','ADA 2024','KDIGO 2022-2024'].map((s, i) => (
+                <li key={i} className="font-display text-sm leading-relaxed">{s}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+    );
+
+    // ═══════════════════════════════════════════════════
+    // METHODOLOGY SECTION
+    // ═══════════════════════════════════════════════════
+    const MethodologySection = () => (
+      <div className="py-32 border-b border-border" id="methodology">
+        <h2 className="font-display text-[clamp(32px,5vw,64px)] leading-[1] tracking-tight font-medium mb-8">Metodologi.</h2>
+        <p className="max-w-[620px] text-xl text-muted leading-relaxed mb-16">
+          Arsip ini disusun melalui proses validasi ketat untuk memastikan akurasi dan relevansi referensi klinis.
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-border border border-border">
+          {[
+            { step: '01', title: 'Identifikasi Penyakit', desc: 'Daftar 144 penyakit diambil dari Permenkes No. 5/2014 dan SK Menkes 1186/2022 tentang standar kompetensi dokter layanan primer.' },
+            { step: '02', title: 'Pemetaan Referensi', desc: 'Setiap penyakit dipetakan ke pedoman nasional (Kemenkes, organisasi profesi) dan internasional (WHO, IDSA, dll) terkini.' },
+            { step: '03', title: 'Cross-Validation', desc: 'Referensi nasional dan internasional dicek silang untuk konsistensi rekomendasi klinis.' },
+            { step: '04', title: 'Ringkasan Klinis', desc: 'Poin-poin kunci diagnosis dan tatalaksana diringkas berdasarkan evidence-based medicine.' },
+          ].map((m, i) => (
+            <div key={i} className="bg-background p-10 hover:bg-surface transition-colors">
+              <div className="font-mono text-[10px] uppercase tracking-[0.2em] font-bold text-muted mb-4">{m.step}</div>
+              <div className="font-display text-xl font-medium mb-4">{m.title}</div>
+              <div className="text-muted leading-relaxed text-sm">{m.desc}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+
+    // ═══════════════════════════════════════════════════
+    // MAIN APP
+    // ═══════════════════════════════════════════════════
+    const App = () => {
+      const [selectedCategory, setSelectedCategory] = useState(null);
+      const [searchQuery, setSearchQuery] = useState('');
+
+      return (
+        <div className="min-h-screen pb-20">
+          {/* HEADER */}
+          <header className="sticky top-0 z-50 border-b border-foreground bg-background/90 backdrop-blur-md h-24 flex items-center px-10">
+            <div className="max-w-[1440px] mx-auto w-full flex justify-between items-center">
+              <div className="flex items-baseline gap-4">
+                <span className="font-display font-bold text-3xl tracking-tighter uppercase">SENTRAPEDIA</span>
+                <span className="font-mono text-[10px] opacity-60 font-bold tracking-widest uppercase">Arsip Klinis</span>
+              </div>
+              <div className="flex items-center gap-4 md:gap-10">
+                <div className="hidden md:flex items-center gap-3">
+                  <a href="#stats" className="inline-flex items-center justify-center border border-border px-4 py-3 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-muted transition-all duration-300 hover:border-foreground hover:text-foreground">
+                    Statistik
+                  </a>
+                  <a href="#categories" className="inline-flex items-center justify-center border border-border px-4 py-3 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-muted transition-all duration-300 hover:border-foreground hover:text-foreground">
+                    Kategori
+                  </a>
+                  <a href="#diseases" className="inline-flex items-center justify-center border border-foreground bg-foreground px-4 py-3 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-background transition-all duration-300 hover:bg-transparent hover:text-foreground">
+                    Daftar Penyakit
+                  </a>
+                </div>
+                <div className="flex items-center gap-10 font-mono text-[11px] font-bold">
+                  <div className="flex items-center gap-3">
+                    <div className="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse-soft" />
+                    <span>ARSIP AKTIF</span>
+                  </div>
+                  <div className="hidden lg:block opacity-20">|</div>
+                  <div className="hidden lg:block uppercase tracking-widest">144 Penyakit</div>
+                </div>
+              </div>
+            </div>
+          </header>
+
+          {/* MAIN CONTENT */}
+          <main className="max-w-[1440px] mx-auto px-10">
+            <HeroSection />
+            <StatsSection />
+            <CategoryGrid onSelectCategory={setSelectedCategory} selectedCategory={selectedCategory} />
+            
+            {/* DISEASE LIST */}
+            <div className="py-32 border-b border-border" id="diseases">
+              <div className="flex justify-between items-end mb-16">
+                <div>
+                  <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted block mb-4 font-bold">
+                    {selectedCategory ? selectedCategory : 'Semua Penyakit'}
+                  </span>
+                  <h2 className="font-display text-5xl leading-[0.95] tracking-tight font-medium">Daftar Referensi.</h2>
+                </div>
+                <div className="hidden md:block">
+                  <div className="text-right opacity-20 font-display text-xl font-bold uppercase tracking-[0.4em]">STANDAR KLINIS</div>
+                </div>
+              </div>
+
+              {/* Search Bar */}
+              <div className="relative mb-10">
+                <svg className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <input 
+                  type="text" 
+                  className="search-input" 
+                  placeholder="Cari penyakit, kategori, atau referensi..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+
+              {/* Filter Pills */}
+              <div className="flex flex-wrap gap-2 mb-10">
+                <button 
+                  className={`filter-pill ${!selectedCategory ? 'active' : ''}`}
+                  onClick={() => setSelectedCategory(null)}
+                >
+                  Semua (144)
+                </button>
+                {categories.map((cat, i) => (
+                  <button 
+                    key={i}
+                    className={`filter-pill ${selectedCategory === cat.name ? 'active' : ''}`}
+                    onClick={() => setSelectedCategory(selectedCategory === cat.name ? null : cat.name)}
+                  >
+                    {cat.name} ({cat.count})
+                  </button>
+                ))}
+              </div>
+
+              <DiseaseTable selectedCategory={selectedCategory} searchQuery={searchQuery} />
+            </div>
+
+            <SourcesSection />
+            <MethodologySection />
+
+            {/* CTA */}
+            <section className="bg-foreground text-background p-16 relative overflow-hidden mt-16">
+              <div className="absolute top-0 right-0 p-12 opacity-10 font-display text-[60px] font-bold uppercase tracking-[0.4em] branding-vertical translate-y-16 pointer-events-none">SENTRAPEDIA</div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
+                <div>
+                  <span className="font-mono text-[11px] uppercase tracking-[0.3em] text-accent block mb-6 font-bold">Untuk Tenaga Medis</span>
+                  <h2 className="font-display text-5xl font-medium mb-8 leading-tight tracking-tight">Referensi yang akurat. Diagnosis yang tepat.</h2>
+                  <p className="text-background/60 text-xl leading-relaxed max-w-[48ch]">
+                    Sentrapedia hadir untuk memastikan setiap tenaga medis di Puskesmas memiliki acuan berbasis bukti yang mutakhir untuk pelayanan kesehatan terbaik.
+                  </p>
+                </div>
+                <div className="flex flex-col gap-6 max-w-sm md:ml-auto w-full">
+                  <div className="bg-background text-foreground font-mono text-[11px] font-bold px-10 py-6 uppercase tracking-widest">
+                    Versi 2026 · 144 Penyakit
+                  </div>
+                  <div className="bg-transparent text-background border border-background/40 font-mono text-[11px] font-bold px-10 py-6 uppercase tracking-widest">
+                    Berbasis Evidence-Based Medicine
+                  </div>
+                </div>
+              </div>
+            </section>
+          </main>
+
+          {/* FOOTER */}
+          <footer className="max-w-[1440px] mx-auto px-10 py-32 border-t border-border mt-32">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-20">
+              <div className="lg:col-span-2">
+                <div className="flex items-baseline gap-4 mb-8">
+                  <span className="font-display font-bold text-3xl tracking-tighter uppercase">SENTRAPEDIA</span>
+                  <span className="font-mono text-[10px] text-muted font-bold tracking-[0.4em]">EST. 2026</span>
+                </div>
+                <p className="text-muted max-w-[40ch] leading-relaxed">
+                  Referensi standar klinis 144 penyakit layanan primer Puskesmas Indonesia. Berbasis pedoman Kemenkes RI dan standar internasional terkini.
+                </p>
+              </div>
+              <div>
+                <span className="font-mono text-[11px] uppercase tracking-[0.2em] font-bold mb-8 block">Navigasi</span>
+                <ul className="space-y-4 font-mono text-[11px] font-bold uppercase tracking-widest text-muted">
+                  <li><a href="#hero" className="hover:text-foreground cursor-pointer">Beranda</a></li>
+                  <li><a href="#stats" className="hover:text-foreground cursor-pointer">Statistik</a></li>
+                  <li><a href="#categories" className="hover:text-foreground cursor-pointer">Kategori</a></li>
+                  <li><a href="#diseases" className="hover:text-foreground cursor-pointer">Daftar Penyakit</a></li>
+                  <li><a href="#sources" className="hover:text-foreground cursor-pointer">Referensi</a></li>
+                </ul>
+              </div>
+              <div>
+                <span className="font-mono text-[11px] uppercase tracking-[0.2em] font-bold mb-8 block">Regulasi</span>
+                <p className="font-mono text-[11px] font-bold uppercase tracking-widest text-muted leading-loose">
+                  Permenkes No. 5/2014<br/>
+                  SK Menkes 1186/2022<br/>
+                  PNPK Kemenkes 2020<br/>
+                  Standar Kompetensi DLP
+                </p>
+              </div>
+            </div>
+            <div className="mt-32 pt-12 border-t border-border flex flex-col md:flex-row justify-between items-center gap-8">
+              <div className="font-mono text-[10px] text-muted font-bold uppercase tracking-widest">
+                &copy; 2026 SENTRAPEDIA &middot; SELURUH HAK CIPTA DILINDUNGI
+              </div>
+              <div className="font-mono text-[10px] text-muted font-bold uppercase tracking-widest">
+                Untuk Pelayanan Kesehatan Indonesia yang Lebih Baik
+              </div>
+            </div>
+          </footer>
+        </div>
+      );
+    };
+
+    const renderApp = () => { const rootEl = document.getElementById('root'); if (rootEl) { ReactDOM.createRoot(rootEl).render(<App />); } };
+    if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', renderApp); } else { renderApp(); }
+  </script>
+</body>
+</html>

@@ -1,0 +1,3351 @@
+const DISEASES = [
+  {
+    id: 1,
+    nama: 'Common Cold (Pilek Biasa)',
+    kategori: 'ISPA',
+    kode: 'J00',
+    definisi:
+      'Infeksi ringan pada hidung dan tenggorokan yang disebabkan oleh lebih dari 200 jenis virus, dengan rhinovirus sebagai penyebab utama (~30-50%). Merupakan penyakit ISPA paling sering di Puskesmas.',
+    gejala: [
+      'Hidung tersumbat/meler',
+      'Bersin-bersin',
+      'Gatal tenggorokan',
+      'Batuk ringan',
+      'Sakit kepala ringan',
+      'Demam ringan (<38.5degC)',
+    ],
+    diagnosis:
+      'Diagnosis klinis berdasarkan anamnesis dan pemeriksaan fisik. Tidak diperlukan pemeriksaan penunjang untuk kasus ringan.',
+    terapi:
+      'Terapi simptomatik: decongestant oral/topikal (pseudoephedrine 60mg 3x/hari), analgesik antipiretik (parasetamol 500mg 3-4x/hari), istirahat cukup, hidrasi adekuat. Tidak direkomendasikan antibiotik.',
+    rujukan:
+      'Demam >3 hari, dispnea, nyeri dada, demam tinggi persisten, atau gejala memburuk setelah 10 hari.',
+  },
+  {
+    id: 2,
+    nama: 'Faringitis Akut (Radang Tenggorokan)',
+    kategori: 'ISPA',
+    kode: 'J02-J03',
+    definisi:
+      'Infeksi akut pada faring dan tonsil yang 70-80% disebabkan oleh virus (rhinovirus, adenovirus, EBV) dan 20-30% oleh bakteri (Streptococcus pyogenes/Grup A Streptococcus).',
+    gejala: [
+      'Nyeri tenggorokan saat menelan',
+      'Demam',
+      'Eritema faring dan tonsil',
+      'Pembesaran kelenjar getah bening servikal',
+      'Mungkin tonsil eksudatif (bila GAS)',
+    ],
+    diagnosis:
+      'Pemeriksaan faring: eritema, eksudat. Rapid Antigen Detection Test (RADT) untuk GAS jika skor Centor 3-4. Skor Centor: demam >38degC (1), tonsil eksudat (1), tidak ada batuk (1), limfadenopati servikal (1), usia 3-14 (1), usia >45 (-1).',
+    terapi:
+      'Viral: terapi suportif (parasetamol, air hangat). GAS terkonfirmasi: penisilin V 250-500mg 3-4x/hari selama 10 hari, atau amoksisilin 500mg 3x/hari 10 hari, atau azitromisin 500mg 1x/hari 5 hari (bila alergi penisilin).',
+    rujukan:
+      'Abses peritonsilar, obstruksi jalan napas, demam >39degC persisten >3 hari, tidak responsif terhadap antibiotik 48 jam, riwayat glomerulonefritis/rheumatic fever.',
+  },
+  {
+    id: 3,
+    nama: 'Sinusitis Akut',
+    kategori: 'ISPA',
+    kode: 'J01',
+    definisi:
+      'Inflamasi akut mukosa sinus paranasal yang umumnya terjadi sebagai komplikasi dari common cold. Virus menyebabkan 90-98% kasus sinusitis akut. Dikategorikan sebagai sinusitis viral (<=10 hari), akut bakteri post-viral (>10 hari), atau fulminan bakter...',
+    gejala: [
+      'Nyeri tekan pada wajah (sinus frontalis, maksilaris)',
+      'Hidung tersumbat dengan sekret purulen',
+      'Nyeri kepala',
+      'Hiposmia/anosmia',
+      'Batuk post-nasal drip',
+      'Demam (pada sinusitis bakteri)',
+    ],
+    diagnosis:
+      "Kriteria sinusitis bakteri: durasi >10 hari tanpa perbaikan, gejala parah >=39degC + purulen sekret/nanah >=3-4 hari, atau 'double-worsening' (membaik lalu memburuk). CT scan sinus diperlukan hanya untuk diagnosis komplikasi atau sinusitis kronik.",
+    terapi:
+      'Viral: nasal saline irrigation, dekongestan topikal maksimal 3 hari, analgesik. Bakteri: amoksisilin-klavulanat 875/125mg 2x/hari 5-7 hari (terapi empiris), atau doxycycline 100mg 2x/hari 5-7 hari (bila alergi penisilin).',
+    rujukan:
+      'Periorbital/orbital cellulitis, komplikasi intracranial (meningitis, abses otak), osteomielitis frontalis, tidak responsif terhadap antibiotik, imunokompromais.',
+  },
+  {
+    id: 4,
+    nama: 'Otitis Media Akut (OMA)',
+    kategori: 'ISPA',
+    kode: 'H65-H66',
+    definisi:
+      'Infeksi akut pada telinga tengah dengan akumulasi cairan di belakang membran timpani yang terjadi akut. Merupakan salah satu diagnosis infeksi paling sering pada anak <5 tahun. 80% kasus spontan resolve dalam 2-14 hari tanpa antibiotik.',
+    gejala: [
+      'Nyeri telinga (otalgia) - anak sering menggoyangkan telinga',
+      'Demam',
+      'Iritabilitas',
+      'Gangguan pendengaran ringan',
+      'Mungkin otorhoe (nanah dari telinga) bila perforasi timpani',
+    ],
+    diagnosis:
+      'Otoscopy: membran timpani meneral (bulging), eritema, hilangnya landmark timpani, mobilitas berkurang. Pneumatic otoscopy adalah gold standard. Skor Kriteria AAP: otalgia berat 2 poin, otalgia ringan 1 poin, demam >=39degC 2 poin, demam <39degC 1 poin. Skor >=3 pertimbangkan antibiotik. Timpanometri...',
+    terapi:
+      'Wait-and-see: anak >=2 tahun dengan otalgia ringan-demam ringan, observasi 48-72 jam dengan analgesik (parasetamol/ibuprofen). Antibiotik: amoksisilin 80-90mg/kg/hari dibagi 2 dosis 5-7 hari. Alergi penisilin: azitromisin 10mg/kg hari 1, lalu 5mg/kg hari 2-5. Analgesik: parasetamol 15mg/kg atau ibup...',
+    rujukan:
+      'Mastoiditis, intracranial complication, facial nerve palsy, labyrinthitis, recurrent OMA (>3 episode/6 bulan atau >4 episode/tahun), persistent middle ear effusion >3 bulan.',
+  },
+  {
+    id: 5,
+    nama: 'Otitis Eksterna',
+    kategori: 'ISPA',
+    kode: 'H60',
+    definisi:
+      "Inflamasi pada kanalis auditivus eksternus yang sering disebabkan oleh Pseudomonas aeruginosa atau Staphylococcus aureus. Disebut juga 'swimmer's ear' karena sering terkait paparan air berlebihan.",
+    gejala: [
+      'Nyeri telinga parah (otalgia) saat tragus atau pinna ditarik',
+      'Gatal pada saluran telinga',
+      'Otorhoe (sekret telinga)',
+      'Eritema dan edema kanalis auditivus',
+      'Gangguan pendengaran ringan akibat sumbatan',
+    ],
+    diagnosis:
+      'Pemeriksaan otoskopi: eritema, edema, dan debris pada kanalis auditivus. Rasa nyeri parah saat tragus manipulation. Kultur bila infeksi berat atau tidak responsif terhadap terapi awal. Perlu dibedakan dengan otitis media dengan perforasi timpani.',
+    terapi:
+      'Topikal: obat tetes telinga antibiotik-steroid (ciprofloxacin + dexamethasone) 4 tetes 2x/hari 7-10 hari, atau ofloxacin 0.3% 10 tetes 2x/hari. Bersihkan kanalis (aural toilet). Analgesik: ibuprofen 400mg 3x/hari atau parasetamol. Hindari air masuk telinga. Bila edema parah: insert wick + topikal.',
+    rujukan:
+      'Malignant/necrotizing otitis eksterna (terutama pada diabetes/elderly), cellulitis periaurikular, osteomielitis tulang temporal, infeksi menyebar ke basis cranii, imunokompromais berat.',
+  },
+  {
+    id: 6,
+    nama: 'Influenza',
+    kategori: 'ISPA',
+    kode: 'J10-J11',
+    definisi:
+      'Infeksi akut saluran pernapasan akibat virus influenza A atau B. Karakteristik onset akut, demam tinggi, dan gejala sistemik yang lebih parah dibandingkan common cold. Virus memiliki antigenik drift dan shift yang menyebabkan pandemi periodik.',
+    gejala: [
+      'Onset akut demam tinggi (38-40degC)',
+      'Mialgia dan artralgia',
+      'Sakit kepala frontal',
+      'Nyeri retro-orbital',
+      'Batuk kering',
+      'Fatigue ekstrem',
+      'Mungkin rinore dan sakit tenggorokan',
+    ],
+    diagnosis:
+      'Diagnosis klinis berdasarkan onset akut demam tinggi + batuk + mialgia selama musim influenza. Rapid Influenza Diagnostic Test (RIDT) tersedia di Puskesmas. RT-PCR gold standard. Perlu dibedakan dengan COVID-19 dan RSV.',
+    terapi:
+      'Antiviral: oseltamivir 75mg 2x/hari 5 hari (efektif bila diberikan <48 jam dari onset), zanamivir, atau baloxavir. Suportif: istirahat, hidrasi, parasetamol. Hanya berikan antiviral pada kelompok berisiko tinggi: usia >65, <5 tahun (terutama <2), hamil, obesitas, imunokompromais, komorbid kronik (CO...',
+    rujukan:
+      'Pneumonia influenza, ARDS, ensefalopati, dehidrasi berat, demam persisten >5 hari, syok septik, komplikasi kardiovaskular (miokarditis).',
+  },
+  {
+    id: 7,
+    nama: 'Tonsilitis Akut',
+    kategori: 'ISPA',
+    kode: 'J03',
+    definisi:
+      'Inflamasi akut pada tonsila palatina yang dapat disebabkan oleh virus (40-60%) atau bakteri (Grup A Streptococcus pada 15-30% kasus pada anak dan 5-10% pada dewasa). Tonsilitis kronik berulang dapat menjadi indikasi tonsilektomi.',
+    gejala: [
+      'Nyeri tenggorokan parah',
+      'Demam tinggi',
+      'Eritema tonsil dengan eksudat purulen',
+      'Dysphagia/odynophagia',
+      'Halitosis',
+      'Limfadenopati servikal anterior',
+    ],
+    diagnosis:
+      'Pemeriksaan orofaring: tonsil bengkak dengan eksudat putih-kuning, eritema faring. Skor McIsaac (modifikasi Centor): demam >38degC (1), tonsil eksudat (1), tender anterior cervical node (1), onset <3 hari (1), usia 3-14 tahun (1), tidak ada batuk (1). Skor >=4: probabilitas GAS tinggi. Rapid Strep T...',
+    terapi:
+      'Suportif: analgesik-antipiretik (parasetamol/ibuprofen), cairan hangat, istirahat. Konfirmasi GAS: penisilin V 500mg 2-3x/hari 10 hari, atau benzatin penisilin G 1,2 juta unit IM sekali dosis, atau amoksisilin 500mg 3x/hari 10 hari. Alergi penisilin: azitromisin 500mg hari 1, 250mg hari 2-5.',
+    rujukan:
+      'Abses peritonsilar (quinsy), abses parafaringeal, obstruksi jalan napas, tonsilitis rekuren >=7 episode/1 tahun, >=5 episode/tahun selama 2 tahun, atau >=3 episode/tahun selama 3 tahun.',
+  },
+  {
+    id: 8,
+    nama: 'Laringitis Akut',
+    kategori: 'ISPA',
+    kode: 'J04-J05',
+    definisi:
+      'Inflamasi akut pada laring yang menyebabkan suara serak atau afonia. Dapat disebabkan oleh infeksi viral (parainfluenza, rhinovirus), bakteri (Corynebacterium diphtheriae, Haemophilus influenzae type b), atau iritasi non-infeksius.',
+    gejala: [
+      'Suara serak (hoarseness) atau hilang suara',
+      'Batuk kering (barking cough pada anak)',
+      'Sakit tenggorokan ringan',
+      'Dyspnea ringan',
+      'Mungkin demam',
+    ],
+    diagnosis:
+      'Diagnosis klinis berdasarkan hoarseness akut. Laringoskopi bila tersedia: edema dan eritema pita suara. Pemberian nebulisasi epinefrin racemic bila stridor present. Perlu dibedakan dengan epiglotitis (urgensi medis) dan croup (pada anak).',
+    terapi:
+      'Vocal rest (istirahat suara), hidrasi adekuat, humidifier, antitusif bila perlu. Antibiotik hanya bila etiologi bakteri terkonfirmasi. Kortikosteroid oral (prednison 20-40mg/hari 3-5 hari) untuk laringitis berat dengan obstruksi. Nebulisasi adrenalina 0,5mL/kg (maks 5mL) untuk stridor inspiratori.',
+    rujukan:
+      'Stridor progresif, dispnea berat, cyanosis, drooling, tidak mampu menelan (tanda epiglotitis), symptom persisten >3 minggu (pertimbangkan keganasan).',
+  },
+  {
+    id: 9,
+    nama: 'Rinitis Alergi',
+    kategori: 'ISPA',
+    kode: 'J30',
+    definisi:
+      'Inflamasi mukosa nasal akibat respon imun IgE-mediated terhadap alergen (debu tungau, serbuk sari, bulu hewan, jamur). Diklasifikasikan berdasarkan durasi (intermiten <4 hari/minggu atau persisten >=4 hari/minggu) dan berat (ringan, sedang-berat).',
+    gejala: [
+      'Rinore berair',
+      'Hidung tersumbat (berselingan)',
+      'Bersin beruntun',
+      'Gatal hidung, mata, tenggorokan',
+      'Mata merah dan berair',
+      'Post-nasal drip',
+    ],
+    diagnosis:
+      'Anamnesis: hubungan temporal dengan paparan alergen, pola musiman. Pemeriksaan hidung: mukosa pucat, edematosa, sekret jernih. Tes alergi: skin prick test atau serum IgE spesifik (jika tersedia). Skor ARIA untuk klasifikasi dan manajemen.',
+    terapi:
+      'Hindari alergen. Terapi farmakologi: intranasal corticosteroid (flutikason propionat atau mometason furoate 1 semprot/hidung 1-2x/hari - lini pertama), antihistamin oral generasi-2 (cetirizine 10mg 1x/hari atau loratadine 10mg 1x/hari), decongestan topikal maksimal 7 hari, salep mata antihistamin. I...',
+    rujukan:
+      'Rinitis persisten tidak responsif terhadap terapi maksimal 4-8 minggu, komplikasi (sinusitis, polip nasal, otitis media), asma berkorelasi, untuk evaluasi imunoterapi.',
+  },
+  {
+    id: 10,
+    nama: 'Faringitis Kronik',
+    kategori: 'ISPA',
+    kode: 'J31',
+    definisi:
+      'Inflamasi kronis pada mukosa faring dengan durasi >3 bulan. Biasanya berhubungan dengan iritasi berulang (merokok, polusi, refluks gastroesofageal), infeksi kronis, atau alergi. Sering merupakan sekuel dari ISPA berulang.',
+    gejala: [
+      'Sensasi gatal/tidak nyaman di tenggorokan (globus sensation)',
+      'Batuk kering kronis',
+      'Sensasi ada lendir di tenggorokan',
+      'Halitosis kronis',
+      'Sakit tenggorokan ringan yang berulang',
+    ],
+    diagnosis:
+      'Diagnosis klinis berdasarkan anamnesis dan pemeriksaan fisik. Faringoskopi: mukosa faring hiperemis, granulasi pada posterior pharyngeal wall (granular pharyngitis), tonsil cryptae dengan debris. Evaluasi faktor predisposisi: Gastroesofageal Refluks Disease (GERD), sinusitis kronis, alergi, merokok.',
+    terapi:
+      'Tangani penyebab utama: PPI untuk GERD (omeprazole 20mg 1-2x/hari), antihistamin untuk alergi, berhenti merokok. Suportif: gargle air garam hangat, humidifier, mukolitik (ambroxol 30mg 3x/hari). Antibiotik hanya bila ada tanda infeksi bakteri superimposed.',
+    rujukan:
+      'Suspisi keganasan (odynophagia progresif, riwayat merokok berat, penurunan BB), perlu evaluasi laringoskopi, abses berulang.',
+  },
+  {
+    id: 11,
+    nama: 'Tonsilitis Kronik',
+    kategori: 'ISPA',
+    kode: 'J35',
+    definisi:
+      'Inflamasi tonsil yang berulang atau persisten dengan tonsil kronis bengkak, eksudat pada cryptae, dan gejala yang berlangsung lebih dari 3 bulan. Tonsilitis kronis dapat menyebabkan fokus infeksi untuk glomerulonefritis atau rheumatic fever.',
+    gejala: [
+      'Nyeri tenggorokan berulang',
+      'Halitosis kronis',
+      'Tonjolan putih pada tonsil (tonsillolith/debris cryptae)',
+      'Dysphagia ringan',
+      'Malaise',
+      'Limfadenopati kronis',
+    ],
+    diagnosis:
+      'Pemeriksaan orofaring: tonsil bengkak tidak simetris, eksudat pada cryptae, hipertrofi tonsilar. Riwayat tonsilitis akut berulang (>=7 episode/tahun, >=5 episode/tahun selama 2 tahun, atau >=3 episode/tahun selama 3 tahun). Perlu dibedakan dengan mononukleosis infeksiosa.',
+    terapi:
+      'Antibiotik profilaksis tidak direkomendasikan. Terapi akut bila superinfeksi. Pertimbangkan tonsilektomi sesuai kriteria: >=7 episode dalam 1 tahun, atau >=5 episode/tahun selama 2 tahun berturut, atau >=3 episode/tahun selama 3 tahun berturut. Tonsilektomi juga untuk abses peritonsilar berulang, ob...',
+    rujukan:
+      'Kriteria tonsilektomi terpenuhi, abses peritonsilar, obstruksi jalan napas, suspisi neoplasma, tonsil asimetri (pertimbangkan keganasan pada dewasa >40 tahun).',
+  },
+  {
+    id: 12,
+    nama: 'Sinusitis Kronik',
+    kategori: 'ISPA',
+    kode: 'J32',
+    definisi:
+      'Inflamasi kronis mukosa sinus paranasal dengan durasi >=12 minggu. Dapat dengan atau tanpa polip nasal. Etiologi multifaktorial: infeksi bakteri, alergi, anatomi abnormal (deviasi septum), imunodefisiensi, atau fungal infection.',
+    gejala: [
+      'Hidung tersumbat kronis',
+      'Sekret nasal purulen',
+      'Hiposmia/anosmia',
+      'Nyeri tekan wajah (bisa ringan/tidak ada pada kronik)',
+      'Batuk post-nasal drip',
+      'Halitosis',
+    ],
+    diagnosis:
+      'Kriteria diagnostik: >=2 gejala utama selama >=12 minggu + >=1 tanda objektif. Tanda objektif: endoskopi nasal (mukosa nasal edema, polip, sekret purulen middle meatus), atau CT scan sinus (mucosal thickening, opasifikasi, polip). Mikrobiologi: H. influenzae, S. pneumoniae, M. catarrhalis, anaerob.',
+    terapi:
+      'Intranasal corticosteroid (flutikason atau mometason) 2 semprot/hidung 1-2x/hari - terapi lini pertama. Saline irrigation. Antibiotik: amoksisilin-klavulanat 875/125mg 2x/hari 3-5 minggu (untuk eksaserbasi akut). Mukolitik. Bila polip: kortikosteroid oral (prednison 30-40mg/hari 5-10 hari).',
+    rujukan:
+      'Kegagalan terapi maksimal medis, komplikasi (mukocele, osteomielitis), polip nasal, deviasi septum signifikan, imunodefisiensi, untuk FESS (Functional Endoscopic Sinus Surgery).',
+  },
+  {
+    id: 13,
+    nama: 'Bronkitis Akut',
+    kategori: 'Pernapasan Bawah',
+    kode: 'J20',
+    definisi:
+      "Inflamasi akut bronkus yang biasanya infeksius (90% viral) dan berlangsung <3 minggu. Disebut juga 'chest cold'. Merupakan diagnosis yang sering overdiagnosa dan di-overtreat dengan antibiotik.",
+    gejala: [
+      'Batuk produktif (<=3 minggu)',
+      'Sputum mukopurulen (bisa jernih, kuning, atau hijau)',
+      'Rhonchi/wheezing',
+      'Sakit dada saat batuk',
+      'Mungkin demam ringan',
+      'Malaise',
+    ],
+    diagnosis:
+      'Diagnosis klinis: batuk akut <=3 minggu dengan sputum. Auskultasi: rhonchi dan crackle. Tidak diperlukan rontgen thoraks kecuali untuk membedakan dengan pneumonia. Warna sputum tidak memprediksi etiologi bakteri.',
+    terapi:
+      'Terapi simptomatik: antitusif (dextromethorphan 10-20mg 3-4x/hari) bila batuk kering mengganggu tidur, mukolitik (ambroxol 30mg 3x/hari), analgesik, hidrasi. Tidak direkomendasikan antibiotik secara rutin (efektivitas minimal). Antibiotik hanya bila pertusis terkonfirmasi, influenza dengan bakteri s...',
+    rujukan:
+      'Dispnea progresif, hemoptisis, demam >38.5degC >3 hari, riwayat TB, imunokompromais, symptom persisten >3 minggu, usia >65 dengan komorbid.',
+  },
+  {
+    id: 14,
+    nama: 'Pneumonia Komuniti',
+    kategori: 'Pernapasan Bawah',
+    kode: 'J12-J18',
+    definisi:
+      'Infeksi paru-paru (alveoli) yang diperoleh di masyarakat. Penyebab utama: Streptococcus pneumoniae, Haemophilus influenzae, Moraxella catarrhalis (bakteri); Influenza, RSV, SARS-CoV-2 (virus). WHO mengestimasi pneumonia menyebabkan 14% kematian anak ...',
+    gejala: [
+      'Batuk produktif (bisa berdahak purulen/berdarah)',
+      'Demam',
+      'Dispnea/napas cepat',
+      'Nyeri dada pleuritik',
+      'Takikardia',
+      'Kebingungan (pada lansia)',
+      'Tirage, retraksi, cyanosis (pada anak)',
+    ],
+    diagnosis:
+      'Pemeriksaan fisik: konsolidasi (dullness to percussion, bronchial breath sound, crackle, egophoni). Rontgen thoraks: infiltrat/consolidasi. CRB-65/CURB-65 untuk mortalitas: Confusion, Respiratory rate >=30, Blood pressure systolic <90 atau diastolic <=60, usia >=65. Skor >=2: hospitalisasi. GAT (Gen...',
+    terapi:
+      'Outpatient (CRB-65 skor 0-1): amoksisilin 500mg 3x/hari 5-7 hari, atau doxycycline 100mg 2x/hari 5-7 hari, atau makrolide (azitromycin 500mg hari 1, 250mg hari 2-5). Anak: amoksisilin 40-50mg/kg/hari 3x/hari 5 hari. Parasetamol/antipiretik, oksigen bila SpO2 <94%, hidrasi.',
+    rujukan:
+      'CRB-65 >=2, SpO2 <92%, RR >30, hipotensi, kebingungan, gagal napas, hidrasi oral tidak adekuat, komorbid berat (CKD, gagal jantung, imunokompromais), tidak responsif terhadap antibiotik oral 48-72 jam.',
+  },
+  {
+    id: 15,
+    nama: 'Asma Bronkial',
+    kategori: 'Pernapasan Bawah',
+    kode: 'J45',
+    definisi:
+      'Penyakit kronik saluran napas yang ditandai dengan hiperresponsivitas bronkial, inflamasi, dan variabilitas aliran udara obstruktif yang reversibel. Prevalensi asma di Indonesia diperkirakan 4-7% populasi dan meningkat.',
+    gejala: [
+      'Dispnea',
+      'Mengi (wheezing)',
+      'Batuk (sering malam hari/dini hari)',
+      'Rasa sesak di dada',
+      'Gejala fluktuatif dan episodik',
+      'Bangun malam karena batuk/napas',
+    ],
+    diagnosis:
+      'Spirometri: rasio FEV1/FVC <0.70 + peningkatan FEV1 >=12% dan >=200mL setelah bronkodilator (reversibilitas). Bila spirometri normal: tes bronkoprovokasi (metakolin). PEFR monitoring: variabilitas diurnal >10%. Alergi testing bila tersedia. Klasifikasi berat: intermitten, persisten ringan, persisten...',
+    terapi:
+      'Reliever: SABA (salbutamol inhaler 100-200mcg 1-2 puff bila gejala, maksimal 8x/hari). Controller: ICS (budesonide 200-400mcg 2x/hari) untuk persisten. ICS-LABA kombinasi (budesonide/formoterol) untuk persisten sedang-berat. LTRA (montelukast 10mg 1x/malam) alternatif. Action Plan Asma: zon hijau (t...',
+    rujukan:
+      'Status asmatikus, tidak responsif terhadap SABA (FEV1 <40% prediksi), SpO2 <92%, retraksi, suara napas menurun (silent chest), kelelahan napas, distres respiratori, serangan berulang >2x/seminggu, tidak stabil dengan terapi level 4.',
+  },
+  {
+    id: 16,
+    nama: 'Eksaserbasi Asma Akut',
+    kategori: 'Pernapasan Bawah',
+    kode: 'J46',
+    definisi:
+      'Peningkatan akut gejala asma di atas baseline yang memerlukan perubahan terapi. Eksaserbasi dapat disebabkan oleh infeksi virus, alergen, polusi, atau non-adherensi terapi kontroler.',
+    gejala: [
+      'Dispnea berat/progresif',
+      'Wheezing intens',
+      'Batuk parah',
+      'Retraksi dinding dada',
+      'Kesulitan berbicara',
+      'Takikardia',
+      'Hipotensi',
+    ],
+    diagnosis:
+      'PEFR <80% prediksi personal terbaik. Pemeriksaan fisik: prolonged expiration, wheezing diffus, retraksi, menggunakan otot bantu napas, cyanosis, perubahan status mental (tanda hipoksia). Arteri blood gas bila tersedia: PaCO2 meningkat tanda kelelahan napas (tidak bisa dikompensasi).',
+    terapi:
+      'SABA (salbutamol nebulisasi 2.5-5mg setiap 20 menit x 3 dosis, lalu 1-4 jam). Ipratropium bromide neb (0.5mg 3x dalam 1 jam untuk kasus berat). Kortikosteroid sistemik: prednison 40-60mg/hari 5-7 hari (atau methylprednisolone 125mg IV untuk berat). Oksigen untuk target SpO2 93-95%. Magnesium sulfat ...',
+    rujukan:
+      'Status asmatikus (gagal SABA + steroid nebul), SpO2 <92% dengan oksigen, distres respiratori, distres mental, PaCO2 meningkat, kelelahan napas, tidak responsif terhadap terapi Puskesmas 1-2 jam.',
+  },
+  {
+    id: 17,
+    nama: 'COPD (Penyakit Paru Obstruktif Kronik)',
+    kategori: 'Pernapasan Bawah',
+    kode: 'J44',
+    definisi:
+      'Penyakit kronik saluran napas yang ditandai dengan aliran udara persisten dan progresif obstruktif yang tidak sepenuhnya reversibel. Penyebab utama: merokok (85-90%), polusi udara, dan exposure biomassa. Prevalensi global ~10% pada dewasa >40 tahun.',
+    gejala: [
+      'Dispnea progresif (awalnya saat aktivitas, kemudian saat istirahat)',
+      'Batuk kronis produktif >=3 bulan/tahun selama 2 tahun (bronkitis kronis)',
+      'Mengi (tidak universal)',
+      'Berat badan menurun',
+      'Fatigue',
+    ],
+    diagnosis:
+      'Spirometri: FEV1/FVC <0.70 post-bronkodilator (konfirmasi obstruksi tidak sepenuhnya reversibel). Klasifikasi GOLD berdasarkan FEV1% prediksi: GOLD 1 (>=80%), GOLD 2 (50-79%), GOLD 3 (30-49%), GOLD 4 (<30%). mMRC dyspnea scale dan CAT score untuk assess gejala. Rontgen thoraks: hyperinflasi, flatten...',
+    terapi:
+      'Lini pertama: LABA (salmeterol/formoterol) atau LAMA (tiotropium). Kombinasi LABA+LAMA untuk GOLD B-D. ICS tambahan bila eosinofil >=300 atau >=2 eksaserbasi/tahun. Bronkodilator rescue: SABA atau SAMA. Rehabilitasi pulmoner. Vaksinasi: influenza dan pneumokokus. Berhenti merokok sangat penting. Oks...',
+    rujukan:
+      'Eksaserbasi berat (dapat menentukan dengan Anthonisen criteria: ^dyspnea, ^sputum volume, ^sputum purulence), gagal napas, SpO2 <88%, perlu oksigen >4L/menit, distres respiratori, tidak responsif nebulisasi, komplikasi (pneumotoraks, gagal jantung).',
+  },
+  {
+    id: 18,
+    nama: 'Tuberkulosis Paru',
+    kategori: 'Pernapasan Bawah',
+    kode: 'A15-A16',
+    definisi:
+      'Infeksi kronis Mycobacterium tuberculosis pada paru-paru. Indonesia memiliki beban TB tertinggi ketiga di dunia setelah India dan Tiongkok, dengan estimasi 969.000 kasus baru per tahun (WHO 2024). TB adalah penyebab kematian infeksius tertinggi.',
+    gejala: [
+      'Batuk >2-3 minggu',
+      'Dahak (bisa berdarah/hemoptisis)',
+      'Demam hilang-timbul (afternoon fever)',
+      'Berkeringat malam',
+      'Penurunan berat badan',
+      'Malaise/fatigue',
+      'Nyeri dada pleuritik',
+    ],
+    diagnosis:
+      'Pemeriksaan mikroskopis dahak (ZZ staining): minimal 2 spesimen (spot + morning). GeneXpert MTB/RIF (CBNAAT): sensitivitas tinggi dan deteksi resistensi rifampisin 2 jam. Rontgen thoraks: infiltrat apikal, kavitas, atau nodul. TST/IGRA untuk LTBI. Biakan Lowenstein-Jensen (gold standard, 2-8 minggu)...',
+    terapi:
+      'Regimen standar 6 bulan (kategori 1): 2HRZE/4HR (2 bulan isoniazid + rifampisin + pirazinamid + etambutol, lanjut 4 bulan isoniazid + rifampisin). Catatan DOTS (Directly Observed Treatment Short-course). Pantau fungsi hati (ALT/AST) bulanan. B suplementasi piridoksin 10mg/hari. Vaksinasi BCG untuk n...',
+    rujukan:
+      'TB-MDR/XDR (resisten rifampisin), hemoptisis masif (>100mL/24jam), komplikasi pleural/empiema, SpO2 <90%, gagal napas, miliary TB, TB extrapulmonal (meningitis, tulang), efek samping hepatotoksik (ikterus), gagal pengobatan kategori 1.',
+  },
+  {
+    id: 19,
+    nama: 'Pleurisi (Pleuritis)',
+    kategori: 'Pernapasan Bawah',
+    kode: 'R09',
+    definisi:
+      'Inflamasi pada pleura (membran yang melapisi paru-paru dan rongga dada). Dapat disebabkan oleh infeksi (TB, pneumonia), autoimun (lupus), trauma, atau neoplasma (mesothelioma, metastasis).',
+    gejala: [
+      'Nyeri dada pleuritik (tajam, saat napas dalam/batuk)',
+      'Dispnea',
+      'Batuk kering',
+      'Demam (bila infeksius)',
+      'Bunyi gesek pleura (auskultasi)',
+    ],
+    diagnosis:
+      "Pemeriksaan fisik: friction rub (bunyi gesekan pleura). Rontgen thoraks: efusi pleura (meniscus sign, blunting costophrenic angle). USG thoraks untuk konfirmasi efusi dan guided thoracentesis. Analisis cairan pleura: Light's criteria untuk membedakan transudat vs eksudat. ADA, protein, LDH, sel coun...",
+    terapi:
+      'Tangani etiologi: antibiotik untuk pneumonia, anti-TB untuk TB. Analgesik: NSAID (ibuprofen 400mg 3x/hari). Bila efusi besar dan symptomatik: thoracentesis untuk menguras cairan. Kortikosteroid untuk pleuritis autoimun (prednison 0,5mg/kg/hari).',
+    rujukan:
+      'Efusi pleura besar/berulang, empiema, hemotoraks, efusi tidak jelas etiologi (perlu pleuroskopi), komplikasi dengan kollapse paru, keganasan.',
+  },
+  {
+    id: 20,
+    nama: 'Bronkiektasis',
+    kategori: 'Pernapasan Bawah',
+    kode: 'J47',
+    definisi:
+      'Dilatasi permanen dan abnormal bronkus akibat destruksi dinding elastik dan muscularis. Disebabkan oleh infeksi berulang, obstruksi, imunodefisiensi, atau kondisi genetik (sistik fibrosis, PCD). Incidensi meningkat pada lansia.',
+    gejala: [
+      'Batuk kronis produktif dengan sputum purulen (banyak, berlapis)',
+      'Hemoptisis (ringan-sedang)',
+      'Dispnea progresif',
+      'Nyeri dada',
+      'Recurrent respiratory infections',
+      'Halitosis',
+    ],
+    diagnosis:
+      "HRCT thoraks: 'signet ring sign' (diameter bronkus >diameter arteri yang menyertainya), 'tram track sign', lack of tapering. Spirometri: obstruksi (FEV1/FVC <0.70) atau mixed pattern. Kultur sputum: P. aeruginosa, H. influenzae, S. aureus, NTM. Evaluasi etiologi: Ig levels, Aspergillus spesifik IgE ...",
+    terapi:
+      'Airway clearance: teknik oscilasi positive expiratory pressure (OPEP), postural drainage. Antibiotik: amoksisilin-klavulanat untuk eksaserbasi (7-14 hari), atau ciprofloxacin 500mg 2x/hari 14 hari (bila Pseudomonas). Bronkodilator. ICS bila asma beroverlap. Vaksinasi influenza dan pneumokokus. Surge...',
+    rujukan:
+      'Hemoptisis masif, eksaserbasi berat, gagal napas, bronkiektasis luas yang tidak responsif, perlu evaluasi etiologi (imunodefisiensi, sistik fibrosis), pertimbangan surgery.',
+  },
+  {
+    id: 21,
+    nama: 'Pneumotoraks',
+    kategori: 'Pernapasan Bawah',
+    kode: 'J93',
+    definisi:
+      'Akumulasi udara di rongga pleura yang menyebabkan kolaps paru-parsial atau total. Dapat spontan (PSP) pada individu muda/tanpa penyakit paru, sekunder (SSP) pada penyakit paru yang mendasari (COPD, TB, PCP), atau traumatic.',
+    gejala: [
+      'Nyeri dada tiba-tiba tajam (unilateral)',
+      'Dispnea progresif',
+      'Takikardia',
+      'Suara napas menurun/hilang',
+      'Hiperresonansi pada perkusi',
+      'Tracheal deviation (pada tension pneumothorax)',
+    ],
+    diagnosis:
+      'Rontgen thoraks upright (ekspirasi): garis viseral pleura terlihat dengan tidak adanya vaskular marking di perifer. Tension pneumothorax: tracheal deviation, JVP meningkat, hipotensi, distres respiratori parah - emergency! Ultrasonid (point-of-care): absent lung sliding, barcode/stratosphere sign.',
+    terapi:
+      'Pneumotoraks kecil (<2cm apex-to-cupola): observasi + oksigen (meningkatkan resorpsi 4x). Pneumotoraks besar: aspirasi jarum (needle aspiration) 14-16G di 2nd ICS midclavicular line. Chest tube insertion (water seal drainage) bila gagal aspirasi atau recurrent. Tension pneumothorax: immediate needle...',
+    rujukan:
+      'Tension pneumothorax (emergency), SSP, pneumothoraks besar dengan kolaps >50%, gagal aspirasi, recurrens, hemopneumothorax, trauma, perlu VATS/bullectomy.',
+  },
+  {
+    id: 22,
+    nama: 'COVID-19',
+    kategori: 'Pernapasan Bawah',
+    kode: 'U07.1',
+    definisi:
+      'Penyakit infeksius akut yang disebabkan oleh SARS-CoV-2, virus RNA yang menyerang saluran pernapasan dan sistem organ lain. Dideklarasikan sebagai pandemi oleh WHO pada Maret 2020. Indonesia mengalami beberapa gelombang infeksi dengan total >6 juta k...',
+    gejala: [
+      'Demam',
+      'Batuk kering',
+      'Fatigue',
+      'Anosmia/hyposmia',
+      'Ageusia',
+      'Dyspnea',
+      'Sakit tenggorokan',
+      'Nyeri otot',
+      'Nyeri kepala',
+      'Mungkin asimptomatik',
+    ],
+    diagnosis:
+      'RT-PCR SARS-CoV-2 dari swab nasofaring/orofaring (gold standard). Antigen Rapid Test (ART) untuk skrining. Kriteria klinis + kontak erat + CT thoraks (ground-glass opacities, consolidasi bilateral). D-dimer, CRP, prokalsitonin, LDH untuk assess berat. Klasifikasi: asimptomatik, ringan, sedang, berat...',
+    terapi:
+      'Ringan-sedang: isolasi mandiri, suportif (parasetamol, hidrasi, vitamin C-D-zinc), monitoring saturasi oksigen. Berat: oksigen nasal kanul/masker, dexamethasone 6mg/hari 10 hari (kortikosteroid untuk berat/kritis), remdesivir (bila durasi <10 hari dan non-ventilator), antikoagulan profilaksis (enoxa...',
+    rujukan:
+      'SpO2 <=93% dengan udara ruang, RR >=30, distress respiratori, penurunan kesadaran, komorbid berat, gagal isolasi mandiri, symptom berat >5 hari, imunokompromais.',
+  },
+  {
+    id: 23,
+    nama: 'Gastroenteritis Akut',
+    kategori: 'Saluran Cerna',
+    kode: 'A09',
+    definisi:
+      'Inflamasi akut pada mukosa saluran cerna (biasanya lambung dan usus) yang menyebabkan diare, muntah, dan kram perut. Penyebab utama: virus (rotavirus, norovirus - 50-70%), bakteri (Salmonella, Shigella, E. coli, Campylobacter, Vibrio cholerae), dan p...',
+    gejala: [
+      'Diare akut (>=3x/hari encer/cair)',
+      'Muntah',
+      'Kram/kolik perut',
+      'Nyeri perut',
+      'Demam (bila infeksi bakteri)',
+      'Malaise',
+      'Dehidrasi (mulai dari ringan hingga berat)',
+    ],
+    diagnosis:
+      'Diagnosis klinis berdasarkan anamnesis dan pemeriksaan fisik. Evaluasi dehidrasi (WHO criteria: looking, touch, counting): ringan (haus, mulut kering), sedang (letargi, sunken eyes, skin turgor poor), berat (tidak responsif, sunken fontanel, anuria). Tes darah: leukositosis (bakteri). Stool culture ...',
+    terapi:
+      'Terapi utama: Rehidrasi Oral (ORS) - WHO ORS 75-100 mL/kg dalam 4 jam untuk dehidrasi sedang, atau 50 mL/kg untuk ringan. Zinc 20mg/hari (anak <6 bulan: 10mg/hari) selama 10-14 hari - mengurangi durasi dan severity. Diet: teruskan ASI/makanan, makanan lunak. Antiemetik: ondansetron (untuk muntah ber...',
+    rujukan:
+      'Dehidrasi berat (tidak responsif ORS), hematemesis, melena, abdomen akut, sepsis, distensi abdomen, vomiting intractable, rektal prolapse, usia <3 bulan dengan demam, imunokompromais.',
+  },
+  {
+    id: 24,
+    nama: 'Dispepsia (Gangguan Pencernaan)',
+    kategori: 'Saluran Cerna',
+    kode: 'K30',
+    definisi:
+      'Gangguan atau rasa tidak nyaman di daerah epigastrium yang persisten atau rekuren. Disebut juga indigestion. Diklasifikasikan sebagai dispepsia organik (ada lesi struktural) atau fungsional (tidak ada lesi - 60-70% kasus).',
+    gejala: [
+      'Nyeri atau rasa tidak nyaman epigastrium',
+      'Rasa kenyang cepat (early satiety)',
+      'Bloating/perut kembung',
+      'Mual',
+      'Eructase (sendawa berlebihan)',
+      'Heartburn (bila refluks berkoeksistensi)',
+      'Mungkin muntah',
+    ],
+    diagnosis:
+      'Anamnesis: lokasi nyeri (epigastrium), hubungan dengan makan, faktor pencetus (NSAID, makanan pedas/asam, stres). Pemeriksaan fisik: nyeri tekan epigastrium. Tes Helicobacter pylori (urea breath test, stool antigen, atau rapid urease test dari biopsi endoskopi). Uji terapi empiris dengan PPI 4-8 min...',
+    terapi:
+      'Lini pertama: PPI (omeprazole 20-40mg 1x/hari 4-8 minggu) atau H2RA (ranitidine - meski ditarik di banyak negara, famotidine 20mg 2x/hari sebagai alternatif). Bila H. pylori positif: eradikasi triple therapy (PPI + amoksisilin 1g + klaritromisin 500mg, semua 2x/hari 14 hari), atau quadruple therapy ...',
+    rujukan:
+      'Alarm features: anemia, hematemesis/melena, penurunan BB tanpa sebab, dysphagia/odynophagia, massa palpabel, usia >50 tahun dengan symptom baru, persisten >8 minggu meski PPI, family history GI cancer, perlu endoskopi.',
+  },
+  {
+    id: 25,
+    nama: 'GERD (Gastroesofageal Refluks Disease)',
+    kategori: 'Saluran Cerna',
+    kode: 'K21',
+    definisi:
+      'Refluks berulang isi lambung ke esofagus yang menyebabkan gejala klinis dan/atau komplikasi. Disebabkan oleh dysfungsi LES (lower esophageal sphincter) dan hiatus hernia. Prevalensi global 8-33%, lebih tinggi di negara Barat.',
+    gejala: [
+      'Heartburn (rasa terbakar di dada retrosternal)',
+      'Regurgitasi asam/makanan',
+      'Dysphagia',
+      'Odynophagia',
+      'Nyeri epigastrium',
+      'Batuk kronis',
+      'Hoarseness',
+      'Rasa ada benjolan di tenggorokan (globus)',
+    ],
+    diagnosis:
+      "Diagnosis klinis berdasarkan heartburn dan regurgitasi karakteristik. Uji terapi empiris: PPI 2x/hari 4-8 minggu (omeprazole 20mg 2x/hari). Pemeriksaan endoskopi: esophagitis, Barrett's esophagus, hiatus hernia. Esophageal pH monitoring bila diagnosis tidak jelas. Manometri esofagus untuk dysmotilit...",
+    terapi:
+      'Modifikasi gaya hidup: elevasi kepala tempat tidur 15-20cm, hindari makanan pencetus (pedas, asam, berlemak, kafein, alkohol, coklat), makan 3 jam sebelum tidur, weight loss, berhenti merokok. Farmakologi: PPI lini pertama (omeprazole/esomeprazole 20-40mg 1x/hari 8 minggu), H2RA untuk ringan (famoti...',
+    rujukan:
+      "Alarm features (dysphagia, odynophagia, anemia, berat badan turun, hematemesis/melena), Barrett's esophagus, tidak responsif PPI maksimal 12 minggu, perlu evaluasi bedah, komplikasi (striktur, ulcer).",
+  },
+  {
+    id: 26,
+    nama: 'Konstipasi',
+    kategori: 'Saluran Cerna',
+    kode: 'K59.0',
+    definisi:
+      'Defekasi jarang (<3x/minggu), feses keras, straining, sensasi inkomplet evacuation, atau sensasi obstruksi. Dapat primer (idiopatik/slow transit) atau sekunder (obat-obatan, diet, penyakit metabolic, struktural). Prevalensi global 14-16%, lebih tingg...',
+    gejala: [
+      'Defekasi <3x/minggu',
+      'Feses keras/lumpy (Bristol Stool Scale tipe 1-2)',
+      'Straining saat defekasi',
+      'Sensasi inkomplet evacuation',
+      'Sensasi obstruksi/anorectal blockage',
+      'Nyeri perut kram/kolik',
+      'Bloating',
+      'Mungkin fecal overflow (inkontinensia feses cair)',
+    ],
+    diagnosis:
+      'Rome IV criteria: >=2 dari: straining >25% defekasi, feses lumpy/keras, sensasi inkomplet evacuation, sensasi anorectal obstruction, manual maneuvering >25%, defekasi <3x/minggu. Pemeriksaan fisik: rektal digital examination (massa, tone, feses impaksi). TSH, kalsium serum untuk screening hipotiroid...',
+    terapi:
+      'Diet: serat 25-30g/hari (buah, sayur, gandum utuh), minum air 1.5-2L/hari, aktivitas fisik teratur. Osmotik laksatif: PEG 3350 (makrogol) 17g 1-2x/hari - lini pertama yang aman jangka panjang. Stimulan laksatif: bisakodil 5-10mg (jangka pendek), senna. Stool softener: docusate. Laktulosa: 15-30mL 1-...',
+    rujukan:
+      'Alarm features (berat badan turun, anemia, melena, family history kolorektal cancer), usia >50 tahun dengan onset baru konstipasi, tidak responsif terapi maksimal, suspisi obstruksi mekanik (kolon cancer, stricture), megarektum/megakolon, perlu manom...',
+  },
+  {
+    id: 27,
+    nama: 'Diare Kronik',
+    kategori: 'Saluran Cerna',
+    kode: 'K52.9',
+    definisi:
+      'Diare dengan durasi >4 minggu. Dapat disebabkan oleh infeksi kronis (Giardia, Entamoeba, C. difficile), malabsorpsi (laktosa, gluten, pankreatik insufisiensi), inflamasi (IBD), dismotilitas, atau obat-obatan (antibiotik, metformin, PPI, laksatif).',
+    gejala: [
+      'Frekuensi defekasi meningkat >3x/hari selama >4 minggu',
+      'Feses cair/encer',
+      'Bisa berlemak (steatorrhea)',
+      'Berdarah (bila inflamasi)',
+      'Nyeri perut',
+      'Penurunan berat badan',
+      'Bloating',
+      'Malaise',
+    ],
+    diagnosis:
+      'Anamnesis: durasi, frekuensi, karakteristik feses (berdarah, berlemak, berlendir), hubungan dengan makanan, obat-obatan, riwayat travel. Pemeriksaan: stool microscopy (ova/cysta parasit), stool culture, fecal calprotectin (screening IBD), TSH, anti-tTG IgA (screening celiac disease), HbA1c (diabetes...',
+    terapi:
+      'Tangani etiologi: anti-parasit (metronidazole 500mg 3x/hari 7-10 hari untuk giardiasis/albendazole 400mg 1x/hari 5 hari untuk helminth), antibiotik spesifik untuk bakteri. Laktose-free diet bila intoleransi laktosa. Gluten-free diet untuk celiac disease. Pankreatik enzim untuk EPI. Loperamide 2-4mg ...',
+    rujukan:
+      'Alarm features (berat badan turun, anemia, melena, demam, family history cancer/kolitis), tidak responsif terapi empiris, perlu endoskopi/kolonoskopi, suspisi IBD, celiac disease, atau keganasan.',
+  },
+  {
+    id: 28,
+    nama: 'Disentri (Diare Berdarah)',
+    kategori: 'Saluran Cerna',
+    kode: 'A03-A09',
+    definisi:
+      'Diare dengan adanya darah dalam feses yang disebabkan oleh invasi mukosa usus oleh patogen. Penyebab utama: Shigella (paling umum), Campylobacter jejuni, Salmonella non-typhi, EHEC (E. coli O157:H7), Entamoeba histolytica. Merupakan kondisi yang meme...',
+    gejala: [
+      'Diare dengan darah/mukus (tenesmus)',
+      'Nyeri perut kram (kolik)',
+      'Demam',
+      'Muntah',
+      'Tenesmus (rasa ingin BAB terus-menerus)',
+      'Dehidrasi',
+      'Malaise',
+    ],
+    diagnosis:
+      'Pemeriksaan feses: mikroskopis (leukosit eritrosit), kultur dan sensitivitas (identifikasi patogen), tes antigen Shigella/Campylobacter bila tersedia. Tes amuba: stool microscopy dengan iodine stain, ELISA antigen Entamoeba. Perlu dibedakan dengan ISK (irritable bowel syndrome) dan IBD (kolitis ulse...',
+    terapi:
+      'Rehidrasi (ORS/IV bila berat). Antibiotik: azitromycin 500mg hari 1, 250mg hari 2-5 (untuk disentri bakteri umum), ciprofloxacin 500mg 2x/hari 3 hari (bila tersedia dan tidak resisten). Untuk amebiasis: metronidazole 750mg 3x/hari 5-10 hari, dilanjutkan iodoquinol atau paromomycin. Loperamide KONTRA...',
+    rujukan:
+      'Disentri berat dengan dehidrasi, demam >39degC persisten, hematemesis, abdomen akut, sepsis, toxic megacolon (terutama pada EHEC - hindari antibiotik), usia <1 tahun, imunokompromais.',
+  },
+  {
+    id: 29,
+    nama: 'Hepatitis A',
+    kategori: 'Saluran Cerna',
+    kode: 'B15',
+    definisi:
+      'Infeksi akut hati yang disebabkan oleh Hepatitis A virus (HAV), virus RNA dari famili Picornaviridae. Ditularkan secara feco-oral. Umumnya self-limiting dengan kematian <1%. Tidak menyebabkan hepatitis kronik. Indonesia termasuk daerah endemis dengan...',
+    gejala: [
+      'Fatigue/prostration',
+      'Mual dan muntah',
+      'Nyeri perut (hepatomegali dengan nyeri tekan)',
+      'Ikterus (sclera dan kulit kuning)',
+      'Urine gelap (koluria)',
+      'Feses pucat (akolik)',
+      'Demam ringan',
+      'Artralgia',
+    ],
+    diagnosis:
+      'Serologi: Anti-HAV IgM (diagnosis akut), Anti-HAV IgG (kekebalan/masa lalu). Pemeriksaan liver function: ALT dan AST meningkat (10-100x normal), bilirubin total/direct meningkat, ALP ringan meningkat. USG abdomen untuk menyingkirkan obstruksi biliari.',
+    terapi:
+      'Terapi suportif: istirahat total, nutrisi adekuat, hindari alkohol dan hepatotoksin (termasuk paracetamol dosis tinggi). Tidak ada antiviral spesifik. Hidrasi dan antiemetic (ondansetron) bila muntah berat. Monitoring: fungsi hati mingguan. Vaksinasi HAV profilaksis untuk kontak dekat dalam 2 minggu...',
+    rujukan:
+      'Acute liver failure (encefalopati, koagulopati), bilirubin >20mg/dL, PT/INR meningkat, hipoglikemia, asidosis, atau gejala memburuk setelah 1-2 minggu (fulminant hepatitis).',
+  },
+  {
+    id: 30,
+    nama: 'Ambeien (Hemoroid)',
+    kategori: 'Saluran Cerna',
+    kode: 'K64',
+    definisi:
+      'Pembesaran dan varises dari pleksus vena hemoroidalis di anus (internal - di atas dentate line, atau eksternal - di bawah dentate line). Prevalensi 4-35% populasi umum, puncak pada usia 45-65 tahun. Faktor risiko: konstipasi kronis, straining, kehami...',
+    gejala: [
+      'Perdarahan segar saat/ setelah defekasi (warna merah cerah)',
+      'Prolapsus jaringan anus',
+      'Nyeri (terutama hemoroid thrombosed eksternal)',
+      'Gatal/iritasi perianal',
+      'Sensasi tidak tuntas setelah BAB',
+      'Benjolan lunak di anus',
+    ],
+    diagnosis:
+      'Anamnesis: karakteristik perdarahan (merah cerah, menetes), prolapsus, nyeri. Pemeriksaan fisik: inspeksi perianal, digital rectal examination (DRE), anoskopi untuk melihat hemoroid internal (grading 1-4: grade 1 - tidak prolaps, grade 2 - prolaps spontan masuk, grade 3 - perlu manual reduction, gra...',
+    terapi:
+      'Diet serat tinggi 25-30g/hari + hidrasi + stoll softener (PEG/laktulosa). Topikal: kortikosteroid + lokal anestetik (hydrocortisone + lidocaine cream) 2-3x/hari maksimal 7 hari. Venotonik: diosmin 450mg + hesperidin 50mg (Daflon) 2 tablet 2x/hari 4 hari, lalu 1 tablet 2x/hari. Sitz bath air hangat 1...',
+    rujukan:
+      'Grade 3-4, perdarahan berat/anemia, trombosis hemoroid eksternal dengan nyeri parah, strangulated hemoroid, gagal konservatif >4-6 minggu, perlu prosedur invasif (RBL, surgery), alarm features memerlukan kolonoskopi.',
+  },
+  {
+    id: 31,
+    nama: 'Anal Fissure (Pecah Dubur)',
+    kategori: 'Saluran Cerna',
+    kode: 'K60',
+    definisi:
+      'Laserasi linear pada mukosa anus, biasanya di midline posterior (90% pada pria, 10% anterior pada wanita). Dapat akut (<6 minggu) atau kronik (>6 minggu dengan sentinel tags, hypertrophied anal papilla). Penyebab utama: trauma feses keras saat defeka...',
+    gejala: [
+      'Nyeri tajam saat/ setelah defekasi',
+      'Perdarahan merah segar sedikit',
+      'Spasme sfingter',
+      'Fobia defekasi',
+      'Sensasi terbakar perianal',
+    ],
+    diagnosis:
+      'Pemeriksaan: inspeksi perianal dengan pencahan bokong - lihat laserasi linear. Bila tidak terlihat (spasme): anestesi topikal lalu inspeksi. Anoskopi setelah healing. Perlu dibedakan dengan hemoroid, abses perianal, fistula, IBD, atau kanker anus.',
+    terapi:
+      'Konservatif (90% sembuh): diet serat + stoll softener (PEG 17g 1-2x/hari), sitz bath air hangat, hidrasi. Topikal GTN 0.2-0.4% ointment 2-3x/hari (menyebabkan headache tapi efektif relaksasi sfingter), atau diltiazem 2% cream 2x/hari (lebih sedikit efek samping). Botulinum toxin injeksi untuk refrak...',
+    rujukan:
+      'Fissure kronik tidak responsif konservatif 6-8 minggu, lokasi lateral/atipikal (pertimbangkan IBD, TB, sifilis, kanker), perlu sphincterotomy, abses/fistula berkoeksistensi.',
+  },
+  {
+    id: 32,
+    nama: 'Appendisitis (Usus Buntu)',
+    kategori: 'Saluran Cerna',
+    kode: 'K35',
+    definisi:
+      'Inflamasi akut appendix vermiformis yang merupakan emergency bedah paling umum. Dapat disebabkan oleh obstruksi lumen (faecalith, limfoid hiperplasia) -> distensi -> iskemia -> perforasi. Incidensi puncak pada usia 10-30 tahun. Mortalitas <1% bila di...',
+    gejala: [
+      'Nyeri perut awalnya periumbilikal, migrasi ke RIF (titik McBurney)',
+      'Anoreksia',
+      'Mual dan muntah',
+      'Demam ringan-sedang',
+      'Leukositosis',
+      "Rovsing's sign (nyeri RIF saat tekan kiri)",
+      'Psoas sign (nyeri saat ekstensi paha kanan)',
+    ],
+    diagnosis:
+      "Pemeriksaan fisik: nyeri tekan McBurney's point, guarding, rebound tenderness. Skor Alvarado: migrasi nyeri (1), anoreksia (1), muntah (1), nyeri RIF (2), rebound (1), demam (1), leukositosis (2), shift kiri neutrofil (1). Skor 7-8: probable appendicitis, >=9: very probable. USG abdomen: non-compres...",
+    terapi:
+      'Appendektomi (laparoskopi atau terbuka) - standard of care. Pre-operasi: NPO, IV fluid, antibiotik profilaksis (sefazolin + metronidazole). Bila abses appendix: drainase perktuan + antibiotik IV 7-10 hari, appendektomi ditunda 6-8 minggu (interval appendectomy). Appendicitis non-perforated tanpa abs...',
+    rujukan:
+      'SEMUA kasus appendisitis harus dirujuk untuk evaluasi bedah. Emergency bila perforasi, generalized peritonitis, abses, atau symptom berat.',
+  },
+  {
+    id: 33,
+    nama: 'Kolesistitis Akut',
+    kategori: 'Saluran Cerna',
+    kode: 'K80-K81',
+    definisi:
+      'Inflamasi akut kantong empedu yang 95% disebabkan oleh obstruksi leher kantong empedu oleh batu empedu (kalkulus). Non-kalkulus kolesistitis terjadi pada kritis/trauma/burn. Perforasi dapat terjadi dalam 48-72 jam tanpa treatment.',
+    gejala: [
+      'Nyeri kuadran kanan atas (RUQ) tiba-tiba dan konstan',
+      'Nyeri dapat irradiasi ke bahu kanan/scapula',
+      'Demam dan menggigil',
+      'Mual dan muntah',
+      'Distensi abdomen',
+      "Murphy's sign positif (nyeri RUQ saat inspirasi dalam)",
+    ],
+    diagnosis:
+      "Pemeriksaan fisik: Murphy's sign, guarding RUQ. Lab: leukositosis, CRP meningkat, bilirubin ringan meningkat, ALP dan GGT meningkat (bila obstruksi common bile duct). USG abdomen: batu empedu, wall thickening >3mm, pericholecystic fluid, sonographic Murphy's sign. CT abdomen bila diagnosis tidak jel...",
+    terapi:
+      'NPO, IV fluid, analgesik (NSAID/ketorolak/opioid), antibiotik (seftriakson + metronidazole, atau piperacillin-tazobactam). Early laparoscopic cholecystectomy (dalam 24-72 jam dari onset - preferable). Bila high surgical risk: percutaneous cholecystostomy drain. Kalangka (cholecystectomy) setelah rec...',
+    rujukan:
+      'SEMUA kasus kolesistitis akut ke fasilitas bedah. Emergency bila: perforasi, empiema kantong empedu, emphysematous cholecystitis, gangrenous cholecystitis, kolesistitis pada diabetes/elderly, atau symptom persisten >72 jam.',
+  },
+  {
+    id: 34,
+    nama: 'Pankreatitis Akut',
+    kategori: 'Saluran Cerna',
+    kode: 'K85',
+    definisi:
+      'Inflamasi akut pankreas dengan autodigesti oleh enzim pankreatik yang diaktifkan prematur. Penyebab utama: batu empedu (40-70%) dan alkohol (25-35%). Kondisi yang berpotensi life-threatening dengan mortality 5-10%.',
+    gejala: [
+      'Nyeri epigastrium tiba-tiba dan parah',
+      'Nyeri irradiasi ke punggung (band-like)',
+      'Mual dan muntah parah',
+      'Distensi abdomen',
+      'Demam',
+      'Takikardia',
+      'Hipotensi (bila nekrosis/hemorrhagic)',
+    ],
+    diagnosis:
+      'Kriteria diagnostik (>=2 dari 3): (1) nyeri epigastrium akut, (2) lipase atau amilase serum >=3x normal, (3) temuan radiologis pankreatitis (CT/MRI/USG). Ranson criteria dan APACHE II untuk severity. CT abdomen dengan kontras: gold standard untuk komplikasi (nekrosis, koleksi, pseudokista). USG: unt...',
+    terapi:
+      'Agresif IV rehidrasi (LR 250-500mL/jam atau 5-10mL/kg/jam), NPO awal (tapi early feeding bila ringan), analgesik (morphine/hidromorfon - tidak ada kontraindikasi morphine untuk Oddi sphincter), antiemetic. Antibiotik hanya bila infeksi terkonfirmasi (nekrosis infeksius - imipenem/meropenem). ERCP ur...',
+    rujukan:
+      'Severe pancreatitis (Ranson >=3, APACHE II >=8), organ failure, nekrosis pankreas >30%, pseudokista >6cm/symptomatik, abses pankreas, kolesistitis berkoeksistensi, atau moderate-severe berdasarkan Revised Atlanta Classification.',
+  },
+  {
+    id: 35,
+    nama: 'Dermatitis Seboroik',
+    kategori: 'Kulit',
+    kode: 'L21',
+    definisi:
+      'Dermatitis kronis inflamasi pada area kulit dengan konsentrasi kelenjar sebasea tinggi (skalp, wajah, dada, lipatan). Berhubungan dengan reaksi imun terhadap Malassezia yeast (Pityrosporum ovale) yang merupakan flora normal. Prevalensi 3-5% populasi ...',
+    gejala: [
+      'Eritema dengan skala putih/kekuningan (greasy scales)',
+      'Gatal ringan',
+      'Lokasi: skalp (ketombe berat), alis, glabella, nasolabial fold, retroauricular, dada sternal, lipatan (axilla, inframammary)',
+      'Cradle cap pada bayi',
+    ],
+    diagnosis:
+      'Diagnosis klinis berdasarkan distribusi khas (sebaceous areas) dan morfologi (eritema dengan skala greasy). Pemeriksaan mikroskopis KOH: yeast Malassezia (spaghetti and meatball appearance). Perlu dibedakan dengan psoriasis, tinea corporis, atopik dermatitis, rosacea.',
+    terapi:
+      'Topikal: ketoconazole 2% cream/shampoo 2x/minggu (lini pertama - anti-Malassezia), kortikosteroid ringan (hydrocortisone 1% cream untuk wajah/lipatan, betamethasone valerate 0.1% untuk badan) 1-2x/hari maksimal 2 minggu. Shampoo selenium sulfide 2.5% atau zinc pyrithione untuk skalp. Kalsineurin inh...',
+    rujukan:
+      'Refrakter terhadap terapi topikal 4-6 minggu, diagnosa tidak pasti (perlu biopsi), kecurigaan penyakit dasar (HIV, Parkinson), luas dan severe, infeksi sekunder.',
+  },
+  {
+    id: 36,
+    nama: 'Dermatitis Kontak',
+    kategori: 'Kulit',
+    kode: 'L23-L25',
+    definisi:
+      'Inflamasi kulit akibat kontak dengan zat iritan (irritant contact dermatitis - 80% kasus, non-imunologic) atau alergen (allergic contact dermatitis - delayed-type hypersensitivity tipe IV). Penyebab umum: nikel, kosmetik, lateks, pewarna, tumbuhan (p...',
+    gejala: [
+      'Eritema, edema, vesikel/bula',
+      'Gatal dan nyeri',
+      'Distribusi sesuai area kontak (well-demarcated)',
+      'Fissuring dan likenifikasi (kronik)',
+      'Mungkin sekunder infeksi',
+    ],
+    diagnosis:
+      'Anamnesis: identifikasi zat kontak, hubungan temporal. Pemeriksaan: distribusi sesuai kontak (line pattern pada poison ivy). Patch test untuk alergi kontak (diaplikasikan di punggung, dibaca 48 dan 96 jam). Perlu dibedakan dengan atopik dermatitis, tinea, psoriasis, dyshidrotic eczema.',
+    terapi:
+      'Hindari alergen/iritan. Acute/severe: kortikosteroid topikal sedang-keras (triamcinolone 0.1% atau mometason 0.1% cream 2x/hari 2-3 minggu), kortikosteroid oral (prednison 40-60mg/hari tappering 5 hari) untuk severe/widespread. Antihistamin oral (cetirizine 10mg/hari) untuk gatal. Moisturizer. Barri...',
+    rujukan:
+      'Severe/widespread, tidak responsif terhadap terapi topikal + oral, diagnosa tidak pasti, perlu patch testing, kecurigaan occupational exposure kompleks.',
+  },
+  {
+    id: 37,
+    nama: 'Dermatitis Atopik (Eksim)',
+    kategori: 'Kulit',
+    kode: 'L20',
+    definisi:
+      'Dermatitis kronis inflamasi dengan predisposisi genetik, karakteristik oleh gangguan barrier kulit (mutasi filaggrin) dan respon imun Th2 yang berlebihan. Prevalensi global meningkat (10-20% anak, 1-3% dewasa). Sering berkoeksistensi dengan rinitis a...',
+    gejala: [
+      'Gatal parah (pruritus - ciri khas, memburuk malam hari)',
+      'Eritema, papul, vesikel',
+      'Eksudasi dan krusta (akut)',
+      'Likenifikasi dan lichen simplex chronicus (kronik)',
+      'Distribusi sesuai usia: infant (wajah, ekstensor), child (lipatan - popliteal, antekubital), adult (lipatan, tangan, leher)',
+      'Xerosis (kulit kering)',
+    ],
+    diagnosis:
+      'Kriteria Hanifin-Rajka (>=3 major + >=3 minor). Major: pruritus, morfologi khas, kronik relapsing, personal/family history atopi. Severity scoring: EASI (Eczema Area and Severity Index) atau SCORAD. IgE total sering meningkat. Patch test untuk menyingkirkan kontak dermatitis. Bacterial culture bila ...',
+    terapi:
+      'Basic therapy: emolien/moisturizer (aplikasi liberal >3x/hari, dalam 3 menit setelah mandi). Topikal kortikosteroid: hydrocortisone 1% (wajah), triamcinolone 0.1% (badan), mometason/betamethasone (kronik) - apply 1-2x/hari. TCI (tacrolimus 0.03-0.1% atau pimecrolimus 1%) untuk wajah dan maintenance....',
+    rujukan:
+      'Severe/refrakter (EASI >20), perlu terapi sistemik/immunosupresan, infeksi berulang, erythroderma, diagnosa tidak pasti, kecurigaan imunodefisiensi.',
+  },
+  {
+    id: 38,
+    nama: 'Tinea Korporis (Kurap)',
+    kategori: 'Kulit',
+    kode: 'B35.6',
+    definisi:
+      'Infeksi dermatofita pada kulit tubuh (tinea corporis) yang ditandai dengan lesi anular dengan batas aktif yang raised, skaly, dan clearing sentral. Penyebab: Trichophyton rubrum (paling umum), T. mentagrophytes, Microsporum canis. Indonesia termasuk ...',
+    gejala: [
+      'Lesions anular/bulat dengan batas jelas',
+      'Batas aktif: eritema, papul, vesikel, skala',
+      'Clearing sentral',
+      'Gatal',
+      'Lesions dapat berkonfluens membentuk polycyclic',
+      'Tinea incognito (bila diterapi steroid)',
+    ],
+    diagnosis:
+      "Pemeriksaan KOH: hifa septate branching (dermatofita). Kultur: identifikasi spesies (pada lesi atipikal atau refrakter). Wood's lamp: fluoresens hijau (Microsporum) - T. rubrum tidak fluoresen. Perlu dibedakan dengan nummular eczema, psoriasis, pityriasis rosea, granuloma annulare.",
+    terapi:
+      'Topikal: antifungal azole (krim ketoconazole 2%, klotrimazol 1%, atau mikonazol 2% 2x/hari 2-4 minggu) atau allylamine (terbinafine 1% cream 1-2x/hari 1-2 minggu). Oral (untuk extensive/resistant): terbinafine 250mg 1x/hari 2-4 minggu, atau itrakonazol 200mg 1x/hari 1-2 minggu. Teruskan terapi 1-2 m...',
+    rujukan:
+      'Extensive (>20% BSA), tinea incognito, tidak responsif topikal 4 minggu, imunokompromais (HIV, DM), tinea profunda/kerion, perlu terapi oral, atau invasi kuku/rambut bersamaan.',
+  },
+  {
+    id: 39,
+    nama: 'Tinea Kruris (Jamur Selangkangan)',
+    kategori: 'Kulit',
+    kode: 'B35.6',
+    definisi:
+      'Infeksi dermatofita pada lipatan inguinal, paha dalam, dan nates. Sangat umum di daerah tropis dan pada atlet (jock itch). Hampir selalu disebabkan oleh Trichophyton rubrum. Pria lebih sering terkena (3:1).',
+    gejala: [
+      'Eritema dengan batas jelas di lipatan inguinal',
+      'Skala pada batas aktif',
+      'Gatal intens',
+      'Lesi dapat meluas ke paha dalam, nates, skrotum (sparing penis - ciri khas)',
+      'Mungkin macerasi di area lembab',
+    ],
+    diagnosis:
+      "Pemeriksaan: lesi khas di inguinal folds dengan sparing penis. KOH: hifa dermatofita. Kultur bila diagnosis tidak pasti. Perlu dibedakan dengan intertrigo (Candida), erythrasma (Corynebacterium - coral-red fluorescence under Wood's lamp), psoriasis invers, seboroik dermatitis.",
+    terapi:
+      'Topikal: terbinafine 1% cream 1-2x/hari 1-2 minggu (superior dibanding azole), atau klotrimazol/ketoconazole 2x/hari 2-4 minggu. Oral (untuk refrakter/extensive): terbinafine 250mg 1x/hari 2-4 minggu. Powder antifungal (mikonazol) untuk mencegah rekurens. Hindari pakaian ketat, jaga kekeringan area.',
+    rujukan:
+      'Refrakter terhadap topikal, ekstensif, imunokompromais, tinea cruris berulang, diagnosa tidak pasti, atau berkoeksistensi dengan tinea pedis (manajemen juga).',
+  },
+  {
+    id: 40,
+    nama: "Tinea Pedis (Athlete's Foot / Kaki Jamur)",
+    kategori: 'Kulit',
+    kode: 'B35.3',
+    definisi:
+      'Infeksi dermatofita pada kaki, paling umum di dunia dengan prevalensi 3-15%. Penyebab: Trichophyton rubrum (70%), T. interdigitale, Epidermophyton floccosum. Diklasifikasikan sebagai interdigital (paling umum), moccasin (hyperkeratotic), dan vesikula...',
+    gejala: [
+      'Interdigital: macerasi, fissuring, skala di antara jari kaki (terutama 4-5)',
+      'Moccasin: hiperkeratosis diffus pada telapak dan sisi kaki',
+      'Vesikular: vesikel/bula gatal di arch',
+      'Gatal dan nyeri',
+      'Mungkin bau tidak sedap',
+      'Mungkin onikomikosis bersamaan',
+    ],
+    diagnosis:
+      "Pemeriksaan: lesi khas di kaki. KOH: hifa dermatofita. Kultur bila refrakter atau untuk identifikasi spesies. Wood's lamp: erythrasma menunjukkan koral-merah fluoresens. Perlu dibedakan dengan intertrigo Candida, psoriasis palmoplantar, kontak dermatitis, dyshidrotic eczema.",
+    terapi:
+      'Topikal: terbinafine 1% cream/spray 1-2x/hari 1-2 minggu (superior), atau butenafine 1% 1x/hari 2 minggu, atau azole (klotrimazol/ketoconazole 2x/hari 4 minggu). Oral (untuk moccasin/extensive): terbinafine 250mg 1x/hari 2-6 minggu. Powder antifungal pada sepatu/kaki. Jaga kekeringan, ganti kaus kak...',
+    rujukan:
+      'Tinea pedis moccasin/extensive, tidak responsif topikal, onikomikosis bersamaan, imunokompromais, komplikasi (selulitis - Streptococcus -hemolytic), diabetes dengan infeksi.',
+  },
+  {
+    id: 41,
+    nama: 'Onikomikosis',
+    kategori: 'Kulit',
+    kode: 'B35.1',
+    definisi:
+      'Infeksi jamur pada kuku yang disebabkan oleh dermatofita (90% - T. rubrum), yeast (Candida), atau mold. Prevalensi meningkat dengan usia (2-14% populasi umum, 20-50% pada usia >60). Lebih sering pada kuku kaki (90%) dibanding tangan.',
+    gejala: [
+      'Kuku menebal (hyperkeratosis subungual)',
+      'Dystrofi kuku: brittle, crumbly, discolored (kuning, putih, coklat)',
+      'Onikolisis (pemisahan kuku dari nail bed)',
+      'Subungual debris',
+      'Distorsi bentuk kuku',
+    ],
+    diagnosis:
+      'Pemeriksaan: tanda khas pada kuku. KOH dari subungual debris: hifa/spora. PAS stain (periodic acid-Schiff) dari clipping kuku - sensitivitas tinggi. Kultur: identifikasi patogen. Perlu dibedakan dengan psoriasis nail, lichen planus, trauma kuku, eczema.',
+    terapi:
+      'Oral (lini pertama untuk onikomikosis): terbinafine 250mg 1x/hari 6 minggu (kuku tangan) atau 12 minggu (kuku kaki), atau itrakonazol 200mg 1x/hari 12 minggu (pulse therapy: 200mg 2x/hari 1 minggu per bulan x 3-4 bulan untuk kuku kaki). Topikal (untuk superficial white onychomycosis atau bila kontra...',
+    rujukan:
+      'Extensive nail involvement, not responding to topical treatment after 12 weeks, immunocompromised host, or need for oral antifungal therapy.',
+  },
+  {
+    id: 42,
+    nama: 'Impetigo',
+    kategori: 'Kulit',
+    kode: 'L01',
+    definisi:
+      'Infeksi bakteri superfisial pada kulit yang sangat menular dan umum pada anak. Penyebab: Staphylococcus aureus (80%, termasuk MRSA) dan Streptococcus pyogenes (20%). Diklasifikasikan sebagai impetigo non-bullosa (krusted, paling umum) dan bullosa.',
+    gejala: [
+      'Papul/vesikel yang pecah menjadi erosi',
+      'Krusta madu-honey colored tebal (non-bullosa)',
+      'Bula (bullosa) yang pecah meninggalkan erosi varnish-like',
+      'Gatal',
+      'Distribusi: wajah (sekitar mulut/hidung), tangan, ekstremitas',
+      'Lymphadenopati regional',
+    ],
+    diagnosis:
+      'Diagnosis klinis: lesi vesikulopustular dengan krusta honey-colored khas. Gram stain: Gram-positive cocci in chains/clusters. Kultur: identifikasi patogen dan sensitivitas (penting untuk MRSA). Bila MRSA: pertimbangkan TMP-SMX, clindamycin, atau doxycycline.',
+    terapi:
+      'Lokalized (<3 lesi): mupirocin 2% ointment 3x/hari 5 hari (superior), atau fusidic acid 2% cream 3x/hari 7 hari. Extensive/facial: antibiotik oral (sefaleksin 25-50mg/kg/hari 3-4x/hari 7 hari, atau dikloksasilin 250mg 4x/hari 7 hari). MRSA: TMP-SMX, clindamycin, atau doxycycline. Higiene: hand washi...',
+    rujukan:
+      'Impetigo extensive, MRSA, glomerulonefritis post-streptokokal, cellulitis, sepsis, imunokompromais, impetigo bullosa, tidak responsif 48 jam, atau fasial involving eyes.',
+  },
+  {
+    id: 43,
+    nama: 'Selulitis',
+    kategori: 'Kulit',
+    kode: 'L03',
+    definisi:
+      'Infeksi bakteri akut pada dermis dan subkutan yang ditandai dengan eritema, hangat, edema, dan nyeri. Penyebab: S. pyogenes (GAS) dan S. aureus (termasuk MRSA). Dapat progresif cepat dan menyebabkan komplikasi serius (sepsis, nekrosis).',
+    gejala: [
+      'Eritema dengan batas tidak jelas yang meluas',
+      'Kulit hangat',
+      'Edema',
+      'Nyeri/tekanan',
+      'Demam dan menggigil',
+      'Limfadenopati regional',
+      'Lymphangitis (garis merah menuju nodus limfe)',
+    ],
+    diagnosis:
+      'Diagnosis klinis: eritema akut, hangat, edema, nyeri. Marking batas eritema untuk monitor progresi. Kultur: dari aspirasi/punch biopsy bila ada abses/pustul; blood culture bila demam >38.5degC. WBC dan CRP meningkat. Perlu dibedakan dengan erisipelas (batas jelas, raised), DVT, alergi kontak, gout.',
+    terapi:
+      'Ringan (tidak demam, komorbid): dikloksasilin 500mg 4x/hari 7-10 hari, atau sefaleksin 500mg 4x/hari 7-10 hari, atau amoksisilin 500mg 3x/hari. Moderate-berat (demam, lymphangitis): IV sefazolin, atau clindamycin 600mg IV/PO 3x/hari (bila alergi penisilin). MRSA: TMP-SMX DS 1-2 tablet 2x/hari, atau ...',
+    rujukan:
+      'Severe/systemic toxicity, sepsis, nekrosis fasia, abses yang perlu drainase, tidak responsif oral 48 jam, imunokompromais, DM dengan kaki, lyell syndrome, atau fasial/orbital selulitis.',
+  },
+  {
+    id: 44,
+    nama: 'Furunkel dan Karbunkel',
+    kategori: 'Kulit',
+    kode: 'L02',
+    definisi:
+      'Abses bakteri pada folikel rambut (furunkel = 1 folikel, karbunkel = multiple furunkel yang berkonfluens). Penyebab: S. aureus (termasuk MRSA, 20-80% komunitas tergantung daerah). Predisposisi: DM, obesitas, imunokompromais, poor hygiene.',
+    gejala: [
+      'Nodul nyeri, merah, hangat dengan pus pointing',
+      'Fluktuan (abses matang)',
+      'Demam (pada karbunkel)',
+      'Karbunkel: multiple opening drainage',
+      'Lymphadenopati regional',
+    ],
+    diagnosis:
+      'Pemeriksaan: abses folikular karakteristik. Kultur dan sensitivitas dari drainage (penting untuk MRSA). Bila recurrent: screening MRSA carrier (nasal swab), screening DM.',
+    terapi:
+      'Drainase dan insisi (I&D) adalah terapi utama - jangan berikan antibiotik tanpa I&D kecuali cellulitis berkoeksistensi atau sistemik symptom. Antibiotik bila: karbunkel, cellulitis surrounding, demam, imunokompromais, fasial: TMP-SMX, clindamycin, atau doxycycline untuk MRSA; dikloksasilin/sefaleksi...',
+    rujukan:
+      'Karbunkel, fasial (triangle of danger), MRSA, sepsis, cellulitis berat, abses deep/large, imunokompromais, DM tidak terkontrol, recurrent furunculosis.',
+  },
+  {
+    id: 45,
+    nama: 'Herpes Simplex (Herpes)',
+    kategori: 'Kulit',
+    kode: 'B00',
+    definisi:
+      'Infeksi virus DNA Herpes simplex virus (HSV-1 dan HSV-2) yang bersifat lifelong dan recurrent. HSV-1 terutama orofasial (cold sore), HSV-2 terutama genital. Setelah infeksi primer, virus latency di ganglion sensoris dan dapat reaktivasi.',
+    gejala: [
+      'Tingling/burning sensation (prodrom)',
+      'Vesikel bergerombol pada dasar eritema',
+      'Vesikel pecah menjadi erosi dengan krusta',
+      'Nyeri dan gatal',
+      'Lymphadenopati regional',
+      'Primary infection: mungkin disertai demam, malaise',
+      'Rekuren di lokasi yang sama',
+    ],
+    diagnosis:
+      'Diagnosis klinis: vesikel grouped pada dasar eritema. Tzanck smear: multinucleated giant cells (tidak membedakan HSV/VZV). PCR: gold standard (sensitif dan spesifik). Viral culture: dari vesikel fresh. Serologi IgG/IgM: untuk epidemiologi, tidak untuk diagnosis akut. Perlu dibedakan dengan zoster (d...',
+    terapi:
+      'Orofasial: asiklovir 400mg 3x/hari 5 hari, atau valasiklovir 2g 2x/hari 1 hari (untuk episodik), atau famsiklovir 1500mg single dose. Genital: asiklovir 400mg 3x/hari 7-10 hari (primer), 400mg 3x/hari 5 hari (rekuren). Supresi jangka panjang: asiklovir 400mg 2x/hari untuk recurrent frequent. Topikal...',
+    rujukan:
+      'Herpes disseminated, herpetic whitlow dengan komplikasi, herpes simplex encephalitis (emergency), herpes neonatorum, herpes ocular (keratitis - ke ophthalmology segera), genital herpes primer severe, immunocompromised host.',
+  },
+  {
+    id: 46,
+    nama: 'Herpes Zoster (Cacar Ular / Cacar Api)',
+    kategori: 'Kulit',
+    kode: 'B02',
+    definisi:
+      'Reaktivasi virus varicella-zoster (VZV) dari latency di ganglion dorsal radix setelah infeksi cacar air (varicella) masa kecil. Incidensi meningkat dengan usia dan imunokompromais. Rash mengikuti distribusi dermatome.',
+    gejala: [
+      'Nyeri, gatal, paresthesia di dermatome (prodrom 1-3 hari)',
+      'Vesikel bergerombol pada dasar eritema mengikuti dermatome',
+      'Vesikel menjadi pustul, lalu krusta',
+      'Nyeri neuropatik (bisa parah)',
+      'Post-herpetic neuralgia (PHN): nyeri persisten >3 bulan setelah rash sembuh',
+      'Mungkin demam dan malaise',
+    ],
+    diagnosis:
+      'Diagnosis klinis: vesikel grouped unilateral mengikuti dermatome. Tzanck smear: multinucleated giant cells. PCR dari vesikel: konfirmasi VZV. Serologi IgM VZV. Perlu dibedakan dengan HSV (crosses midline, recurrent di lokasi sama), kontak dermatitis, herpes simplex.',
+    terapi:
+      'Antiviral (efektif bila diberikan <72 jam dari onset): asiklovir 800mg 5x/hari 7 hari, atau valasiklovir 1g 3x/hari 7 hari (preferable - bioavailabilitas lebih tinggi), atau famsiklovir 500mg 3x/hari 7 hari. Analgesik: parasetamol, NSAID, atau gabapentin/pregabalin untuk nyeri neuropatik. Kortikoste...',
+    rujukan:
+      'Ophthalmic zoster (V1 - emergency ke ophthalmology), Ramsay Hunt syndrome (VZV geniculate ganglion - facial paralysis + ear vesicles), disseminated zoster, zoster dengan neurologic complications (encephalitis, myelitis), PHN severe, imunokompromais, ...',
+  },
+  {
+    id: 47,
+    nama: 'Scabies (Kudis)',
+    kategori: 'Kulit',
+    kode: 'B86',
+    definisi:
+      'Infeksi kulit menular yang disebabkan oleh tungau Sarcoptes scabiei var. hominis. Tungau menggali terowongan di stratum korneum dan bertelur. Prevalensi sangat tinggi di daerah tropis dan overcrowding. Sangat menular melalui kontak kulit-ke-kulit.',
+    gejala: [
+      'Gatal parah (pruritus) - memburuk malam hari (pathognomonic)',
+      'Papul eritema',
+      'Terowongan (burrows) - linier greyish di interdigital spaces, wrists, axillae',
+      'Ekskoriasi',
+      'Nodul (nodules scabies) di axillae, genitalia, areola',
+      'Dermatitis sekunder (bakteri)',
+      'Distribusi: interdigital, wrists, elbows, axillae, periumbilical, genitalia, nates',
+    ],
+    diagnosis:
+      'Pemeriksaan: burrows di lokasi khas. Skin scraping dari burrow: mikroskopis lihat tungau, telur, atau feses (scybala). Dermatoscopy: delta wing sign (tungau di ujung burrow). Ink test: tetes tincture iodine/flurosein di burrow, lalu hapus - burrow terlihat sebagai wavy line. Perlu dibedakan dengan a...',
+    terapi:
+      'Topikal: permethrin 5% cream (lini pertama - aplikasi dari leher ke bawah, biarkan 8-14 jam, lalu cuci, ulang 7 hari), atau benzyl benzoate 25% lotion. Oral: ivermectin 200mcg/kg dosis tunggal, ulang 7-14 hari (untuk crusted scabies atau outbreak). Antihistamin (cetirizine) untuk gatal. Antibiotik b...',
+    rujukan:
+      'Crusted (Norwegian) scabies, imunokompromais, outbreak komunitas, tidak responsif terapi standard, infeksi seknder berat, atau diagnosa tidak pasti.',
+  },
+  {
+    id: 48,
+    nama: 'Pityriasis Versikolor (Panu)',
+    kategori: 'Kulit',
+    kode: 'B36.0',
+    definisi:
+      'Infeksi superfisial kulit yang disebabkan oleh yeast Malassezia (Pityrosporum ovale/orbiculare) - flora normal kulit. Faktor predisposisi: iklim panas-lembab, keringat berlebihan, imunokompromais (HIV), pregnancy, minum kortikosteroid. Sangat umum di...',
+    gejala: [
+      'Makul hipopigmentasi atau hiperpigmentasi',
+      'Skala halus (fine branny scale)',
+      'Distribusi: dada, punggung, lengan atas, leher, wajah',
+      'Gatal ringan atau tidak gatal',
+      'Lesi berkonfluens menjadi patch besar',
+      'Hipopigmentasi lebih terlihat setelah sun exposure',
+    ],
+    diagnosis:
+      "Pemeriksaan: makul dengan skala halus di trunk. Tanda scraping: scrap area dengan kuku/spatula - skala halus terlihat jelas. KOH: spaghetti and meatball appearance (short hyphae dan yeast clusters). Wood's lamp: fluoresens kuning-kuning coklat (copper-orange). Perlu dibedakan dengan vitiligo (depigm...",
+    terapi:
+      'Topikal: selenium sulfide 2.5% lotion (Selsun) aplikasi pada lesi 10 menit, lalu cuci - ulang 7 hari berturut, atau ketoconazole 2% shampoo 5 menit 2x/minggu 2-4 minggu. Oral (untuk extensive/refrakter): itrakonazol 200mg 1x/hari 7 hari, atau fluconazol 300mg 1x/minggu 2 minggu. Klotrimazol 1% cream...',
+    rujukan:
+      'Extensive/refrakter, diagnosa tidak pasti (perlu KOH/biopsy), berkoeksistensi dengan kondisi imunokompromais, atau rekuren yang mengganggu meski maintenance.',
+  },
+  {
+    id: 49,
+    nama: 'Hipertensi Esensial',
+    kategori: 'PTM Kardiovaskular',
+    kode: 'I10',
+    definisi:
+      'Peningkatan tekanan darah sistolik >=140 mmHg dan/atau diastolik >=90 mmHg pada >=2 kunjungan terpisah, tanpa penyebab sekunder yang jelas. Prevalensi hipertensi di Indonesia 34% pada dewasa >18 tahun (Riset Kesehatan Dasar 2018), namun hanya 14% yan...',
+    gejala: [
+      'Umumnya ASIMPTOMATIK (silent killer)',
+      'Sakit kepala (terutama pagi hari)',
+      'Pusing',
+      'Nyeri dada',
+      'Dispnea',
+      'Mimisan',
+      'Flushing',
+    ],
+    diagnosis:
+      'Pengukuran tekanan darah: ambil rata-rata >=2 pembacaan pada >=2 kunjungan terpisah. Proper technique: duduk 5 menit, lengan di level jantung, cuff yang tepat. Klasifikasi JNC 8/ESH: Normal <120/80, Elevated 120-129/<80, Grade 1 HTN 130-139/80-89, Grade 2 HTN >=140/90. Evaluasi target organ damage: ...',
+    terapi:
+      'Lifestyle modification: DASH diet (kurangi garam <2g/hari, kurangi lemak jenuh, tinggi sayur/buah), aktivitas fisik 150 menit/minggu, weight loss (target BMI <25), berhenti merokok, kurangi alkohol. Farmakologi: Thiazide-like diuretik (indapamide), CCB (amlodipine 5-10mg/hari), ACE-I (lisinopril, ca...',
+    rujukan:
+      'HTN urgensi (BP >180/120 dengan symptom target organ), HTN emergensi (BP >180/120 dengan kerusakan target organ - stroke, acute heart failure, dissection aorta, encephalopathy), HTN resisten (3 obat termasuk diuretik tidak terkontrol), suspisi HTN se...',
+  },
+  {
+    id: 50,
+    nama: 'Penyakit Jantung Koroner (PJK)',
+    kategori: 'PTM Kardiovaskular',
+    kode: 'I25',
+    definisi:
+      'Penyakit aterosklerosis pada arteri koroner yang menyebabkan iskemia miokard. Spectrum: angina stabil, sindrom koroner akut (ACS: STEMI, NSTEMI, UA). PJK adalah penyebab kematian tertinggi di Indonesia (35% kematian).',
+    gejala: [
+      'Angina pectoris: nyeri dada pressing/squeezing/heaviness',
+      'Irradiasi: lengan kiri, rahang, leher, punggung',
+      'Dispnea',
+      'Diaphoresis (berkeringat dingin)',
+      'Mual/muntah',
+      'Palpitasi',
+      'Fatigue',
+      'Mungkin asimptomatik (silent ischemia)',
+    ],
+    diagnosis:
+      'Anamnesis: karakteristik angina (typical, atypical, non-anginal). Skor CAD probability berdasarkan usia, jenis kelamin, dan tipe chest pain. EKG: ST depression/elevation, T wave inversion, Q wave patologis. Troponin I/T: elevated pada ACS (gold standard). Echocardiography: wall motion abnormality. S...',
+    terapi:
+      'Acute STEMI: primary PCI (door-to-balloon <90 menit) atau trombolisis (tenecteplase) bila PCI tidak tersedia. ACS: dual antiplatelet (aspirin 100mg + clopidogrel 75mg), antikoagulan (heparin), beta-blocker, nitrat, statin intensif (atorvastatin 40-80mg), ACE-I. Angina stabil: aspirin 75-100mg, stati...',
+    rujukan:
+      'SEMUA ACS/STEMI/NSTEMI ke RS dengan fasilitas cath lab. Angina unstable. Nyeri dada dengan troponin meningkat. STEMI (door-to-needle <30 menit untuk trombolisis). Komplikasi: arrythmia, heart failure, cardiogenic shock.',
+  },
+  {
+    id: 51,
+    nama: 'Gagal Jantung',
+    kategori: 'PTM Kardiovaskular',
+    kode: 'I50',
+    definisi:
+      'Sindrom klinis akibat gangguan struktur atau fungsi jantung yang menyebabkan supply oksigen tidak memenuhi kebutuhan metabolik jaringan. Klasifikasi: HFrEF (EF <40%), HFmrEF (EF 41-49%), HFpEF (EF >=50%). Prevalensi global 1-2% populasi dewasa, menin...',
+    gejala: [
+      'Dispnea (esertion, orthopnea, paroksismal nocturnal dyspnea)',
+      'Edema perifer (bilateral, pitting)',
+      'Fatigue dan kelemahan',
+      'Mual, anoreksia (kongesti hepatik)',
+      'Nocturia',
+      'Batuk (bila kongesti paru - frothy/pink sputum)',
+      'Takikardia',
+      'JVP meningkat',
+    ],
+    diagnosis:
+      'Framingham criteria (major + minor). NT-proBNP/BNP: <100 pg/mL (BNP) atau <300 pg/mL (NT-proBNP) menyingkirkan HF. Ekokardiografi: gold standard (EF, wall motion, valvular function, diastolic function). EKG: tanda iskemia, arrythmia, LVH. Rontgen thoraks: cardiomegali, congestion paru (cephalization...',
+    terapi:
+      'HFrEF: ACE-I/ARB/ARNI (sacubitril/valsartan), beta-blocker (bisoprolol/carvedilol/metoprolol succinate), MRA (spironolactone/eplerenone), SGLT2-i (dapagliflozin/empagliflozin - lini baru, mengurangi mortalitas dan hospitalisasi), loop diuretik (furosemid) untuk congestion. HFpEF: diuretik untuk symp...',
+    rujukan:
+      'Acute decompensated HF (dispnea parah, orthopnea, SpO2 <90%, edema paru), NYHA III-IV, symptom baru onset, arrythmia kompleks, perlu evaluasi device (ICD/CRT), gagal terapi optimal, perlu transplantasi jantung.',
+  },
+  {
+    id: 52,
+    nama: 'Stroke Iskemik',
+    kategori: 'PTM Kardiovaskular',
+    kode: 'I63',
+    definisi:
+      'Gangguan fungsi neurologis akibat iskemia serebral yang disebabkan oleh oklusi arteri serebral (thrombosis, emboli, atau hipoperfusi). Stroke adalah penyebab kematian kedua terbesar di Indonesia dan penyebab disabilitas tertinggi. Golden hour: 4.5 ja...',
+    gejala: [
+      'Onset akut',
+      'Hemiparesis/hemiplegia',
+      'Afasia (gangguan bicara)',
+      'Disfagia',
+      'Hemianopsia',
+      'Ataxia',
+      'Vertigo',
+      'Nyeri kepala (less common than hemorrhagic)',
+      'Gangguan kesadaran',
+    ],
+    diagnosis:
+      'FAST: Face (asymmetry), Arm (drift/weakness), Speech (slurred/aphasia), Time (call emergency). NIHSS scoring untuk severity. CT scan non-contrast: menyingkirkan hemorrhage (esensial sebelum thrombolysis). MRI: DWI untuk detect iskemia dalam menit. EKG: deteksi AF. Lab: glucose, coagulation profile, ...',
+    terapi:
+      'Acute (<4.5 jam): alteplase (tPA) IV 0.9mg/kg (10% bolus, 90% infusion 1 jam) atau tenecteplase 0.25mg/kg IV bolus - kontraindikasi bila CT menunjukkan hemorrhage, BP >185/110, recent surgery, or INR >1.7. Mechanical thrombectomy untuk large vessel occlusion (6-24 jam). Aspirin 160-325mg dalam 24-48...',
+    rujukan:
+      'SEMUA stroke akut ke RS stroke center segera (time is brain). Thrombolysis door-to-needle <60 menit. Mechanical thrombectomy. Stroke dengan hemorrhage. TIA dengan ABCD2 score tinggi. Perlu evaluasi komprehensif dan rehabilitasi.',
+  },
+  {
+    id: 53,
+    nama: 'Demam Rematik Akut (DRA)',
+    kategori: 'PTM Kardiovaskular',
+    kode: 'I01',
+    definisi:
+      'Penyakit inflamasi multisistem akibat respon imun terhadap infeksi faring oleh Streptococcus pyogenes (Grup A). Merupakan komplikasi non-suppurative dari faringitis streptokokal yang tidak tertangani. Utamanya mempengaruhi jantung (karditis), sendi (...',
+    gejala: [
+      'Demam',
+      'Artritis migran (berpindah-pindah antar sendi besar)',
+      'Karditis (new murmur, kardiomegali, gagal jantung)',
+      'Korea Sydenham (gerakan involunter, emotional lability)',
+      'Eritema marginatum (lesi eritema anular non-gatal di trunk)',
+      'Subkutan nodul (nodul keras di ekstensor tendon)',
+    ],
+    diagnosis:
+      'Kriteria Revised Jones (diagnosis memerlukan 2 major + evidence of preceding GAS infection, atau 1 major + 2 minor + evidence of GAS). Major: karditis, poliartritis, korea, erythema marginatum, subcutaneous nodules. Minor: artralgia, demam, ESR/CRP meningkat, PR interval prolongation. Evidence GAS: ...',
+    terapi:
+      'Antibiotik: penisilin G benzatin 1,2 juta unit IM (dewasa) atau 600.000 unit IM (anak <27kg), dosis tunggal. Alternatif: penisilin V oral 250mg 2x/hari 10 hari, atau eritromisin 20-40mg/kg/hari 2-4x/hari 10 hari (alergi penisilin). Anti-inflamasi: aspirin 60-100mg/kg/hari (untuk artritis dan karditi...',
+    rujukan:
+      'Karditis berat dengan gagal jantung, korea severe, diagnosis tidak pasti, perlu echocardiography, komplikasi (perikarditis, endokarditis), atau perlu manajemen jangka panjang oleh kardiologist.',
+  },
+  {
+    id: 54,
+    nama: 'Penyakit Katup Jantung Reumatik',
+    kategori: 'PTM Kardiovaskular',
+    kode: 'I05-I09',
+    definisi:
+      'Kerusakan permanen pada katup jantung akibat DRA berulang. Katup mitral paling sering terkena (65-70%), diikuti oleh aorta (25%), dan tricuspid (10%). Penyebab utama penyakit jantung di negara berkembang pada anak dan dewasa muda. Indonesia masih mem...',
+    gejala: [
+      'Dispnea progresif',
+      'Palpitasi',
+      'Fatigue',
+      'Edema',
+      'Angina (stenosis aorta)',
+      'Hemoptisis (stenosis mitral berat)',
+      'Thromboemboli (fibrilasi atrium)',
+      'Rekuren DRA',
+    ],
+    diagnosis:
+      'Auskultasi: murmur karakteristik (mid-diastolic rumble di apex untuk stenosis mitral, pansystolic murmur di apex untuk regurgitasi mitral, ejection systolic murmur di aortic area untuk stenosis aorta). EKG: fibrilasi atrium, P mitrale. Rontgen thoraks: left atrial enlargement, pulmonary congestion. ...',
+    terapi:
+      'Profilaksis sekunder DRA: penisilin G benzatin 1,2 juta unit IM tiap 3-4 minggu sampai usia minimal 21 tahun. Diuretik untuk kongesti. Beta-blocker untuk control heart rate pada AF. Antikoagulan (warfarin/DOAC) untuk AF/thromboemboli. Vasodilator untuk afterload reduction. Indikasi bedah katup: symp...',
+    rujukan:
+      'Semua pasien PBJR untuk evaluasi kardiologist. Indikasi bedah katup, symptom berat, AF baru, tromboemboli, gagal jantung, endokarditis infeksius, perlu echocardiography komprehensif.',
+  },
+  {
+    id: 55,
+    nama: 'Aritmia (Gangguan Irama Jantung)',
+    kategori: 'PTM Kardiovaskular',
+    kode: 'I47-I49',
+    definisi:
+      'Gangguan irama, kecepatan, atau urutan depolarisasi jantung. Dapat tachyarrhythmia (HR >100) atau bradyarrhythmia (HR <60). Aritmia dapat berasal dari atrium (AF, atrial flutter, SVT) atau ventrikel (VT, VF). Fibrilasi atrium adalah aritmia paling um...',
+    gejala: [
+      'Palpitasi',
+      'Pusing/presyncope',
+      'Syncope (mogok)',
+      'Dispnea',
+      'Nyeri dada',
+      'Fatigue',
+      'Anxiety',
+      'Mungkin asimptomatik',
+    ],
+    diagnosis:
+      'EKG: gold standard untuk diagnosis aritmia. Holter monitoring (24-48 jam) untuk aritmia intermittent. Event recorder/loop recorder untuk aritmia jarang. Echocardiography: struktur dan fungsi jantung. Electrophysiology study (EPS) untuk mapping. Thyroid function (TSH) untuk thyrotoxicosis-induced AF....',
+    terapi:
+      'Tergantung tipe aritmia. AF: rate control (beta-blocker, diltiazem, digoksin) atau rhythm control (amiodaron, flekainid, electrical cardioversion), antikoagulan (CHA2DS2-VASc score >=1 pria/>=2 wanita: warfarin/DOAC). SVT: vagal maneuver, adenosin 6mg IV rapid push (kemudian 12mg). VT: amiodaron 150...',
+    rujukan:
+      'Aritmia symptomatik, AF baru onset, VT/VF, syncope, bradyarrhythmia dengan symptom, perlu ablasi/pacemaker/ICD, komplikasi (stroke, heart failure), tak responsif terapi initial, Wolff-Parkinson-White syndrome.',
+  },
+  {
+    id: 56,
+    nama: 'Varises dan Insufisiensi Vena Kronik',
+    kategori: 'PTM Kardiovaskular',
+    kode: 'I83',
+    definisi:
+      'Dilatasi dan tortuositas vena superfisial akibat incompetensi katup vena, menyebabkan reflux dan peningkatan tekanan vena. Prevalensi 20-30% populasi dewasa, lebih tinggi pada wanita dan usia >50 tahun. Faktor risiko: obesitas, kehamilan, riwayat DVT...',
+    gejala: [
+      'Vena membesar dan meliuk-liuk (spider veins atau varicose veins)',
+      'Rasa berat dan lelah pada kaki (memburuk sore hari)',
+      'Edema ankle',
+      'Nyeri dan kram betis',
+      'Gatal di kulit (venous eczema)',
+      'Pigmentasi coklat di gaster (hemosiderin deposition)',
+      'Ulserasi vena (ulser di malleolus medial)',
+      'Lipodermatosclerosis',
+    ],
+    diagnosis:
+      'Pemeriksaan fisik: varises visualisasi, ankle-brachial index (ABI) sebelum kompresi untuk menyingkirkan arterial disease. Trendelenburg test dan Perthes test untuk evaluasi katup SFJ/SPJ. Doppler USG vena: gold standard (reflux >0.5 detik, vein diameter >3mm). CEAP classification: C0-6 (Clinical, Et...',
+    terapi:
+      'Konservatif: kompresi stocking kelas I-III (20-30 mmHg atau 30-40 mmHg), leg elevation, aktivitas fisik (calf muscle pump), weight loss. Skleroterapi untuk telangiectasia dan varises kecil. Endovenous thermal ablation (laser/RFA) untuk GSV reflux. Stripping dan phlebectomy untuk varises besar. Vena ...',
+    rujukan:
+      'Ulser vena tidak sembuh >3 bulan, varises dengan komplikasi (ulser, sclerosis, bleeding), symptom berat tidak responsif konservatif, perlu evaluasi prosedur invasif (ablation/stripping), suspisi DVT, atau ulser atipikal.',
+  },
+  {
+    id: 57,
+    nama: 'Deep Vein Thrombosis (DVT)',
+    kategori: 'PTM Kardiovaskular',
+    kode: 'I80',
+    definisi:
+      "Pembekuan darah pada vena dalam, umumnya di tungkai bawah (85%), paha (10%), atau vena pelvis. Dapat menyebabkan emboli paru (PE) yang life-threatening. Faktor risiko: Virchow's triad (stasis, hiperkoagulabilitas, endothelial injury).",
+    gejala: [
+      'Nyeri betis atau paha',
+      'Edema unilateral',
+      'Eritema dan hangat',
+      "Tenderness Homans' sign (kontroversial, tidak reliable)",
+      'Pembuluh vena superfisial yang menonjol',
+      'Low-grade fever',
+    ],
+    diagnosis:
+      'Wells score untuk pre-test probability: aktif kanker (+1), bed rest/immobilization >3 hari (+1), tenderness betis (+1), swollen leg (+1), pitting edema (+1), collaterals (+1), DVT sebelumnya (+1), alternative diagnosis lebih mungkin (-2). Score >=2: DVT likely (<2: unlikely). D-dimer: sensitif tapi ...',
+    terapi:
+      'Antikoagulan: apixaban 10mg 2x/hari 7 hari lalu 5mg 2x/hari, atau rivaroxaban 15mg 2x/hari 21 hari lalu 20mg/hari, atau warfarin dengan bridging heparin (INR target 2-3), atau LMWH (enoxaparin 1mg/kg SC 2x/hari). Durasi: provoked DVT 3 bulan, unprovoked DVT minimal 3-6 bulan (pertimbangan extended)....',
+    rujukan:
+      'DVT provksimal (femoral/iliac), PE, massive DVT dengan threat limb, kontraindikasi antikoagulan, perlu thrombolysis, DVT recurrent, DVT pada usia muda tanpa risk factor (screening thrombophilia), DVT pada kehamilan.',
+  },
+  {
+    id: 58,
+    nama: 'Anemia Defisiensi Besi',
+    kategori: 'PTM Kardiovaskular',
+    kode: 'D50',
+    definisi:
+      'Anemia yang disebabkan oleh defisiensi besi yang diperlukan untuk produksi hemoglobin. Penyebab utama: perdarahan kronis (menorrhagia, GI bleeding), asupan tidak adekuat, atau malabsorpsi. Anemia paling umum di dunia, mempengaruhi 30% populasi global...',
+    gejala: [
+      'Fatigue dan lemah',
+      'Pucat (konjungtiva, lidah, telapak tangan)',
+      'Dispnea saat aktivitas',
+      'Palpitasi',
+      'Pusing',
+      'Tinnitus',
+      'Sakit kepala',
+      'Glossitis (lidah halus/merah)',
+      'Koilonychia (kuku sendok)',
+      'Pica (makan zat non-nutrisi - tanah, es)',
+      'Sindrom restless legs',
+    ],
+    diagnosis:
+      'CBC: Hb rendah, MCV <80 fL (mikrositik), MCH <27 pg, MCHC rendah. Peripheral smear: mikrositik hipokromik. Ferritin <30 ng/mL (diagnostik - paling sensitif dan spesifik), serum iron rendah, TIBC meningkat, transferrin saturation <16%. Evaluasi sumber perdarahan: feses okulta darah, endoskopi GI bila...',
+    terapi:
+      'Suplementasi besi oral: ferrous sulfate/fumarate 65mg elemental iron 1-2x/hari (dosis lebih tinggi tidak lebih efektif dan lebih banyak side effect). Vitamin C 250-500mg meningkatkan absorbsi. Teruskan 3-6 bulan setelah Hb normal (untuk replensi storage). Ekspektasi: reticulocytosis dalam 1 minggu, ...',
+    rujukan:
+      'Anemia berat (Hb <7 g/dL), tidak responsif terapi besi 4-6 minggu, perlu evaluasi sumber perdarahan (endoskopi), malabsorpsi, hemolisis, anemia of chronic disease, kehamilan dengan anemia berat, perlu transfusi, atau perlu parenteral iron.',
+  },
+  {
+    id: 59,
+    nama: 'Anemia Megaloblastik (Defisiensi B12/Folat)',
+    kategori: 'PTM Kardiovaskular',
+    kode: 'D51-D52',
+    definisi:
+      'Anemia akibat defisiensi vitamin B12 (kobalamin) dan/atau asam folat yang mengganggu sintesis DNA pada sel-sel yang cepat membelah (eritroid, myeloid, epitel GI). Karakteristik oleh MCV >100 fL (makrositik). Defisiensi B12 juga menyebabkan neurologic...',
+    gejala: [
+      'Fatigue, lemah, dispnea',
+      'Pucat',
+      'Glossitis (lidah merah, smooth, beefy)',
+      'Diare',
+      'Nyeri perut',
+      'Neurologis B12: paresthesia, numbness, ataxia, weakness, dementia, optic neuropathy',
+      'Jaundice ringan (hemolisis intramedular ineffective erythropoiesis)',
+    ],
+    diagnosis:
+      'CBC: Hb rendah, MCV >100 fL (makrositik), MCH meningkat. Peripheral smear: makrositik, ovalosit, hypersegmented neutrophils (>5 lobes). B12 <200 pg/mL (defisiensi), folat serum <3 ng/mL. MMA (methylmalonic acid) dan homocysteine: meningkat pada B12 deficiency (MMA spesifik untuk B12). Anti-intrinsic...',
+    terapi:
+      'B12 defisiensi: sianokobalamin 1000mcg IM setiap hari x 7 hari, lalu mingguan x 4-8 minggu, lalu bulanan seumur hidup (bila pernicious anemia atau malabsorpsi kronis). Oral B12 1000-2000mcg/hari efektif bila ada IF. Folat defisiensi: asam folat 1-5mg/hari 3-4 bulan. HATI: jangan berikan folat tanpa ...',
+    rujukan:
+      'Defisiensi B12 dengan komplikasi neurologis, pernicious anemia, malabsorpsi (perlu evaluasi etiologi), tidak responsif terapi, atau perlu injeksi B12 jangka panjang.',
+  },
+  {
+    id: 60,
+    nama: 'Infeksi Saluran Kemih (ISK)',
+    kategori: 'Saluran Cerna',
+    kode: 'N30-N39',
+    definisi:
+      'Infeksi pada saluran kemih yang dapat mempengaruhi uretra (uretritis), kandung kemih (sistitis), atau ginjal (pielonefritis). ISK paling umum pada wanita (50-60% mengalami setidaknya 1 ISK sepanjang hidup) karena uretra lebih pendek. E. coli menyebab...',
+    gejala: [
+      'Sistitis: disuria, frekuensi, urgency, hematuria, nyeri suprapubik',
+      'Pielonefritis: demam, menggigil, nyeri pinggang (flank pain), mual/muntah',
+      'Uretritis: discharge, dysuria',
+      'Urine keruh dan berbau',
+    ],
+    diagnosis:
+      'Urinalisis: leukocyte esterase positif, nitrit positif, pyuria (>5 WBC/hpf), bacteriuria. Urine culture and sensitivity: gold standard (>=10^5 CFU/mL untuk sistitis, >=10^3 CFU/mL untuk pielonefritis). CBC dan kreatinin untuk pielonefritis. Rontgen/USG bila recurrent atau atypical.',
+    terapi:
+      'Sistitis tidak komplikasi (wanita): fosfomycin 3g single dose, atau nitrofurantoin 100mg 2x/hari 5 hari, atau trimethoprim-sulfamethoxazole DS 1 tablet 2x/hari 3 hari, atau pivmecillinam. Pielonefritis: ciprofloxacin 500mg 2x/hari 7 hari, atau seftriakson 1g IM/IV 1x/hari 10-14 hari. Analgesik, hidr...',
+    rujukan:
+      'Pielonefritis berat, sepsis, tidak responsif 48 jam, kehamilan dengan pielonefritis, recurrent UTI (>3/tahun), komplikasi (abses, obstruksi), pria dengan UTI (perlu evaluasi prostat), imunokompromais, atau perlu hospitalisasi.',
+  },
+  {
+    id: 61,
+    nama: 'Diabetes Melitus Tipe 2',
+    kategori: 'PTM Metabolik',
+    kode: 'E11',
+    definisi:
+      'Disorder metabolik kronis yang ditandai dengan hiperglikemia akibat resistensi insulin progresif dan defisiensi insulin relatif. Prevalensi DM di Indonesia 10,6% (Riset Kesehatan Dasar 2018) dengan 70% tidak terdiagnosis. Merupakan salah satu beban p...',
+    gejala: [
+      'Poliuria',
+      'Polidipsia',
+      'Polifagia',
+      'Penurunan berat badan',
+      'Fatigue',
+      'Gatal/keputihan berulang (kandidiasis)',
+      'Luka sulit sembuh',
+      'Penglihatan kabur',
+      'Paresthesia',
+      'Banyak kasus ASIMPTOMATIS',
+    ],
+    diagnosis:
+      'Kriteria ADA/WHO: HbA1c >=6.5%, atau puasa plasma glucose >=126 mg/dL (>=7.0 mmol/L), atau 2-jam PG >=200 mg/dL (>=11.1 mmol/L) setelah OGTT 75g, atau random PG >=200 mg/dL dengan gejala. Prediabetes: HbA1c 5.7-6.4%, IFG 100-125 mg/dL, IGT 140-199 mg/dL. Screening: semua orang >35 tahun, overweight/...',
+    terapi:
+      'Lifestyle: diet rendah karbohidrat kompleks, aktivitas fisik 150 menit/minggu, weight loss 5-10%. Metformin 500-2000mg/hari (lini pertama). Kombinasi: SGLT2-i (dapagliflozin/empagliflozin - benefit kardiovaskular dan renoprotektif), GLP-1 RA (liraglutid/semaglutid - weight loss dan benefit CV), DPP-...',
+    rujukan:
+      'HbA1c >10% atau glucose >300mg/dL, DKA/HHS, komplikasi mikrovaskular (retinopati proliferatif, nefropati berat, neuropati), komplikasi makrovaskular (CAD, stroke, PAD), luka diabetik, infeksi berat, hipoglikemia berulang, kehamilan, onset muda (suspi...',
+  },
+  {
+    id: 62,
+    nama: 'Hiperlipidemia / Dislipidemia',
+    kategori: 'PTM Metabolik',
+    kode: 'E78',
+    definisi:
+      'Gangguan metabolisme lipid yang ditandai dengan peningkatan kolesterol total, LDL, trigliserida, dan/atau penurunan HDL. Merupakan faktor risiko utama aterosklerosis dan penyakit kardiovaskular. Prevalensi dislipidemia di Indonesia 35-40% populasi de...',
+    gejala: [
+      'Umumnya ASIMPTOMATIK',
+      'Xanthelasma (plakat kuning di kelopak mata)',
+      'Xanthoma (nodul kuning di tendon, tuberosum)',
+      'Arcus senilis corneae pada usia muda',
+      'Pankreatitis (TG >1000 mg/dL)',
+    ],
+    diagnosis:
+      'Lipid profile puasa: total kolesterol, LDL, HDL, trigliserida. Kriteria: LDL >=160 mg/dL (tinggi), TG >=200 mg/dL (tinggi), HDL <40 mg/dL pria/<50 mg/dL wanita (rendah). Kalkulasi 10-year ASCVD risk (berdasarkan Framingham atau Pooled Cohort Equations). Evaluasi sekunder: TSH, HbA1c, LFT, renal func...',
+    terapi:
+      'Lifestyle pertama: diet rendah lemak jenuh (<7% kalori), kurangi kolesterol (<200mg/hari), tinggi serat, aktivitas fisik 150 menit/minggu, weight loss 5-10%. Statin lini pertama: atorvastatin 10-40mg/hari atau simvastatin 20-40mg/hari (malam hari). Target: LDL <100 mg/dL (risiko rendah), <70 mg/dL (...',
+    rujukan:
+      'LDL >=190 mg/dL (suspisi familial hypercholesterolemia), TG >1000 mg/dL (risk pankreatitis), CVD established (secondary prevention), tidak toleransi 2 statin, familial combined hyperlipidemia, perlu spesialis lipoprotein, atau comorbid kompleks.',
+  },
+  {
+    id: 63,
+    nama: 'Obesitas',
+    kategori: 'PTM Metabolik',
+    kode: 'E66',
+    definisi:
+      'Akumulasi lemak tubuh yang berlebihan dengan BMI >=30 kg/m (overweight: BMI 25-29.9). Obesitas sentral (visceral) lebih berisiko metabolik daripada obesitas gluteofemoral. Prevalensi obesitas di Indonesia 21,8% (RISKESDAS 2018), meningkat pesat. Obes...',
+    gejala: [
+      'BMI >=30 kg/m',
+      'Lingkar perut meningkat (sentral obesitas)',
+      'Dispnea saat aktivitas ringan',
+      'Fatigue',
+      'Nyeri sendi (beban berlebih)',
+      'Sering berkeringat',
+      'Sleep apnea/snoring',
+      'Varises',
+    ],
+    diagnosis:
+      'BMI = berat (kg)/tinggi (m): underweight <18.5, normal 18.5-24.9, overweight 25-29.9, obese I 30-34.9, obese II 35-39.9, obese III >=40. Lingkar perut: >90cm (pria Asia), >80cm (wanita Asia). WHtR (waist-to-height ratio) >0.5. Evaluasi komorbid: GDS puasa, lipid profile, TSH, LFT, sleep study bila a...',
+    terapi:
+      'Lifestyle modification: kalori deficit 500-750 kcal/hari (target turun 0.5-1 kg/minggu), diet Mediterania/DASH, aktivitas fisik 150-300 menit/minggu, behavioral therapy. Farmakologi (BMI >=30 atau >=27 dengan komorbid): orlistat 120mg 3x/hari (dengan makan - inhibits pancreatic lipase, efek samping ...',
+    rujukan:
+      'BMI >=35 dengan komorbid berat, gagal farmakologi 6-12 bulan, pertimbangan bariatric surgery, obesitas morbid dengan sleep apnea berat, obesitas onset muda dengan riwayat keluarga kuat, komplikasi metabolik berat, atau perlu manajemen multidisiplin.',
+  },
+  {
+    id: 64,
+    nama: 'Hipotiroidisme',
+    kategori: 'PTM Metabolik',
+    kode: 'E03',
+    definisi:
+      'Defisiensi hormon tiroid (T3/T4) yang menyebabkan metabolisme tubuh menurun. Hipotiroidisme primer (glandular - 95%, akibat thyroiditis autoimun Hashimoto, destruksi iatrogenik, atau defisiensi yodium) lebih umum daripada sekunder (hipofisis) atau te...',
+    gejala: [
+      'Fatigue, lemas, depresi',
+      'Intoleransi dingin',
+      'Kulit kering, rambut rontok',
+      'Konstipasi',
+      'Berat badan naik',
+      'Bradikardia',
+      'Edema non-pitting (myxedema)',
+      'Hoarseness',
+      'Menorrhagia',
+      'Kognitif menurun',
+      'Kolesterol meningkat',
+    ],
+    diagnosis:
+      'TSH meningkat + FT4 rendah (hipotiroidisme primer). TSH normal/rendah + FT4 rendah (sekunder/tersier). Anti-TPO dan anti-thyroglobulin antibodi positif (Hashimoto thyroiditis). USG tiroid: gland heterogeneous dengan pseudonodular (Hashimoto). Jarang perlu biopsy. Evaluasi kolesterol, CK, Hb (anemia)...',
+    terapi:
+      'Levotiroksin sodium (L-thyroxine) 1.6mcg/kg BB ideal/hari (dosis awal: 25-50mcg/hari, dinaikkan 25mcg setiap 4-6 minggu). Lansia/kardiovaskular: start 12.5-25mcg/hari naik lambat. Target: TSH 0.5-4.0 mIU/L (0.5-2.5 untuk wanita hamil). Dosis puasa pagi 30-60 menit sebelum makan. Monitoring TSH 6-8 m...',
+    rujukan:
+      'Hipotiroidisme sekunder/tersier, thyroiditis subacute de Quervain (painful), hipotiroidisme berat dengan myxedema coma, struma besar dengan kompresi, nodul tiroid suspicious, tidak responsif terapi, kehamilan dengan TSH sulit dikontrol, atau perlu ev...',
+  },
+  {
+    id: 65,
+    nama: 'Hipertiroidisme / Tirotoksikosis',
+    kategori: 'PTM Metabolik',
+    kode: 'E05',
+    definisi:
+      'Keadaan hipermetabolisme akibat kadar hormon tiroid (T3/T4) yang berlebihan dalam sirkulasi. Penyebab utama: penyakit Graves (60-80% - autoimun dengan TRAb), nodul toksik multinodular, adenoma toksik tunggal (Plummer), dan thyroiditis. Wanita 5-10x l...',
+    gejala: [
+      'Nervousness/irritabilitas',
+      'Tremor tangan',
+      'Palpitasi/takikardia',
+      'Intoleransi panas',
+      'Berkeringat berlebihan',
+      'Penurunan berat badan meski nafsu makan meningkat',
+      'Diare/frekuesi BAB meningkat',
+      'Insomnia',
+      'Oftalmopati Graves (proptosis, periorbital edema, diplopia)',
+      'Pretibial myxedema',
+      'Weakness proksimal',
+      'Amenorrhea/oligomenorrhea',
+    ],
+    diagnosis:
+      'TSH menekan (<0.01) + FT4/FT3 meningkat. TRAb (TSH receptor antibodies): positif pada Graves (90% sensitivitas). TSI (thyroid stimulating immunoglobulin). USG tiroid: diffus hypervascular (Graves - fire appearance on Doppler), nodul. Radioactive iodine uptake (RAIU): diffus meningkat (Graves), focal...',
+    terapi:
+      'Antitiroid: metimazol (preferred) 10-30mg/hari atau PTU 100-150mg 3x/hari (trimester pertama hamil saja). Beta-blocker (propranolol 10-40mg 3-4x/hari) untuk symptom kontrol. Radioactive iodine (I-131) ablation untuk Graves/adenoma toksik. Surgery (thyroidectomy/subtotal) untuk struma besar, compress...',
+    rujukan:
+      'Thyroid storm (emergency - hipertiroidisme berat dengan demam, takikardia, delirium), Graves ophthalmopathy berat, kompresi jalan napas/esofagus, gagal terapi medikamentosa, riwayat reaksi advers serius pada antitiroid, pertimbangan RAI/surgery, keha...',
+  },
+  {
+    id: 66,
+    nama: 'Sindrom Metabolik',
+    kategori: 'PTM Metabolik',
+    kode: 'E88.9',
+    definisi:
+      'Cluster kondisi metabolik yang meningkatkan risiko penyakit kardiovaskular, stroke, dan diabetes tipe 2. Definisi IDF/NCEP ATP III: >=3 dari 5 kriteria: obesitas sentral, hipertensi, hiperglikemia, hipertrigliseridemia, dan HDL rendah. Prevalensi 20-...',
+    gejala: [
+      'Umumnya ASIMPTOMATIK',
+      'Lingkar perut besar (apple-shaped)',
+      'Fatigue',
+      'Sering haus (prediabetes)',
+      'Visi kabur (hiperglikemia)',
+      'Pusing (hipertensi)',
+      'Nyeri dada saat aktivitas (angina)',
+    ],
+    diagnosis:
+      'Kriteria IDF (untuk populasi Asia): obesitas sentral (LP >=90cm pria/>=80cm wanita) + >=2 dari: (1) TG >=150 mg/dL, (2) HDL <40 pria/<50 wanita, (3) BP >=130/85 mmHg atau terapi HTN, (4) FPG >=100 mg/dL atau terapi DM. Evaluasi: lipid profile, GDS, HbA1c, BP, lingkar perut, BMI. Skor risiko kardiova...',
+    terapi:
+      'Lifestyle intensif: weight loss 7-10%, diet Mediterranean/DASH (kurangi garam, gula, lemak jenuh), aktivitas fisik 150 menit/minggu, berhenti merokok. Manajemen individual komponen: metformin untuk prediabetes (FPG 100-125), statin untuk dislipidemia, antihipertensi target <130/80. Aspirin sekunder ...',
+    rujukan:
+      'Risiko kardiovaskular sangat tinggi, prediabetes berprogresi cepat, komorbid multiple kompleks, gagal lifestyle modification berulang, perlu evaluasi spesialis endokrin/kardiovaskular.',
+  },
+  {
+    id: 67,
+    nama: 'Gout (Asam Urat)',
+    kategori: 'PTM Metabolik',
+    kode: 'M10',
+    definisi:
+      'Artritis inflamasi akut akibat deposisi kristal monosodium urat (MSU) di sendi akibat hiperurisemia. Hiperurisemia disebabkan oleh overproduksi atau underexkresi asam urat. Pria 3-4x lebih sering, puncak 30-60 tahun. Setelah menopause, incidence wani...',
+    gejala: [
+      'Artritis akut monoartikular (metatarsophalangeal joint I - podagra, 50%)',
+      'Onset tiba-tiba malam hari',
+      'Nyeri parah, eritema, hangat, bengkak',
+      'Demam ringan',
+      'Tofus (deposit urat subkutan di jari, siku, telinga)',
+      'Nyeri sendi berulang (recurrent gout)',
+      'Bersamaan: batu ginjal urat',
+    ],
+    diagnosis:
+      'Pemeriksaan: asam urat serum >=7 mg/dL (hiperurisemia - meski 40% serangan gout AU normal). Analisis cairan sinovial dengan polarized light microscopy: kristal MSU (negatively birefringent, needle-shaped - gold standard). ESR/CRP meningkat selama flare. Radiograf: punched-out erosions dengan overhan...',
+    terapi:
+      'Flare akut: NSAID (indomethacin 50mg 3x/hari atau naproxen 500mg 2x/hari) sampai 24-48 jam setelah symptom resolve, atau kolkhisin 1.2mg stat lalu 0.6mg 1 jam kemudian (dosis rendah efektif dan lebih aman). Kortikosteroid: prednison 30-35mg/hari 5 hari (bila kontraindikasi NSAID/kolkhisin), atau int...',
+    rujukan:
+      'Septic arthritis tersangka (emergency - joint aspiration Gram stain dan kultur segera), gout refrakter, tophaceous gout, nephrolithiasis urat berulang, gagal terapi ULT, allopurinol hypersensitivity syndrome, perlu joint aspiration/arthroscopy, onset...',
+  },
+  {
+    id: 68,
+    nama: 'Osteoporosis',
+    kategori: 'PTM Metabolik',
+    kode: 'M80-M81',
+    definisi:
+      'Penyakit sistemik skeletal yang ditandai dengan penurunan kekuatan tulang dan peningkatan risiko fraktur. Didefinisikan sebagai BMD T-score <=-2.5 SD. Osteoporosis mempengaruhi 200 juta wanita di dunia. Wanita pascamenopause paling berisiko (estrogen...',
+    gejala: [
+      'Umumnya ASIMPTOMATIK sampai fraktur terjadi',
+      'Nyeri punggung kronis (fraktur vertebra kompresi)',
+      'Kehilangan tinggi badan (>4cm)',
+      "Kifosis (dowager's hump)",
+      'Fraktur setelah trauma ringan (fragility fracture)',
+      'Fraktur wrist, hip, vertebra (classic osteoporotic fractures)',
+    ],
+    diagnosis:
+      'DXA (dual-energy X-ray absorptiometry): T-score <=-2.5 (osteoporosis), -1.0 sampai -2.5 (osteopenia), >=-1.0 (normal). Lumbal spine dan hip (femoral neck/total hip). FRAX tool: 10-year probability of major osteoporotic fracture atau hip fracture. Evaluasi sekunder: TSH, kalsium, 25-OH vitamin D, tes...',
+    terapi:
+      'Kalsium 1000-1200mg/hari + vitamin D3 800-1000 IU/hari (semua pasien). Lifestyle: weight-bearing exercise, resistance training, berhenti merokok, kurangi alkohol, fall prevention. Bisfosfonat (lini pertama): alendronate 70mg/minggu atau risedronate 35mg/minggu (puasa 30-60 menit, duduk/tegak, air pu...',
+    rujukan:
+      'Fraktur fragility, T-score <=-2.5 dengan risk factor, FRAX high risk, gagal terapi bisfosfonat 1-2 tahun, secondary osteoporosis evaluation needed, premenopausal osteoporosis, perlu terapi anabolic (teriparatide/romosozumab), kompleks dengan comorbid...',
+  },
+  {
+    id: 69,
+    nama: 'Malaria',
+    kategori: 'Tropis & Infeksi',
+    kode: 'B50-B54',
+    definisi:
+      'Penyakit parasit akut yang ditularkan oleh gigitan nyamuk Anopheles betina yang terinfeksi Plasmodium. Empat spesies utama: P. falciparum (paling berbahaya), P. vivax (paling umum), P. ovale, P. malariae. Indonesia termasuk daerah endemis malaria den...',
+    gejala: [
+      'Demam paroksismal (tiga hari/sempat hari)',
+      'Menggigil (rigor)',
+      'Berkeringat profus',
+      'Sakit kepala',
+      'Mialgia dan artralgia',
+      'Anemia',
+      'Splenomegali',
+      'Nausea/muntah',
+      'Ikterus (falciparum)',
+      'Gangguan kesadaran (cerebral malaria - falciparum)',
+    ],
+    diagnosis:
+      'Giemsa/thick and thin blood smear: visualisasi parasit (gold standard - sensitivitas bervariasi). RDT (rapid diagnostic test): deteksi HRP2 (falciparum) dan pLDH/pan (semua spesies). CBC: anemia, trombositopenia. G6PD screening sebelum primaquine (untuk vivax/ovale radical cure). Klasifikasi WHO: un...',
+    terapi:
+      'Uncomplicated P. falciparum (ACT - artemisinin-based combination therapy): artemether-lumefantrine (Coartem) 4 tablet stat, lalu 4 tablet setelah 8 jam, lalu 4 tablet 2x/hari selama 2 hari (total 6 dosis selama 3 hari). Atau DHP (dihydroartemisinin-piperaquine) 1 tablet/hari 3 hari. P. vivax/ovale: ...',
+    rujukan:
+      'Severe malaria (emergency - artesunate IV segera), anemia berat (Hb <5g/dL), cerebral malaria, renal failure, blackwater fever, pregnancy dengan malaria, gagal oral, hypoglycemia, atau tidak responsif ACT 48 jam.',
+  },
+  {
+    id: 70,
+    nama: 'Demam Berdarah Dengue (DBD)',
+    kategori: 'Tropis & Infeksi',
+    kode: 'A90-A91',
+    definisi:
+      'Infeksi akut virus dengue (DENV 1-4) yang ditularkan oleh nyamuk Aedes aegypti. DBD adalah leading cause of hospitalization dan kematian di anak-anak di Asia Tenggara dan Amerika Latin. Indonesia mengalami epidemi DBD hampir setiap tahun. Perjalanan ...',
+    gejala: [
+      'Demam akut tinggi 2-7 hari (saddleback fever)',
+      'Sakit kepala retro-orbital parah',
+      'Mialgia dan artralgia (breakbone fever)',
+      'Nausea, muntah',
+      'Rash (maculopapular)',
+      'Petechiae, ekhimosis, epistaxis, gingival bleeding',
+      'Hepatomegali',
+      'Nyeri abdomen',
+      'Syok (plasma leakage - dengue shock syndrome)',
+    ],
+    diagnosis:
+      'NS1 antigen test: positif hari 1-5 (sensitivitas tinggi). IgM anti-dengue: positif hari 3-5. IgG: secondary infection (titer meningkat 4x). CBC: leukopenia, trombositopenia (<100.000, warning sign <50.000), hemokonsentrasi (Hct naik >20% dari baseline). WHO classification 2009: dengue without warnin...',
+    terapi:
+      'Tidak ada antiviral spesifik. Terapi suportif: rehidrasi (oral/IV) - WHO guidelines: Group A (tidak ada warning signs, dapat pulang dengan hidrasi oral dan follow-up), Group B (warning signs, observasi di RS dengan cairan kristaloid 5-7 mL/kg/jam), Group C (shock - resusitasi agresif 10-20 mL/kg bol...',
+    rujukan:
+      'Severe dengue dengan shock, perdarahan berat (hematemesis/melena), trombosit <20.000 dengan tanda perdarahan, organ failure (hepatitis, encephalopathy), warning signs yang memburuk, atau perlu perawatan intensif.',
+  },
+  {
+    id: 71,
+    nama: 'Demam Tifoid',
+    kategori: 'Tropis & Infeksi',
+    kode: 'A01.0',
+    definisi:
+      'Infeksi sistemik oleh Salmonella typhi atau S. paratyphi (A, B, C) yang ditularkan secara feco-oral melalui kontaminasi makanan/minum. Karakteristik oleh demam berkepanjangan, sakit abdomen, dan gejala sistemik. Indonesia masih endemis tifoid dengan ...',
+    gejala: [
+      'Demam berkepanjangan (step-ladder fever - naik bertahap)',
+      'Sakit kepala',
+      'Malaise, anoreksia',
+      'Abdominal pain (ruas kanan bawah/epigastrium)',
+      'Konstipasi (dewasa) atau diare (anak)',
+      'Rose spots (maculopapular rash di dada/abdomen)',
+      'Bradikardia relatif',
+      'Hepatosplenomegali',
+      'Batuk kering',
+    ],
+    diagnosis:
+      'Blood culture: gold standard (positif 40-60%, sensitivitas tinggi minggu 1-2). Widal test: aglutinasi anti-O dan anti-H (kurang spesifik karena cross-reaction, vaksinasi mempengaruhi). Tubex/Typhidot (IgM anti-Salmonella): rapid test dengan sensitivitas 70-90%. Stool culture (minggu 2-3). Bone marro...',
+    terapi:
+      'Antibiotik: azitromycin 500mg 1x/hari 7 hari (lini pertama Indonesia - efektif dan aman), atau seftriakson 2g IV 1x/hari 10-14 hari (untuk severe atau tidak toleransi oral), atau kiprofloksasin 500mg 2x/hari 7-10 hari (bila sensitif - resistensi meningkat di Asia Selatan). Kortikosteroid (deksametas...',
+    rujukan:
+      'Intestinal perforation (emergency bedah), severe typhoid dengan encephalopathy, persistent fever >7 hari meski terapi, relaps, carrier state (kolesistitis kronis dengan kalkulus), gagal oral, komplikasi (myocarditis, hepatitis, hemolysis), atau perlu...',
+  },
+  {
+    id: 72,
+    nama: 'Leptospirosis',
+    kategori: 'Tropis & Infeksi',
+    kode: 'A27',
+    definisi:
+      'Infeksi zoonosis akut akibat Leptospira interrogans yang ditularkan melalui kontak dengan air/tanah yang terkontaminasi urine hewan (tikus, sapi, babi, anjing). Penyakit ini sangat endemis di Indonesia terutama di daerah pertanian dan pasca-banjir. D...',
+    gejala: [
+      'Onset akut demam, menggigil',
+      'Sakit kepala parah',
+      'Mialgia parah (betis dan punggung)',
+      'Konjungtival suffusion (merah tanpa eksudat - ciri khas)',
+      'Nausea, muntah',
+      'Hepatomegali, ikterus (Weil disease)',
+      'Oliguria/anuria (gagal ginjal)',
+      'Hemoptisis (pulmonary hemorrhage)',
+      'Meningismus',
+    ],
+    diagnosis:
+      'MAT (microscopic agglutination test): gold standard (seroconversion atau 4x titer rise). IgM ELISA/rapid test: screening. PCR (blood/urine/CSF): early diagnosis. CBC: leukocytosis, thrombocytopenia. LFT: bilirubin meningkat, transaminase ringan. BUN/kreatinin: renal impairment. Urinalisis: proteinur...',
+    terapi:
+      'Ringan-moderate: doxycycline 100mg 2x/hari 7 hari (atau azitromycin 500mg 1x/hari 7 hari - preferred bila hamil/anak). Severe (Weil disease): penisilin G 1.5 juta unit IV 6 jam x 7 hari, atau seftriakson 1g IV/hari 7 hari, atau doksisiklin 100mg IV 2x/hari. JARISUMBU (Jarisch-Herxheimer reaction) mu...',
+    rujukan:
+      'Weil disease (ikterus + renal failure + hemorrhage), pulmonary hemorrhage, meningitis/meningoencephalitis, myocarditis, gagal oral, perlu dialisis, Jarisch-Herxheimer severe, atau tidak responsif 48 jam.',
+  },
+  {
+    id: 73,
+    nama: 'Filariasis (Penyakit Kaki Gajah)',
+    kategori: 'Tropis & Infeksi',
+    kode: 'B74',
+    definisi:
+      'Infeksi parasit kronis oleh cacing filarial Wuchereria bancrofti (90%), Brugia malayi, atau B. timori yang ditularkan melalui gigitan nyamuk. Parasit dewasa tinggal di sistem limfatik menyebabkan limfangitis berulang, fibrosis, dan elephantiasis. Ind...',
+    gejala: [
+      'Limfangitis akut berulang (demam, nyeri, eritema trek limfatik)',
+      'Limfedema progresif (skrotum, tungkai, lengan, payudara)',
+      'Elephantiasis (hipertrofi jaringan keras)',
+      'Hidrokel (W. bancrofti)',
+      'Khusnul (chyluria - urine putih susu)',
+      'Asimptomatik mikrofilaremia (banyak carrier)',
+    ],
+    diagnosis:
+      'Pemeriksaan darah tepi malam hari (10pm-2am): mikrofilaria pada smear tebal (Giemsa stain). ICT card test (antigen filarial): sensitivitas tinggi, dapat siang hari. USG (limfoscintigraphy): worm dance sign (filarial movements). Titer antifilarial antibodies. Perlu dibedakan dengan podoconiosis, chro...',
+    terapi:
+      'MDA (mass drug administration): diethylcarbamazine (DEC) 6mg/kg + albendazole 400mg (dosis tunggal tahunan untuk eliminasi di level populasi - program Kemenkes). Individual treatment: DEC 6mg/kg/hari 12 hari (dibagi 3 dosis) dengan dosis gradually increasing (day 1: 1/4 dosis, day 2: 1/2, day 3: ful...',
+    rujukan:
+      'Elephantiasis severe yang memerlukan surgery (debulking), hidrokel, chyluria, komplikasi bakteri berulang (cellulitis/adenolymphangitis), MDA failure, atau perlu evaluasi spesialis limfatik.',
+  },
+  {
+    id: 74,
+    nama: 'Kecacingan (Soil-Transmitted Helminthiasis)',
+    kategori: 'Tropis & Infeksi',
+    kode: 'B76-B80',
+    definisi:
+      'Infeksi cacing usus yang ditularkan melalui tanah terkontaminasi telur cacing. Empat spesies utama: Ascaris lumbricoides (ascariasis - paling umum), Trichuris trichiura (trichuriasis - whipworm), Ancylostoma duodenale dan Necator americanus (hookworm...',
+    gejala: [
+      'Umumnya ASIMPTOMATIK (bila beban ringan)',
+      'Abdominal pain/kolik',
+      'Diare atau konstipasi',
+      'Nausea, muntah',
+      'Anemia (hookworm - blood loss)',
+      'Malnutrisi/growth faltering (anak)',
+      'Cough/wheezing (Loffler syndrome - Ascaris larva migration)',
+      'Worms in stool/vomitus (Ascaris)',
+      'Pruritus ani (Trichuris)',
+      'Cutaneous larva migrans (hookworm)',
+    ],
+    diagnosis:
+      'Stool microscopy (Kato-Katz thick smear): telur cacing (quantitative - EPG = eggs per gram). Konsentrasi metode (formalin-ether) untuk diagnosis ringan. CBC: eosinofilia, anemia (hypochromic microcytic pada hookworm). Fecal occult blood (hookworm). Perlu dibedakan dengan other causes of chronic diar...',
+    terapi:
+      'Albendazole 400mg dosis tunggal (Ascaris - efektivitas >95%). Albendazole 400mg 1x/hari 3 hari (Trichuris/hookworm - higher cure rate). Atau mebendazole 500mg dosis tunggal. Atau pyrantel pamoate 11mg/kg (maks 1g) dosis tunggal. Pemberian besi dan folat untuk anemia hookworm. Sanitasi, handwashing, ...',
+    rujukan:
+      'Intestinal obstruction (Ascaris ball - emergency bedah), biliary ascariasis, appendicitis cacing, severe anemia (Hb <7g/dL), malnutrisi berat, kegagalan deworming berulang, atau komplikasi (pancreatitis, liver abscess dari Ascaris).',
+  },
+  {
+    id: 75,
+    nama: 'Campak (Morbili / Measles)',
+    kategori: 'Tropis & Infeksi',
+    kode: 'B05',
+    definisi:
+      'Infeksi virus RNA Paramyxovirus yang sangat menular (R0 12-18) melalui droplet. Indonesia mengalami outbreak campak periodik meski cakupan vaksin MR (Measles-Rubella) mencapai ~90%. Campak dapat menyebabkan komplikasi serius: pneumonia (pembebab kema...',
+    gejala: [
+      'Prodrom: demam tinggi, kough, coryza, konjungtivitis (3 C)',
+      'Koplik spots (bintik putih kecil di mukosa pipi/bibir - pathognomonic, muncul 1-2 hari sebelum rash)',
+      'Makulopapular rash (dari belakang telinga/hailine -> wajah -> trunk -> ekstremitas - cephalocaudal spread)',
+      'Rash berkonfluens, warna merah tua',
+      'Demam meningkat saat rash muncul',
+      'Lymphadenopati',
+      'Fotofobia',
+    ],
+    diagnosis:
+      'Diagnosis klinis: demam + rash makulopapular + salah satu dari: kough, coryza, konjungtivitis. Koplik spots: diagnosis pasti. Serologi IgM anti-measles. PCR dari nasofaring/orofaring swab atau urine. CBC: leukopenia. Perlu dibedakan dengan rubella (rash lebih ringan, lymphadenopati post-auricular), ...',
+    terapi:
+      'Tidak ada antiviral spesifik. Terapi suportif: parasetamol antipiretik, hidrasi, vitamin A 200.000 IU (2 kapsul biru) untuk semua anak campak di Indonesia (mengurangi mortalitas dan komplikasi - dosis ulang besok). Antibiotik sekunder bila pneumonia bakteri superinfeksi (amoksisilin). Isolasi 4 hari...',
+    rujukan:
+      'Pneumonia campak berat, encephalitis (perubahan perilaku, kejang, coma), SSPE, diare berat dengan dehidrasi, malnutrisi severe, imunokompromais, laryngotracheobronchitis (croup), atau komplikasi bakteri berat.',
+  },
+  {
+    id: 76,
+    nama: 'Tetanus (Kepadetan)',
+    kategori: 'Tropis & Infeksi',
+    kode: 'A33-A35',
+    gejala: [
+      'Rigiditas otot (lockjaw/trismus - rahang terkunci, ciri khas)',
+      'Risus sardonicus (senyum paksa akibat spasm otot wajah)',
+      'Opisthotonus (lengkung punggung ke belakang)',
+      'Spasm otot berulang (kejang - triggered by stimuli: suara, cahaya, sentuhan)',
+      'Autonomic dysfunction (hipertensi, takikardia, arrythmia, hiperhidrosis, fever)',
+      'Dysphagia',
+      'Nyeri otot',
+      'Respiratory failure (diafragma/intercostal spasm)',
+    ],
+    diagnosis:
+      'Diagnosis klinis berdasarkan rigiditas otot dan trismus tanpa perlunya konfirmasi laboratorium. Spatula test: gagal membuka mulut/terjadi spasm saat spatula dimasukkan ke orofaring (sensitivitas dan spesifisitas tinggi). Kultur luka (jarang positif). Serologi antitoksin tidak membantu diagnosis. Kla...',
+    terapi:
+      '1) Tetanus immunoglobulin (TIG) 3000-6000 unit IM (neutralize unbound toxin). 2) Wound debridement (remove anaerobic environment). 3) Antibiotik: metronidazole 500mg IV/PO 4x/hari 7-10 hari (preferred), atau penisilin G 100.000-200.000 unit/kg/hari IV 10 hari. 4) Diazepam 10mg IV/PR/PO untuk kontrol...',
+    rujukan:
+      'SEMUA kasus tetanus generalized ke RS (tingkat keparahan tidak bisa diprediksi). Tetanus neonatorum, cephalic tetanus, autonomic instability, respiratory compromise, spasms intractable, atau perlu ICU care. Case fatality rate 10-50% bahkan dengan tre...',
+    definisi:
+      'Infeksi bakteri Clostridium tetani yang menghasilkan tetanospasmin (neurotoksin paling kuat kedua setelah botulinum toxin) yang menyebabkan rigiditas otot dan kejang. C. tetani adalah anaerob gram-positif yang berada di tanah, debu, dan tinja. Toksin...',
+  },
+  {
+    id: 77,
+    nama: 'Rabies',
+    kategori: 'Tropis & Infeksi',
+    kode: 'A82',
+    definisi:
+      'Infeksi virus RNA Lyssavirus yang ditularkan melalui gigitan atau cakaran hewan terinfeksi (anjing 99% kasus di Asia, kucing, kelelawar). Virus masuk melalui saraf perifer -> migrasi ke CNS -> encephalitis akut. Setelah symptom klinis muncul, rabies ...',
+    gejala: [
+      'Inkubasi 1-3 bulan (bisa 1 minggu - 1 tahun)',
+      'Prodrom: demam, malaise, nyeri/paresthesia di lokasi gigitan',
+      'Encephalitis akut: agitasi, kebingungan, halusinasi',
+      'Hidrofobia (ketakutan air - pathognomonic)',
+      'Aerophobia (ketakutan angin/draught)',
+      'Spasm faringeal/laringeal',
+      'Paralisis (dumb/paralytic rabies - 20%)',
+      'Autonomic dysfunction',
+      'Koma, respiratory failure, kematian',
+    ],
+    diagnosis:
+      'Diagnosis klinis berdasarkan exposure history + encephalitis akut + hidrofobia/aerophobia. Ante-mortem: RT-PCR dari saliva, skin biopsy (nuchal area) untuk antigen deteksi, CSF antibody. Post-mortem: Negri bodies (intracytoplasmic inclusions) di hipokampus, direct fluorescent antibody (DFA) test di ...',
+    terapi:
+      'Pasca-gigitan (PEP - segera!): 1) Cuci luka dengan sabun dan air mengalir 15 menit (paling penting!). 2) Antiseptik: povidone-iodine/ethanol. 3) Tidak perlu jahit (atau jahit longgar setelah PEP dimulai). 4) Rabies immunoglobulin (RIG): 20 IU/kg infiltrasi ke sekitar luka, sisa IM di gluteal (bila l...',
+    rujukan:
+      'SEMUA gigitan hewan tersangka rabies ke fasilitas dengan RIG dan vaksin. Bila tidak tersedia di Puskesmas, rujuk segera ke RS. Pemantauan hewan penyerang (dog/cat) selama 10 hari - bila hewan sehat, PEP bisa dihentikan. Bila hewan mati/sakit/liar, la...',
+  },
+  {
+    id: 78,
+    nama: 'Hepatitis B',
+    kategori: 'Tropis & Infeksi',
+    kode: 'B16-B18',
+    definisi:
+      'Infeksi virus DNA Hepadnaviridae pada hati yang ditularkan secara parenteral, seksual, dan perinatal. Prevalensi HBsAg di Indonesia 3-5% (daerah endemis menengah). 5-10% infeksi dewasa dan 90% infeksi perinatal menjadi kronik. Hepatitis B kronik adal...',
+    gejala: [
+      'Akut: asimptomatik (30-50%), malaise, anoreksia, nausea',
+      'Ikterus, urine gelap, feses pucat',
+      'Hepatomegali dengan nyeri',
+      'Artralgia',
+      'Kronik: umumnya asimptomatik selama dekade',
+      'Fatigue, arthralgia (kronik aktif)',
+      'Dekompensasi sirosis: asites, ensefalopati, varises',
+      'HCC: penurunan BB, nyeri abdomen kanan atas',
+    ],
+    diagnosis:
+      'Serologi: HBsAg (screening - positif = infeksi akut atau kronik). Anti-HBc IgM (infeksi akut). Anti-HBc total (terinfeksi masa lalu). HBeAg (replicasi virus tinggi, infektivitas tinggi). Anti-HBe (low replicative state). Anti-HBs (kekebalan/vaksinasi). HBV DNA quantitative (viral load - untuk treatm...',
+    terapi:
+      'Akut: terapi suportif (istirahat, nutrisi - 99% sembuh spontan pada dewasa). Kronik: indikasi treatment - HBV DNA >2000 IU/mL + ALT elevated, atau sirosis dengan detectable HBV DNA, atau HBeAg positif. Nukleos(t)id analog: tenofovir disoproxil 300mg/hari (preferred - high barrier to resistance, safe...',
+    rujukan:
+      'Hepatitis B akut severe/fulminant, kronik dengan indikasi treatment, sirosis, HCC suspicion (nodul >1cm, AFP meningkat), decompensated liver disease, coinfection HCV/HDV/HIV, kehamilan dengan high viral load (>200.000 IU/mL - perlu tenofovir trimeste...',
+  },
+  {
+    id: 79,
+    nama: 'HIV/AIDS',
+    kategori: 'Tropis & Infeksi',
+    kode: 'B20-B24',
+    definisi:
+      'Infeksi kronis oleh Human Immunodeficiency Virus (HIV) yang menyerang CD4+ T-helper cells, menyebabkan imunodefisiensi progresif. Tanpa terapi, infeksi berkembang menjadi Acquired Immunodeficiency Syndrome (AIDS) ditandai oleh CD4 <200 atau opportuni...',
+    gejala: [
+      'Infeksi akut (seroconversion): mononucleosis-like syndrome',
+      'Demam, malaise, lymphadenopati',
+      'Faringitis, rash makulopapular',
+      'Myalgia, arthralgia',
+      'Laten: asimptomatik 8-10 tahun (tanpa ART)',
+      'AIDS: opportunistic infections (PCP, TB, CMV, toxoplasmosis, candidiasis esophageal)',
+      'Kaposi sarcoma',
+      'Wasting syndrome',
+      'Neuropati perifer',
+      'Demensia HIV',
+    ],
+    diagnosis:
+      'HIV rapid test (screening): deteksi antibodi HIV-1/2. Konfirmasi: HIV serologi (ELISA Western blot/immunoblot), atau HIV-1/2 differentiation assay. Viral load (HIV RNA PCR). CD4 count: untuk staging dan treatment indication. CBC, LFT, renal function, fasting lipid/glucose. Screening: HBV, HCV, TB, s...',
+    terapi:
+      'ART (antiretroviral therapy): TDF (tenofovir) + 3TC (lamivudine) + EFV (efavirenz) atau DTG (dolutegravir) - first-line Indonesia. Start ART segera setelah diagnosis (regardless of CD4). Monitoring: viral load tiap 6 bulan (target <50 copies/mL), CD4 count. Opportunistic infection treatment sesuai p...',
+    rujukan:
+      'Semua kasus HIV baru ke RS rujukan HIV/Klinik VCT untuk ARV initiation. AIDS defining illness, CD4 <200, neurologic complications, malignancy, treatment failure (viral rebound), drug resistance, pregnancy, TB coinfection, atau pediatric HIV.',
+  },
+  {
+    id: 80,
+    nama: 'Leprosy (Kusta / Morbus Hansen)',
+    kategori: 'Tropis & Infeksi',
+    kode: 'A30',
+    definisi:
+      'Infeksi kronik Mycobacterium leprae yang menyerang kulit, saraf perifer, mukosa saluran napas atas, dan mata. Penularan melalui droplet dari hidung. Indonesia memiliki beban kusta tertinggi ketiga di dunia setelah India dan Brazil. Diklasifikasikan s...',
+    gejala: [
+      'Makul hipopigmentasi/hiperpigmentasi dengan hypoaesthesia (lesion khas)',
+      'Thickening nerves perifer (ulnar, median, peroneal, great auricular)',
+      'Nodul papul pada kulit (MB)',
+      'Kehilangan sensasi (thermal, pain, touch)',
+      'Weakness otot (claw hand, foot drop)',
+      'Ulkus plantar (pada area tanpa sensasi)',
+      'Madarosis (alis dan bulu mata rontok)',
+      'Saddle nose deformity (MB advanced)',
+      'Iritis/keratitis',
+    ],
+    diagnosis:
+      'Pemeriksaan klinis: lesi kulit dengan sensory loss + thickened peripheral nerves. Slit-skin smear (SSS): AFB index (0-6+) dari telinga/lesi/sambil. Histopatologi: granuloma dengan AFB (Fite-Faraco stain). WHO criteria: PB (<=5 skin lesions, no bacilli), MB (>5 lesions atau bacilli positif). Ridle-Jo...',
+    terapi:
+      'MDT (multidrug therapy) WHO: PB regimen (6 bulan): rifampicin 600mg/bln + dapson 100mg/hari. MB regimen (12 bulan): rifampicin 600mg/bln + clofazimine 300mg/bln + clofazimine 50mg/hari + dapson 100mg/hari. Single-dose regimen (ROM): rifampicin + ofloxacin + minocycline (untuk single lesion PB). Reak...',
+    rujukan:
+      'Leprosy reaction severe, neuritis akut, deformitas yang memerlukan surgery (tendon transfer, release), MB dengan komplikasi mata, ulkus kronik, diagnosis tidak pasti (perlu biopsy), atau gagal MDT.',
+  },
+  {
+    id: 81,
+    nama: 'Migrain',
+    kategori: 'Neurologi',
+    kode: 'G43',
+    definisi:
+      'Gangguan neurologis kronis yang ditandai oleh episode sakit kepala berulang dengan karakteristik pulsatil, unilateral, berat, yang memburuk dengan aktivitas fisik dan disertai nausea/vomiting serta fotofobia/phonofobia. Prevalensi global ~15% (wanita...',
+    gejala: [
+      'Sakit kepala pulsatil (throbbing) moderat-sangat berat',
+      'Unilateral (bisa bilateral)',
+      'Durasi 4-72 jam tanpa treatment',
+      'Memburuk dengan aktivitas fisik',
+      'Nausea dan/atau vomiting',
+      'Fotofobia dan phonofobia',
+      'Aura (visual: scintillating scotoma, zigzag; sensory: paresthesia; speech disturbance) - 20-30%',
+      'Osmofobia',
+      'Allodynia',
+    ],
+    diagnosis:
+      'Kriteria ICHD-3: >=5 attack dengan A (sakit kepala 4-72 jam, unilateral, pulsatil, moderat-berat, aggravated by routine activity) dan B (>=1: nausea/vomiting, fotofobia/phonofobia). Migrain with aura: fully reversible aura visual/sensory/speech + each aura >=5 menit + total aura 5-60 menit. Pemeriks...',
+    terapi:
+      'Akut: analgesik biasa (parasetamol 1000mg, ibuprofen 400-800mg, naproxen 500-750mg) - efektif untuk ringan-sedang. Triptan (sumatriptan 50-100mg, rizatriptan 10mg) - lini pertama untuk moderat-berat (kontraindikasi: CAD, stroke, uncontrolled HTN). Anti-emetik: metoclopramide 10mg (prokinetic + antie...',
+    rujukan:
+      'Thunderclap headache (SAH), new onset migraine >50 tahun, focal neurologic deficit persisten, papilledema, seizure associated with headache, migraine status (>72 jam), intractable vomiting, atau perlu terapi preventif specialist.',
+  },
+  {
+    id: 82,
+    nama: 'Vertigo (BPPV & Vestibular)',
+    kategori: 'Neurologi',
+    kode: 'H81-H83, R42',
+    definisi:
+      'Sensasi berputar atau bergerak (subjektif - pasien merasa berputar, atau objektif - lingkungan terlihat berputar). Dapat disebabkan oleh gangguan vestibular perifer (BPPV - paling umum 20%, vestibular neuritis, Meniere, labyrinthitis) atau sentral (s...',
+    gejala: [
+      'Vertigo: sensasi berputar',
+      'Triggered by head position change (BPPV)',
+      'Nausea, vomiting',
+      'Nystagmus (directional - perifer, atau bidirectional - sentral)',
+      'Tinnitus, hearing loss (Meniere, labyrinthitis)',
+      'Imbalance, ataxia',
+      'Vertigo persistent >24 jam (neuritis vestibular)',
+      'Neurologic deficits (sentral - dysarthria, diplopia, weakness)',
+    ],
+    diagnosis:
+      'Anamnesis: durasi, trigger, associated symptoms. Dix-Hallpike maneuver: untuk posterior canal BPPV (latency 2-20 detik, rotatory nystagmus toward affected ear, fatigable). Roll test: untuk horizontal canal BPPV. Head impulse test: normal (catch-up saccade = perifer), abnormal (no saccade = sentral -...',
+    terapi:
+      'BPPV: manuver reposisi kanalikular - Epley maneuver (posterior canal, 80-90% effective dalam 1-3 sesi), Barbecue roll (horizontal canal), Brandt-Daroff exercises. Vestibular neuritis: kortikosteroid (prednison 100mg 3 hari lalu taper - kontroversial, benefit terbatas), antiemetic (ondansetron, mecli...',
+    rujukan:
+      'Vertigo sentral (HINTS abnormal, bidirectional nystagmus, skew deviation, new hearing loss with neurologic signs, severe headache), stroke posterior circulation, trauma kepala, new onset vertigo >50 tahun, vertigo persistent >1 minggu tidak membaik, ...',
+  },
+  {
+    id: 83,
+    nama: 'Epilepsi',
+    kategori: 'Neurologi',
+    kode: 'G40',
+    definisi:
+      'Gangguan neurologis kronis yang ditandai oleh kecenderungan berulang untuk mengalami kejang epileptik akibat abnormal neuronal activity di otak. Prevalensi global 0.5-1%. Diklasifikasikan berdasarkan onset (fokal, generalized, unknown), awareness (aw...',
+    gejala: [
+      'Kejang tonik-klonik generalisasi (GTCS): rigiditas -> jerking, cyanosis, tongue bite, urinary incontinence, post-ictal confusion',
+      'Kejang absens (staring spell, blank look, <10 detik)',
+      'Kejang fokal dengan awareness (motorik/sensory/autonomic/psychic)',
+      'Kejang fokal impaired awareness (automatism - lip smacking, fumbling)',
+      'Myoclonic jerk',
+      'Atonic drop attack',
+      'Aura (prodrom fokal)',
+      'Post-ictal: confusion, headache, fatigue, Todd paralysis',
+    ],
+    diagnosis:
+      'Anamnesis detail dari eyewitness (ciri khas, durasi, post-ictal). EEG: interictal spikes/sharp waves/slow waves (tidak selalu abnormal - sensitivitas 50% pada pemeriksaan pertama). Video-EEG monitoring: gold standard untuk klasifikasi. MRI kepala: untuk identifikasi lesi structural (hipokampal scler...',
+    terapi:
+      'Monoterapi AED (antiepileptic drug) lini pertama: valproat 500-2000mg/hari (broad spectrum - avoid pada wanita usia subur karena teratogenicity dan PCOS), levetiracetam 1000-3000mg/hari (well-tolerated, no drug interactions), lamotrigine 100-400mg/hari (fokal + generalised - slow titration), karbama...',
+    rujukan:
+      'Status epileptikus (emergency), new onset seizure (perlu evaluasi imaging EEG), febrile seizure atypical/complex, seizure cluster, pregnancy with epilepsy, refractory epilepsy (failed 2 appropriate AEDs), focal lesion on MRI, atau perlu consideration...',
+  },
+  {
+    id: 84,
+    nama: 'Neuropati Perifer',
+    kategori: 'Neurologi',
+    kode: 'G60-G64',
+    definisi:
+      'Gangguan fungsi saraf perifer (motorik, sensorik, autonomik) akibat berbagai etiologi. Dapat akut (GBS - Guillian-Barre syndrome) atau kronik (DM, B12 deficiency, alkohol, toksin, hereditary). Polineuropati simetris distals (stocking-glove pattern) a...',
+    gejala: [
+      'Paresthesia (kesemutan, pins-and-needles)',
+      'Nyeri neuropatik (burning, shooting, electric shock-like)',
+      'Numbness (hipoestesia)',
+      'Weakness distal (foot drop, hand grip weakness)',
+      'Atrofi otot intrinsik tangan/kaki',
+      'Gangguan keseimbangan',
+      'Allodynia, hyperalgesia',
+      'Autonomik: orthostatic hypotension, gastroparesis, impotensi, bladder dysfunction',
+      'Refleks tendon menurun/hilang',
+    ],
+    diagnosis:
+      'Pemeriksaan neurologis: sensory loss stocking-glove pattern, weakness distal, reflex hyporeflexia/areflexia. Monofilament 10g untuk skrining neuropati diabetik. Tuning fork 128Hz untuk vibrasi sense. Nerve conduction study (NCS): gold standard (demyelinating vs axonal, motor vs sensory). EMG: denerv...',
+    terapi:
+      'Tangani etiologi: kontrol glikemia (DM), B12 replacement, berhenti alkohol/toksin. Nyeri neuropatik: gabapentin 300-1800mg/hari (titrate slowly), pregabalin 75-300mg 2x/hari, duloxetine 60mg/hari, amitriptyline 25-100mg/hari. Topikal: capsaicin 8% patch, lidocaine 5% patch. Fisioterapi dan orthotics...',
+    rujukan:
+      'Guillain-Barre syndrome (emergency - respiratory monitoring), CIDP, mononeuritis multiplex (suspisi vasculitis), neuropati progresif cepat, neuropati dengan CNS involvement, neuropati hereditary, atau perlu NCS/EMG/biopsy.',
+  },
+  {
+    id: 85,
+    nama: 'Stroke Hemoragik',
+    kategori: 'Neurologi',
+    kode: 'I60-I62',
+    definisi:
+      'Perdarahan ke dalam otak akibat rupture pembuluh darah. Dua tipe utama: perdarahan intraserebral (ICH - 80-85%, akibat hipertensi, amyloid angiopathy, koagulopati) dan subarachnoid hemorrhage (SAH - 15-20%, akibat ruptur aneurisma). Stroke hemoragik ...',
+    gejala: [
+      "Onset tiba-tiba (thunderclap headache untuk SAH - 'worst headache of life')",
+      'Sakit kepala parah',
+      'Muntah proyektil',
+      'Gangguan kesadaran (somnolence, coma)',
+      'Nuchal rigidity (SAH)',
+      'Fokal neurologic deficit (seperti stroke iskemik)',
+      'Papilledema',
+      'Kejang',
+      'Hipertensi berat',
+    ],
+    diagnosis:
+      'CT scan non-contrast kepala: gold standard untuk ICH (hiperdensitas darah dalam parenkim) dan SAH (hiperdensitas di sulci/fissures/basal cisterns). CTA/MRA: untuk aneurisma, AVM, vasculitis. LP bila CT negatif dan suspisi SAH tinggi (xanthochromia setelah 12 jam). Coagulation profile: INR, aPTT, pla...',
+    terapi:
+      'ICH: kontrol BP (target SBP 140-160 - labetalol, nicardipine), reversal antikoagulan (vitamin K + PCC untuk warfarin, idarucizumab untuk dabigatran, andexanet alfa untuk factor Xa inhibitors), mannitol/hypertonic saline untuk increased ICP, neurosurgical evacuation bila cerebellar ICH >3cm, lobar IC...',
+    rujukan:
+      'SEMUA stroke hemoragik ke RS dengan fasilitas neurosurgery. Emergency untuk: GCS <8, ICH >30mL, cerebellar ICH, SAH, ventricular extension, brainstem compression, hydrocephalus, atau perlu intervensi neurosurgical.',
+  },
+  {
+    id: 86,
+    nama: 'Penyakit Parkinson',
+    kategori: 'Neurologi',
+    kode: 'G20',
+    definisi:
+      'Neurodegenerative disorder progresif yang ditandai oleh degenerasi neuron dopaminergik di substantia nigra pars compacta. Karakteristik klinis: bradikinesia, tremor saat istirahat, rigiditas, dan postural instability (TRAP). Prevalensi 1% pada usia >...',
+    gejala: [
+      'Tremor saat istirahat (istirahat - 4-6 Hz, pill-rolling, unilateral onset)',
+      'Bradikinesia (gerakan lambat, shuffling gait, micrographia)',
+      'Rigidity (lead-pipe atau cogwheel)',
+      'Postural instability (muncul late stage)',
+      'Mask-like facies (hypomimia)',
+      'Hypophonia (suara pelan)',
+      'Drooling',
+      'Constipation',
+      'Depression, anxiety, apathy',
+      'REM sleep behavior disorder',
+      'Olfactory dysfunction (hyposmia)',
+      'Orthostatic hypotension',
+    ],
+    diagnosis:
+      'Kriteria UK Brain Bank: bradikinesia + >=1 dari: tremor rest, rigidity, postural instability (tetap yang tidak dijelaskan oleh visual, vestibular, cerebellar, atau proprioceptive dysfunction). Respons positif terhadap levodopa (diagnostic). DaTscan (dopamine transporter imaging): menurun uptake di s...',
+    terapi:
+      'Levodopa/carbidopa (sinemet) 100/25mg 3x/hari - gold standard, paling efektif untuk symptom motorik. Agonis dopamin: pramipexole, ropinirole (lini pertama pada usia <65 untuk delay levodopa). MAO-B inhibitor: selegiline, rasagiline (neuroprotective, mild symptom benefit). COMT inhibitor: entacapone ...',
+    rujukan:
+      'Diagnosis tidak pasti, onset muda (<40 tahun), atypical features (early falls, early dementia, early autonomic failure, cerebellar signs), rapid progression, perlu DaTscan/MRI advanced, consideration DBS, kompleks medication management, atau severe n...',
+  },
+  {
+    id: 87,
+    nama: 'Demensia (Alzheimer & Vaskular)',
+    kategori: 'Neurologi',
+    kode: 'F00-F03, G30-G31',
+    definisi:
+      'Sindrom klinis progresif ditandai oleh penurunan fungsi kognitif yang signifikan mengganggu aktivitas sehari-hari. Penyebab utama: Alzheimer disease (60-70%), vascular dementia (15-20%), Lewy body dementia (10-25%), frontotemporal dementia (5-10%). P...',
+    gejala: [
+      'Gangguan memori (terutama recent memory)',
+      'Difficulty finding words (aphasia)',
+      'Disorientation waktu dan tempat',
+      'Impaired judgment dan reasoning',
+      'Difficulty performing familiar tasks (apraxia)',
+      'Perubahan perilaku dan personality',
+      'Depression, anxiety, agitation',
+      'Sleep disturbances',
+      'Wandering',
+      'Sundowning (agitasi sore/malam)',
+      'Penurunan ADL (activities of daily living)',
+    ],
+    diagnosis:
+      'MMSE (Mini-Mental State Examination) atau MoCA (Montreal Cognitive Assessment): skor <24/30 abnormal. Anamnesis detail dari keluarga/caregiver. Pemeriksaan fisik dan neurologis lengkap. Lab: TSH, B12, folat, VDRLL/RPR, HIV, LFT, renal function, calcium (rule out reversible causes). CT/MRI kepala: at...',
+    terapi:
+      'Kolinesterase inhibitor: donepezil 5-10mg/hari (Alzheimer - all stages), rivastigmine (patch preferred - 4.6-13.3mg/24jam), galantamine. Memantine 10mg 2x/hari (NMDA antagonist - moderate-severe, atau kombinasi dengan cholinesterase inhibitor). Manajemen perilaku: non-farmakologis pertama (routine, ...',
+    rujukan:
+      'Onset muda (<65 tahun), rapid progression, atypical presentation, focal neurologic signs, seizure, gait disturbance early, severe behavioral problems, need for specialized dementia care, perlu advanced imaging (PET amyloid/tau), atau consideration cl...',
+  },
+  {
+    id: 88,
+    nama: 'Gangguan Cemas Umum (GAD)',
+    kategori: 'Jiwa & Perilaku',
+    kode: 'F41.1',
+    definisi:
+      'Gangguan kecemasan yang ditandai oleh kekhawatiran berlebihan dan sulit dikontrol terhadap berbagai aspek kehidupan (pekerjaan, kesehatan, keuangan, keluarga) yang berlangsung >=6 bulan. Disertai gejala somatik dan autonomik. Prevalensi seumur hidup ...',
+    gejala: [
+      'Kecemasan/khawatir berlebihan dan persisten',
+      'Sulit mengontrol kekhawatiran',
+      'Restlessness/on edge',
+      'Mudah lelah',
+      'Difficulty concentrating',
+      'Irritability',
+      'Tension otot',
+      'Sleep disturbance (sulit tidur, tidur tidak nyenyak)',
+      'Palpitasi, sweating',
+      'Gastrointestinal symptoms',
+      'Dizziness',
+    ],
+    diagnosis:
+      'Kriteria DSM-5: kekhawatiran berlebihan >=6 bulan + >=3 dari: restlessness, fatigue, difficulty concentrating, irritability, muscle tension, sleep disturbance. GAD-7 questionnaire: skor >=10 moderate anxiety, >=15 severe. Perlu dibedakan dengan: depresi (dominan mood symptoms), social anxiety (fear ...',
+    terapi:
+      'Psikoterapi: CBT (cognitive behavioral therapy) - lini pertama, efektivitas setara dengan farmakologi. Relaxation techniques, mindfulness, breathing exercises. Farmakologi: SSRI (sertraline 50-200mg, escitalopram 10-20mg - lini pertama), SNRI (venlafaxine XR 75-225mg, duloxetine 60mg). Buspirone 15-...',
+    rujukan:
+      'Severe anxiety dengan suicidal ideation, panic disorder comorbid, OCD, PTSD, substance abuse comorbid, refractory to first-line treatment, severe functional impairment, pregnancy/breastfeeding, atau perlu specialized psychiatric care.',
+  },
+  {
+    id: 89,
+    nama: 'Depresi Mayor',
+    kategori: 'Jiwa & Perilaku',
+    kode: 'F32-F33',
+    definisi:
+      'Gangguan mood yang ditandai oleh episode depresi berulang dengan mood yang depresi atau hilangnya minat/pleasure (anhedonia) yang berlangsung minimal 2 minggu, disertai gejala somatik dan kognitif. Prevalensi global 5-6% per tahun, wanita 2x lebih se...',
+    gejala: [
+      'Mood depresi sepanjang hari, hampir setiap hari',
+      'Anhedonia (hilangnya minat/pleasure)',
+      'Penurunan berat badan/significant appetite change',
+      'Insomnia atau hypersomnia',
+      'Psychomotor agitation/retardation',
+      'Fatigue/loss of energy',
+      'Feelings of worthlessness/guilt',
+      'Difficulty concentrating/indecisiveness',
+      'Recurrent thoughts of death/suicidal ideation',
+    ],
+    diagnosis:
+      'Kriteria DSM-5: >=5 dari 9 symptom di atas, termasuk mood depresi atau anhedonia, selama >=2 minggu, causing significant distress/impairment. PHQ-9 questionnaire: skor >=10 moderate depression, >=20 severe. Ruling out: medical causes (hypothyroidism, anemia, B12 deficiency, Cushing, medication-induc...',
+    terapi:
+      'Ringan: psikoterapi (CBT, interpersonal therapy, behavioral activation) sebagai monoterapi. Moderat-berat: kombinasi SSRI + psikoterapi. SSRI lini pertama: fluoxetine 20-40mg, sertraline 50-200mg, escitalopram 10-20mg, paroxetine 20-40mg. SNRI: venlafaxine, duloxetine. NaSSA: mirtazapine 15-45mg (go...',
+    rujukan:
+      'Suicidal ideation dengan plan/intent (emergency), psychotic features, severe functional impairment, refractory depression (failed 2 adequate antidepressant trials), bipolar disorder suspected, perinatal depression, postpartum psychosis, catatonia, at...',
+  },
+  {
+    id: 90,
+    nama: 'Gangguan Tidur (Insomnia)',
+    kategori: 'Jiwa & Perilaku',
+    kode: 'G47.0, F51.0',
+    definisi:
+      'Keluhan sulit memulai tidur, mempertahankan tidur, atau bangun terlalu pagi dengan kualitas tidur yang tidak memulihkan, yang berlangsung >=3 malam/minggu selama >=3 bulan dan menyebabkan gangguan fungsi siang hari. Insomnia paling umum (10-15% kroni...',
+    gejala: [
+      'Sleep onset insomnia (sulit memulai tidur >30 menit)',
+      'Sleep maintenance insomnia (bangun berkali-kali malam)',
+      'Early morning awakening (bangun >2 jam lebih awal)',
+      'Non-restorative sleep',
+      'Daytime fatigue, sleepiness',
+      'Irritability, mood disturbance',
+      'Difficulty concentrating',
+      'Worry about sleep',
+    ],
+    diagnosis:
+      'Kriteria ICSD-3/DSM-5: keluhan sleep difficulty >=3 malam/minggu >=3 bulan + daytime impairment. Sleep diary: bedtime, wake time, sleep latency, awakenings, total sleep time. PSQI (Pittsburgh Sleep Quality Index), ISI (Insomnia Severity Index). Ruling out: sleep apnea (snoring, witnessed apneas), re...',
+    terapi:
+      'CBT-I (cognitive behavioral therapy for insomnia): lini pertama - stimulus control, sleep restriction, cognitive restructuring, relaxation, sleep hygiene. Sleep hygiene: regular schedule, avoid caffeine after noon, limit alcohol, dark/cool/quiet bedroom, no screens 1 hour before bed, bed only for sl...',
+    rujukan:
+      'Insomnia refractory to CBT-I + pharmacotherapy, suspicion sleep apnea/RLS/narcolepsy, insomnia with severe psychiatric comorbid, parasomnia, circadian rhythm disorder, atau perlu sleep study/polysomnography.',
+  },
+  {
+    id: 91,
+    nama: 'PTSD (Post-Traumatic Stress Disorder)',
+    kategori: 'Jiwa & Perilaku',
+    kode: 'F43.1',
+    definisi:
+      'Gangguan psikiatrik yang berkembang setelah exposure terhadap traumatic event (serangan fisik/sexual, bencana alam, kecelakaan, konflik bersenjata, kekerasan). Ditandai oleh intrusive memories, avoidance, negative cognition/mood changes, dan hyperaro...',
+    gejala: [
+      'Intrusive memories: flashbacks, nightmares, intrusive thoughts',
+      'Avoidance: menghindari tempat/orang yang mengingatkan trauma',
+      'Negative cognition: guilt, shame, negative self-belief, emotional numbing',
+      'Hyperarousal: hypervigilance, exaggerated startle, irritability, sleep disturbance',
+      'Dissociative symptoms (depersonalization/derealization)',
+      'Konsentrasi buruk',
+      'Mood lability',
+    ],
+    diagnosis:
+      'Kriteria DSM-5: exposure to trauma + >=1 intrusion symptom + >=1 avoidance symptom + >=2 negative cognition/mood + >=2 hyperarousal symptom, duration >1 month, causing distress/impairment. CAPS-5 (Clinician-Administered PTSD Scale): gold standard. PCL-5 (PTSD Checklist): screening. Perlu dibedakan d...',
+    terapi:
+      'Trauma-focused psychotherapy: lini pertama - Prolonged Exposure (PE), Cognitive Processing Therapy (CPT), EMDR (Eye Movement Desensitization and Reprocessing). SSRIs: sertraline 50-200mg, paroxetine 20-60mg (FDA approved). Venlafaxine XR 75-225mg. Prazosin 2-6mg HS (untuk nightmares - terutama pada ...',
+    rujukan:
+      'Severe PTSD dengan suicidal ideation, comorbid substance abuse, complex PTSD (multiple/repeated trauma), dissociative subtype, refractory to first-line treatment, perinatal PTSD, pediatric PTSD, atau perlu specialized trauma care.',
+  },
+  {
+    id: 92,
+    nama: 'Skizofrenia',
+    kategori: 'Jiwa & Perilaku',
+    kode: 'F20',
+    definisi:
+      'Gangguan psikotik kronis yang ditandai oleh delusi, halusinasi, disorganized speech/behavior, dan negative symptoms (blunted affect, avolition, alogia, asociality). Onset umumnya akhir adolescence/dewasa muda (pria: 15-25, wanita: 25-35). Prevalensi ...',
+    gejala: [
+      'Delusi (paranoid, grandiose, reference, control, somatic)',
+      'Halusinasi (auditory - paling umum: voices commenting/conversing, visual, tactile, olfactory)',
+      'Disorganized speech (tangential, circumstantial, word salad, neologism)',
+      'Disorganized behavior (catatonia, inappropriate affect, bizarre behavior)',
+      'Negative symptoms: flattened affect, avolition, alogia, asociality, anhedonia',
+      'Cognitive impairment: attention, memory, executive function',
+      'Lack of insight (anosognosia)',
+      'Social withdrawal',
+      'Apathy',
+    ],
+    diagnosis:
+      'Kriteria DSM-5: >=2 dari 5 symptom (delusi, halusinasi, disorganized speech, disorganized behavior, negative symptoms) selama >=1 bulan + functional decline >=6 bulan. Ruling out: substance-induced psychosis (cannabis, stimulants, hallucinogens), mood disorder with psychotic features (affective symp...',
+    terapi:
+      'Antipsikotik: first-generation (haloperidol 5-20mg, fluphenazine - high EPS risk) atau second-generation (risperidone 2-6mg, olanzapine 5-20mg, quetiapine 300-800mg, aripiprazole 10-30mg, clozapine 300-900mg - untuk refractory). Clozapine: gold standard untuk treatment-resistant schizophrenia (faile...',
+    rujukan:
+      'First episode psychosis (perlu early intervention), treatment-resistant (failed 2 antipsychotics - clozapine indication), clozapine monitoring, catatonia, severe aggression/suicidal, comorbid substance use, pregnancy, neuroleptic malignant syndrome, ...',
+  },
+  {
+    id: 93,
+    nama: 'Gangguan Bipolar',
+    kategori: 'Jiwa & Perilaku',
+    kode: 'F31',
+    definisi:
+      'Gangguan mood yang ditandai oleh episode manik/hypomanik yang beralternasi dengan episode depresi. Tipe I: manic episode (>=7 hari, severe, possible psychosis). Tipe II: hypomanic + major depressive (no full mania). Cyclothymic: numerous periods of h...',
+    gejala: [
+      'Mania: elevated/expansive/irritable mood, increased energy, decreased sleep need, grandiosity, pressured speech, racing thoughts, distractibility, increased goal-directed activity, hypersexuality, reckless behavior (spending sprees, substance use)',
+      'Hypomania: similar symptoms but less severe, no psychosis, no hospitalization, duration >=4 hari',
+      'Depresi: seperti MDD',
+      'Mixed features: manic and depressive symptoms simultaneously',
+      'Rapid cycling: >=4 mood episodes per tahun',
+      'Psychotic features: mood-congruent delusions/hallucinations during manic/depressive episodes',
+    ],
+    diagnosis:
+      'Kriteria DSM-5 untuk manic episode: >=3 symptom (4 bila mood irritable) dari: grandiosity, decreased sleep, pressured speech, racing thoughts, distractibility, increased activity, excessive involvement in risky activities, duration >=1 week. Rule out: substance-induced (stimulants, steroids), medica...',
+    terapi:
+      'Akut mania: mood stabilizer (lithium 600-1800mg/hari - level 0.8-1.2 mEq/L, valproate 750-2000mg - level 50-100 mcg/mL, carbamazepine 400-1200mg) +/- antipsikotik (olanzapine, quetiapine, aripiprazole, risperidone). Severe: combination + possible hospitalization. Depresi bipolar: lurasidone, lamotri...',
+    rujukan:
+      'First episode mania, severe mania with psychosis, suicidal ideation, rapid cycling, treatment-resistant, pregnancy, lithium toxicity, severe side effects, comorbid substance use, atau perlu specialized mood disorder clinic.',
+  },
+  {
+    id: 94,
+    nama: 'ADHD (Attention Deficit Hyperactivity Disorder)',
+    kategori: 'Jiwa & Perilaku',
+    kode: 'F90',
+    definisi:
+      'Gangguan neurodevelopmental yang ditandai oleh pola persisten inattention dan/atau hyperactivity-impulsivity yang mengganggu fungsi akademik, sosial, atau pekerjaan. Onset sebelum usia 12 tahun. Prevalensi 5-7% anak, persisten ke dewasa 60%. Pria 2-3...',
+    gejala: [
+      "Inattention: careless mistakes, difficulty sustaining attention, doesn't listen, fails to finish tasks, difficulty organizing, avoids mental effort, loses things, easily distracted, forgetful",
+      'Hyperactivity: fidgets, leaves seat, runs/climbs excessively, difficulty playing quietly, talks excessively',
+      'Impulsivity: blurts out answers, difficulty waiting turn, interrupts/intrudes on others',
+      'Emotional dysregulation (irritability, mood lability)',
+      'Poor time management',
+      'Procrastination',
+      'Relationship difficulties',
+      'Low self-esteem',
+    ],
+    diagnosis:
+      'Kriteria DSM-5: >=6 symptom inattention dan/atau >=6 symptom hyperactivity-impulsivity (>=5 untuk >=17 tahun) selama >=6 bulan, present before age 12, in >=2 settings (home, school, work), causing impairment. CONNERS rating scales, Vanderbilt ADHD diagnostic rating scale. Rule out: learning disabili...',
+    terapi:
+      'Anak: stimulan (methylphenidate 5-60mg/hari - short-acting atau extended-release, dexamphetamine - first-line, most effective). Non-stimulan: atomoxetine 0.5-1.2mg/kg (Strattera - bila stimulan kontraindikasi/tidak toleran), guanfacine ER 1-4mg, clonidine ER. Parent training, behavioral therapy, sch...',
+    rujukan:
+      'Severe ADHD dengan comorbid (ODD, conduct disorder, learning disability, anxiety, depression), treatment-resistant, cardiac concerns, tics/Tourette syndrome, substance use comorbid, pregnancy, perlu specialized ADHD assessment, atau consideration of ...',
+  },
+  {
+    id: 95,
+    nama: 'Konjungtivitis',
+    kategori: 'THT & Mata',
+    kode: 'H10',
+    definisi:
+      'Inflamasi konjungtiva (membran mukosa yang melapisi sclera dan bagian dalam kelopak mata). Penyebab: viral (adenovirus - paling umum, 65-90%), bakteri (S. pneumoniae, H. influenzae, S. aureus), alergi, atau iritan. Sangat umum di Puskesmas, terutama ...',
+    gejala: [
+      'Mata merah (hyperemia konjungtiva)',
+      'Gatal (alergi/viral), berpasir (bakterial)',
+      'Sekret: watery (viral), purulen/mucopurulen (bacterial), stringy (allergic)',
+      'Mata lengket di pagi hari (bacterial)',
+      'Fotofobia ringan',
+      'Preauricular lymphadenopati (viral - terutama adenovirus)',
+      'Follicles (viral - terutama adenovirus, chlamydia)',
+      'Bilateral (viral/alergi) atau unilateral (bacterial awal)',
+    ],
+    diagnosis:
+      'Pemeriksaan: konjungtiva hyperemic, sekret sesuai etiologi. Slit lamp: follicles, papillae, pseudomembrane. Perlu dibedakan: keratitis (corneal involvement - urgent!), uveitis (ciliary flush, pain, photophobia), acute glaucoma (painful, mid-dilated pupil, halos), scleritis (deep redness, pain).',
+    terapi:
+      'Viral: self-limiting 7-14 hari, terapi suportif (compress hangat/dingin, artificial tears, hygiene). Bacterial: antibiotic drops/ointment (ciprofloxacin, ofloxacin, tobramycin, chloramphenicol 0.5% - 4x/hari 5-7 hari). Alergi: antihistamin/mast cell stabilizer drops (olopatadine, ketotifen), artific...',
+    rujukan:
+      'Keratitis (ulcer kornea - emergency), uveitis, scleritis, acute glaucoma, konjungtivitis neonatorum (ophthalmia neonatorum - emergency, rule out gonococcal/chlamydial), konjungtivitis >2 minggu, vision loss, severe pain, contact lens wearer dengan su...',
+  },
+  {
+    id: 96,
+    nama: 'Katarak',
+    kategori: 'THT & Mata',
+    kode: 'H25-H26',
+    definisi:
+      'Opasifikasi lensa mata yang menyebabkan penurunan penglihatan progresif. Katarak adalah penyebab kebutaan terbesar di dunia (51% buta yang dapat dicegah). Tipe: age-related/nuclear (paling umum), cortical, posterior subcapsular. Faktor risiko: usia, ...',
+    gejala: [
+      'Penglihatan kabur berangsur-angsur',
+      'Sensitivity to glare (terutama malam/sore)',
+      'Halos around lights',
+      'Warna tampak faded/kuning',
+      'Double vision monocular',
+      'Sering ganti kacamata',
+      'Myopia shift (nuclear cataract)',
+      'Vision loss progresif',
+    ],
+    diagnosis:
+      'Pemeriksaan visus (Snellen chart). Slit lamp examination: lokasi dan derajat opasifikasi lensa. Funduskopi: red reflex (obscured/absent pada katarak dense). Klasifikasi LOCS III. Perlu dibedakan dengan: macular degeneration, glaucoma, diabetic retinopathy, optic neuropathy. Catatan: katarak bilatera...',
+    terapi:
+      'Early: koreksi refraksi, increased lighting, anti-glare glasses, magnifiers. Surgery: phacoemulsification dengan intraocular lens (IOL) implant - gold standard, daycare procedure, minimal invasive, recovery cepat. Indikasi surgery: vision impairment affecting ADL, VA <20/40, glare disability, lens-i...',
+    rujukan:
+      'SEMUA katarak yang memerlukan surgery ke ophthalmologist. Mature/hypermature cataract, phacomorphic glaucoma, congenital cataract, traumatic cataract, cataract with comorbid eye disease (glaucoma, diabetic retinopathy requiring treatment).',
+  },
+  {
+    id: 97,
+    nama: 'Glaukoma',
+    kategori: 'THT & Mata',
+    kode: 'H40',
+    definisi:
+      'Kelompok penyakit eye neuropathy yang ditandai oleh progressive damage pada optic nerve (retinal ganglion cell loss) dengan karakteristic visual field defects, biasanya terkait dengan elevated intraocular pressure (IOP). Glaukoma sudut terbuka primer...',
+    gejala: [
+      'POAG: umumnya ASIMPTOMATIK sampai advanced (silent thief of sight)',
+      'Peripheral vision loss (tunnel vision - late stage)',
+      'AACG: severe eye pain, headache, nausea/vomiting, blurred vision, halos around lights, mid-dilated fixed pupil, corneal edema, red eye',
+      'Pigment dispersion: intermittent blurred vision, halos after exercise',
+      'Pseudoexfoliation: asymmetric IOP',
+    ],
+    diagnosis:
+      'Tonometry: IOP >21 mmHg (bila tidak diobati). Ophthalmoscopy: increased cup-to-disc ratio (>0.5), notching, disc hemorrhage. Visual field testing (perimetry): arcuate scotoma, nasal step, paracentral scotoma. Gonioscopy: grading sudut (Shaffer, Spaeth). OCT RNFL: thinning retinal nerve fiber layer. ...',
+    terapi:
+      'POAG: lini pertama - prostaglandin analog (latanoprost 0.005% HS, travoprost, bimatoprost - increases uveoscleral outflow, once daily). Beta-blocker (timolol 0.5% BID - decreases aqueous production, contraindicated in asthma/COPD/bradycardia). Alpha-agonist (brimonidine 0.2% TID). Carbonic anhydrase...',
+    rujukan:
+      'SEMUA glaukoma ke ophthalmologist untuk manajemen jangka panjang. AACG: emergency ke RS. Suspected glaucoma (increased cupping, elevated IOP, visual field defect), advanced glaucoma, young-onset glaucoma (<40 tahun), secondary glaucoma (traumatic, st...',
+  },
+  {
+    id: 98,
+    nama: 'Kelainan Refraksi (Rabun Jauh/Dekat)',
+    kategori: 'THT & Mata',
+    kode: 'H52',
+    definisi:
+      'Gangguan penglihatan akibat fokus cahaya tidak tepat di retina karena bentuk bola mata (panjang/short axial length) atau kelengkungan kornea/lensa. Tipe: myopia (rabun jauh - fokus di depan retina), hipermetropi (rabun dekat - fokus di belakang retin...',
+    gejala: [
+      'Myopia: penglihatan kabur untuk objek jauh, squinting, headache',
+      'Hipermetropi: penglihatan kabur untuk objek dekat, eye strain, headache',
+      'Astigmatisme: penglihatan kabur/distorsi pada semua jarak',
+      'Presbiopi: sulit membaca pada jarak normal, perlu memegang bacaan lebih jauh, headache saat reading',
+      'Eye strain (asthenopia)',
+      'Squinting',
+      'Headache frontal',
+    ],
+    diagnosis:
+      'Retinoscopy: objective refraction. Autorefractor. Subjective refraction (phoropter - trial frame dengan lensa trial). Visual acuity testing (Snellen chart). Cycloplegic refraction (anak - atropin/cyclopentolate untuk menghilangkan akomodasi). Funduskopi myopia: tessellated fundus, peripapillary atro...',
+    terapi:
+      'Koreksi: kacamata (paling sederhana), soft contact lens, rigid gas permeable lens (untuk astigmatisme tinggi). Myopia control (anak): low-dose atropine 0.01-0.05% (mengurangi progresi 50-60%), orthokeratology (OK lens - overnight corneal reshaping), multifocal soft contact lens, increased outdoor ti...',
+    rujukan:
+      'High myopia (>-6D - retinal detachment risk, myopic maculopathy), anisometropia signifikan, amblyopia (lazy eye), strabismus, keratoconus, congenital cataract, pediatric refractive errors requiring amblyopia management, atau pertimbangan refractive s...',
+  },
+  {
+    id: 99,
+    nama: 'Hordeolum (Bintitan) & Kalazion',
+    kategori: 'THT & Mata',
+    kode: 'H00',
+    definisi:
+      'Hordeolum (stye) adalah infeksi akut pada kelenjar sebasea atau apokrin kelenjar kelopak mata (internal - meibomian gland, atau eksternal - Zeis/Moll gland). Kalazion adalah granuloma kronik kelenjar meibomian akibat obstruksi dan retensi sebum. Hord...',
+    gejala: [
+      'Hordeolum: nyeri, eritema, edema, abses kecil di kelopak',
+      'Tenderness to palpation',
+      'Pointing/pus (eksternal) atau di konjungtiva (internal)',
+      'Kalazion: nodul keras non-tender di kelopak, persisten >2-3 minggu',
+      'Kalazion: dapat menyebabkan astigmatisme jika tekan kornea',
+      'Irritasi, foreign body sensation',
+    ],
+    diagnosis:
+      'Pemeriksaan: lokasi dan karakteristik lesi. Hordeolum: tender, acute, erythematous nodule. Kalazion: firm, non-tender, chronic nodule. Perlu dibedakan dengan: sebaceous cell carcinoma (refractory/recurrent chalazion in elderly - biopsy!), basal cell carcinoma, molluscum contagiosum, blepharitis.',
+    terapi:
+      'Hordeolum: warm compress 10-15 menit 4-6x/hari (promotes drainage), massage gentle, eyelid hygiene. Topical antibiotic ointment (erythromycin/bacitracin) bila secondary infection. Jarang perlu I&D. Internal hordeolum: topical + systemic antibiotic (dikloksasilin). Kalazion: warm compress, intralesio...',
+    rujukan:
+      'Refractory/recurrent hordeolum atau kalazion, large chalazion affecting vision/causing astigmatisme, preseptal cellulitis, suspicion malignancy (sebaceous cell carcinoma - biopsy), extensive lid involvement, atau perlu surgical I&C.',
+  },
+  {
+    id: 100,
+    nama: 'Uveitis Anterior (Iritis)',
+    kategori: 'THT & Mata',
+    kode: 'H20',
+    definisi:
+      'Inflamasi pada iris dan/atau badan siliar (anterior uvea). Dapat akut (sudut terbuka - paling umum) atau kronik. Etiologi: idiopatik (50%), autoimmune (HLA-B27 - ankylosing spondylitis, reactive arthritis, psoriatic arthritis, IBD), infeksi (HSV, VZV...',
+    gejala: [
+      'Nyeri mata (dull aching)',
+      'Fotofobia',
+      'Blurred vision',
+      'Lacrimation',
+      'Ciliary flush (perilimbal injection - deep red ring around cornea)',
+      'Miosis (pupil constricted)',
+      'Smeared/flare in anterior chamber (slit lamp)',
+      'Synechiae (posterior - iris to lens, atau peripheral - iris to cornea)',
+    ],
+    diagnosis:
+      'Slit lamp examination: cells and flare in anterior chamber (graded 1-4+), keratic precipitates (KPs - white deposits on corneal endothelium), posterior synechiae, hypopyon (layered pus in AC - severe). IOP: may be low (ciliary body shutdown) or elevated (steroid response/synechial angle closure). Ru...',
+    terapi:
+      'Topical corticosteroid: prednisolone acetate 1% (potent) atau dexamethasone 0.1% - hourly initially, taper over 2-6 weeks as inflammation resolves. Cycloplegic/mydriatic: atropine 1% BID-TID (prevents synechiae formation, relieves ciliary spasm pain) atau cyclopentolate 1%. HATI: steroid-induced IOP...',
+    rujukan:
+      'SEMUA uveitis ke ophthalmologist. Posterior uveitis/intermediate uveitis, hypopyon, severe uveitis, recurrent uveitis, uveitis in children, suspicion infectious etiology (TB, syphilis, toxoplasmosis), HLA-B27 associated systemic disease evaluation, a...',
+  },
+  {
+    id: 101,
+    nama: 'Osteoarthritis (OA)',
+    kategori: 'Musculoskeletal',
+    kode: 'M15-M19',
+    definisi:
+      'Degenerative joint disease yang ditandai oleh progressive loss of articular cartilage, subchondral bone remodeling, osteophyte formation, dan synovial inflammation. OA adalah penyebab disability musculoskeletal paling umum di dunia. Faktor risiko: us...',
+    gejala: [
+      'Nyeri sendi (deep, aching) yang memburuk dengan aktivitas, membaik dengan istirahat',
+      'Stiffness pagi <30 menit',
+      'Joint swelling (mild, osteophyte-related)',
+      'Crepitus',
+      'Decreased range of motion',
+      'Joint instability',
+      "Deformitas (Heberden's nodes - DIP, Bouchard's nodes - PIP)",
+      'Muscle weakness (quadriceps atrophy pada knee OA)',
+    ],
+    diagnosis:
+      'Pemeriksaan klinis: joint tenderness, crepitus, reduced ROM, osteophytes, effusion (mild), deformity. Rontgen: joint space narrowing, osteophytes, subchondral sclerosis, subchondral cysts. Klasifikasi Kellgren-Lawrence grade 0-4. MRI: untuk early OA, meniscal tears, cartilage assessment. Lab: normal...',
+    terapi:
+      'Non-farmakologis: education, weight loss (5-10% bila overweight - most effective for knee OA), exercise (aerobic, resistance, range of motion, tai chi), physical therapy, occupational therapy, assistive devices (cane, walker), knee brace (unloaders), heat/cold therapy, acupuncture, intra-articular i...',
+    rujukan:
+      'Severe OA (Kellgren-Lawrence grade 3-4) dengan significant disability, failed conservative management, joint replacement consideration, atypical presentation (young age, rapid progression, inflammatory features), suspected secondary OA (avascular nec...',
+  },
+  {
+    id: 102,
+    nama: 'Rheumatoid Arthritis (RA)',
+    kategori: 'Musculoskeletal',
+    kode: 'M05-M06',
+    definisi:
+      'Autoimmune inflammatory arthritis kronis yang ditandai oleh symmetric polyarthritis, morning stiffness prolonged, dan potensi joint destruction. Prevalensi 0.5-1% populasi global, wanita 3x lebih sering. Onset umumnya 30-50 tahun. Dapat melibatkan or...',
+    gejala: [
+      'Symmetric polyarthritis (MCP, PIP, wrist, MTP - small joints)',
+      'Morning stiffness >1 jam',
+      'Joint swelling, warmth, tenderness',
+      'Fatigue, malaise',
+      'Weight loss',
+      'Low-grade fever',
+      'Rheumatoid nodules (elbow, extensor surfaces)',
+      'Sicca symptoms (Sjogren syndrome)',
+      'Pleuritis, pericarditis',
+      'Interstitial lung disease',
+      'Vasculitis (digital ulcers, neuropathy)',
+    ],
+    diagnosis:
+      'ACR/EULAR 2010 criteria: joint involvement (1-10 points), serology (RF and/or anti-CCP - 0-3 points), acute phase reactants (ESR/CRP - 0-1 point), duration >6 weeks (0-1 point). Score >=6 = definite RA. RF: sensitivity 70%, specificity 70%. Anti-CCP: sensitivity 70%, specificity 95% (more specific)....',
+    terapi:
+      'Treat-to-target: remission atau low disease activity. DMARDs (disease-modifying antirheumatic drugs): methotrexate 7.5-25mg/minggu (first-line - folic acid 5mg weekly), sulfasalazine 1-3g/hari, hydroxychloroquine 200-400mg/hari, leflunomide 10-20mg/hari. Biologic DMARDs: TNF inhibitors (adalimumab, ...',
+    rujukan:
+      'Suspected/confirmed RA (perlu rheumatologist for diagnosis and management plan), failure of conventional DMARDs (indication for biologic), severe extra-articular manifestations, pregnancy, severe side effects (bone marrow suppression, hepatotoxicity)...',
+  },
+  {
+    id: 103,
+    nama: 'Low Back Pain (Nyeri Punggung Bawah)',
+    kategori: 'Musculoskeletal',
+    kode: 'M54.5',
+    definisi:
+      'Nyeri di daerah lumbosakral (L1-S1) yang merupakan keluhan muskuloskeletal paling umum di dunia (lifetime prevalence 60-80%). Diklasifikasikan berdasarkan durasi: akut (<6 minggu), subakut (6-12 minggu), kronik (>12 minggu). Etiologi: non-specific me...',
+    gejala: [
+      'Nyeri punggung bawah: dull, aching, stiffness',
+      'Pain radiation to buttock/leg (sciatica - radiculopathy)',
+      'Numbness/tingling (nerve root compression)',
+      'Muscle spasm',
+      'Pain worse with flexion/extension/rotation',
+      'Morning stiffness',
+      'Leg weakness (severe radiculopathy)',
+    ],
+    diagnosis:
+      'Pemeriksaan neurologis: motor strength, sensation (dermatome), reflexes (patellar L3-L4, Achilles S1), straight leg raise (SLR - Lasegue test: positive bila nyeri pada 30-70 degrees hip flexion indicates L5/S1 radiculopathy). Red flags (warrant imaging/referral): age <20 or >50 with new onset, traum...',
+    terapi:
+      'Acute (<6 minggu): tetap aktif (avoid prolonged bed rest - maksimal 1-2 hari), heat/cold therapy, gentle stretching, education. Analgesik: acetaminophen (first-line), NSAID short course (ibuprofen 400-600mg 3x/hari 5-7 hari - PPI protection), muscle relaxant (cyclobenzaprine 5-10mg HS - short term)....',
+    rujukan:
+      'Red flags present, cauda equina syndrome (emergency - urinary retention, saddle anesthesia, bilateral leg weakness), progressive neurologic deficit, suspected fracture/infection/malignancy, persistent radiculopathy >6-12 minggu failed conservative, c...',
+  },
+  {
+    id: 104,
+    nama: 'Fraktur Tulang',
+    kategori: 'Musculoskeletal',
+    kode: 'S02-S92',
+    definisi:
+      'Kerusakan kontinuitas tulang akibat trauma (fraktur traumatik) atau kekuatan tulang yang lemah (fraktur patologis - osteoporosis, metastasis, infeksi). Fraktur closed (kulit utuh) atau open/compound (kulit terbuka - emergency, risk infeksi). Healing ...',
+    gejala: [
+      'Nyeri parah di lokasi fraktur',
+      'Swelling, bruising',
+      'Deformitas/angulation',
+      'Inability to bear weight/use limb',
+      'Crepitus/grating',
+      'Open wound with bone exposure (compound fracture)',
+      'Numbness/tingling (nerve/vascular compromise)',
+      'Compartment syndrome (pain out of proportion, pain with passive stretch - emergency)',
+    ],
+    diagnosis:
+      'Pemeriksaan: deformity, swelling, tenderness, crepitus, abnormal mobility. Neurovascular assessment: distal pulse, capillary refill, sensation, motor function (wajib sebelum dan sesudah immobilization!). Rontgen: AP dan lateral (minimal 2 views), include joint above and below. CT: untuk complex/intr...',
+    terapi:
+      'Emergency: immobilization (splint), analgesia (morphine/fentanyl untuk severe), neurovascular monitoring, tetanus prophylaxis (open fracture), IV antibiotics (open fracture - cefazolin + gentamicin). Reduction: closed reduction untuk displaced fractures, open reduction internal fixation (ORIF) untuk...',
+    rujukan:
+      'SEMUA fraktur open/compound (emergency), dislocation, neurovascular compromise, compartment syndrome (emergency fasciotomy), irreducible fracture, intra-articular fracture, pelvic/acetabular fracture, femoral neck/intertrochanteric fracture (geriatri...',
+  },
+  {
+    id: 105,
+    nama: 'Kecelakaan dan Trauma Soft Tissue (KTS)',
+    kategori: 'Musculoskeletal',
+    kode: 'T00-T14, S00-S99',
+    definisi:
+      'Cedera pada jaringan lunak (kulit, otot, tendon, ligament, syaraf, pembuluh darah) akibat trauma tumpul (blunt) atau tajam (penetrating). Termasuk: lacerasi, abrasio, contusio, strain (cedera otot/tendon), sprain (cedera ligament), hematoma, avulsi, ...',
+    gejala: [
+      'Lacerasi: robekan kulit/jaringan',
+      'Abrasio: goresan permukaan',
+      'Contusio: memar tanpa robekan',
+      'Strain: nyeri otot/tendon, swelling, weakness',
+      'Sprain: nyeri sendi, swelling, instability, reduced ROM',
+      'Hematoma: koleksi darah subkutan',
+      'Avulsi: jaringan terlepas dari attachment',
+      'Open wound with bleeding',
+    ],
+    diagnosis:
+      'Pemeriksaan: tipe dan extent cedera, depth, neurovascular status distal. Wound assessment: size, depth, contamination, foreign body. X-ray: untuk suspected foreign body (glass, metal) atau underlying fracture. CT/MRI: untuk deep tissue injury, compartment syndrome evaluation. Klasifikasi: closed vs ...',
+    terapi:
+      'Lacerasi: irrigation (normal saline 500-1000mL under pressure), debridement, hemostasis, closure (primary - <6-12 jam, delayed primary - 3-5 hari bila contaminated). Tetanus prophylaxis. Antibiotik: amoksisilin-klavulanat untuk dirty wounds, animal/human bites. Strain (Grade I-II): RICE (Rest, Ice 1...',
+    rujukan:
+      'Lacerasi besar/kompleks (face, hand, genitalia), deep wound with tendon/nerve/vessel injury, compartment syndrome, open fracture, degloving injury, animal/human bite dengan infection risk, wound >12 jam requiring delayed closure, facial/orbital/penet...',
+  },
+  {
+    id: 106,
+    nama: 'Batu Ginjal (Nefrolitiasis)',
+    kategori: 'Ginjal & Saluran Kemih',
+    kode: 'N20',
+    definisi:
+      'Pembentukan kristal mineral di saluran kemih (ginjal, ureter, kandung kemih). Prevalensi 5-10% populasi global, pria 2-3x lebih sering. Tipe batu: kalsium oksalat (75%), kalsium fosfat (10%), struvit (infection stones - 10%), asam urat (5%), sistin (...',
+    gejala: [
+      'Renal colic: nyeri tiba-tiba parah di flank, radiates ke groin/testis/labia',
+      'Nyeri tidak menetap (colicky), memburuk dengan movement',
+      'Hematuria (gross atau mikroskopik)',
+      'Nausea, vomiting',
+      'Dysuria, urgency, frequency (bila batu distal ureter/bladder)',
+      'Restlessness (tidak bisa menemukan posisi nyaman)',
+      'Fever (bila infected obstruction - emergency!)',
+    ],
+    diagnosis:
+      'Non-contrast CT KUB (kidney-ureter-bladder): gold standard (sensitivitas dan spesifisitas >95%, detects all stone types, size, location). USG: first-line untuk pregnant dan children (hydronephrosis, stone visualization in kidney/proximal ureter), radiation-free. X-ray KUB: detects radiopaque stones ...',
+    terapi:
+      'Analgesik: NSAID (ketorolac 30-60mg IM/IV - first-line for renal colic, superior to opioids), diclofenac 75mg IM, atau morphine bila NSAID contraindicated. Anti-emetic: ondansetron. Medical expulsive therapy (MET): tamsulosin 0.4mg/hari (alpha-blocker relaxes ureteral smooth muscle - increases stone...',
+    rujukan:
+      'Stone >10mm, failed MET 4-6 minggu, infected obstruction (emergency), bilateral obstruction, solitary kidney, intractable pain, progressive renal impairment, recurrent stones, staghorn calculus, anuria, pediatric stones, atau perlu urologic intervent...',
+  },
+  {
+    id: 107,
+    nama: 'Chronic Kidney Disease (CKD)',
+    kategori: 'Ginjal & Saluran Kemih',
+    kode: 'N18',
+    definisi:
+      'Penurunan fungsi ginjal struktural atau fungsional yang abnormal dengan durasi >3 bulan, manifestasi oleh GFR <60 mL/min/1.73m dan/atau marker kerusakan ginjal (albuminuria, hematuria, abnormal imaging). Prevalensi global 9-12%. Penyebab utama: DM (4...',
+    gejala: [
+      'Umumnya ASIMPTOMATIK pada tahap awal',
+      'Fatigue, weakness',
+      'Anoreksia, nausea, vomiting (uremia)',
+      'Pruritus',
+      'Edema periorbital/peripheral',
+      'Nocturia',
+      'Hypertension',
+      'Anemia (pale, fatigue)',
+      'Bone pain/fractures (renal osteodystrophy)',
+      'Pericardial friction rub (uremic pericarditis)',
+      'Neuropati perifer (restless legs)',
+      'Metallic taste, hiccups',
+    ],
+    diagnosis:
+      'KDIGO criteria: GFR category (G1 >=90, G2 60-89, G3a 45-59, G3b 30-44, G4 15-29, G5 <15 mL/min/1.73m) + albuminuria category (A1 <30, A2 30-300, A3 >300 mg/g creatinine). eGFR (CKD-EPI atau MDRD formula). Urine albumin/creatinine ratio (UACR). Renal ultrasound: small echogenic kidneys (chronic), enl...',
+    terapi:
+      'Slow progression: kontrol BP target <130/80 (ACE-I/ARB - lini pertama, renoprotective, reduces proteinuria), kontrol glikemia (HbA1c target ~7%), smoking cessation, weight loss, exercise. Diet: protein restriction 0.8g/kg/hari (non-dialysis), sodium <2g/hari, potassium dan phosphate restriction bila...',
+    rujukan:
+      'eGFR <30 (G4-G5), rapid progression (eGFR decline >5 mL/min/tahun), albuminuria A3, hematuria with casts, suspected glomerulonephritis, resistant hypertension, electrolyte abnormalities refractory, anemia requiring ESA, mineral bone disorder, prepara...',
+  },
+  {
+    id: 108,
+    nama: 'Benign Prostatic Hyperplasia (BPH)',
+    kategori: 'Ginjal & Saluran Kemih',
+    kode: 'N40',
+    definisi:
+      'Pembesaran non-malignant kelenjar prostat yang umum terjadi pada pria dengan penuaan (50% pria >50 tahun, 90% >80 tahun). BPH menyebabkan obstructive dan irritative voiding symptoms akibat kompresi uretra prostatik dan bladder outlet obstruction. Dap...',
+    gejala: [
+      'Obstructive: weak stream, hesitancy, intermittency, straining, incomplete emptying, dribbling',
+      'Irritative: frequency, urgency, nocturia, dysuria',
+      'Acute urinary retention (AUR - painful, emergency catheterization)',
+      'Chronic urinary retention (painless, large residual volume)',
+      'Hematuria',
+      'Bladder stones',
+      'UTI recurrent',
+    ],
+    diagnosis:
+      'IPSS (International Prostate Symptom Score): mild 0-7, moderate 8-19, severe 20-35. DRE (digital rectal examination): enlarged, smooth, rubbery prostate. PSA: may be mildly elevated (rule out cancer - PSA >4 or abnormal DRE needs urology referral). Residual urine volume (bladder scan): >100-150mL si...',
+    terapi:
+      'Watchful waiting: mild symptoms (IPSS <7), education, lifestyle (reduce evening fluids, avoid caffeine/alcohol, bladder training, double voiding). Alpha-blocker (lini pertama symptomatik): tamsulosin 0.4mg/hari (selective for prostate, fewer orthostatic side effects), alfuzosin, doxazosin, terazosin...',
+    rujukan:
+      'Acute urinary retention, recurrent UTI, bladder stones, hydronephrosis/renal impairment, hematuria, elevated PSA/suspicious DRE, failed medical therapy (maximal 2 classes), large prostate (>80mL), atau perlu surgical intervention.',
+  },
+  {
+    id: 109,
+    nama: 'Gagal Ginjal Akut (Acute Kidney Injury)',
+    kategori: 'Ginjal & Saluran Kemih',
+    kode: 'N17',
+    definisi:
+      'Penurunan fungsi ginjal mendadak (dalam hitungan jam sampai hari) yang ditandai oleh kenaikan kreatinin serum >=0.3 mg/dL dalam 48 jam atau >=1.5x dari baseline, atau penurunan produksi urine <0.5 mL/kg/jam selama 6 jam. Diklasifikasikan berdasarkan ...',
+    gejala: [
+      'Oliguria (<400mL/hari) atau anuria',
+      'Edema (periorbital, peripheral, pulmonary)',
+      'Nausea, vomiting, anorexia',
+      'Fatigue, confusion',
+      'Dyspnea (pulmonary edema)',
+      'Hypertension',
+      'Pericarditis (chest pain, friction rub)',
+      'Hyperkalemia symptoms (palpitations, weakness, EKG changes - peaked T waves, widened QRS)',
+      'Uremic symptoms (pruritus, asterixis, bleeding)',
+      'Loin pain/flank pain (pyelonephritis, obstruction)',
+    ],
+    diagnosis:
+      'KDIGO AKI criteria: Stage 1 (SCr 1.5-1.9x baseline or >=0.3mg/dL increase), Stage 2 (2.0-2.9x), Stage 3 (>=3x or SCr >=4mg/dL or initiation of RRT or eGFR <35 in children). Urinalysis: muddy brown casts (ATN), RBC casts (glomerulonephritis), WBC casts (AIN/pyelonephritis), eosinophils (AIN). BUN/Cr ...',
+    terapi:
+      'Prerenal: fluid resuscitation (isotonic saline - careful in heart failure), stop nephrotoxins, treat underlying cause (bleeding, sepsis, dehydration). Postrenal: catheterization (Foley or suprapubic) untuk relief obstruction, stent/nephrostomy bila ureteric obstruction. Intrinsik: supportive - fluid...',
+    rujukan:
+      'Stage 3 AKI, hyperkalemia refractory, severe acidosis, fluid overload with pulmonary edema, uremic complications, suspected glomerulonephritis/AIN requiring biopsy, need for dialysis, rhabdomyolysis, tumor lysis syndrome, pregnancy, atau perlu nephro...',
+  },
+  {
+    id: 110,
+    nama: 'Stunting (Pendek)',
+    kategori: 'Gizi & Tumbuh Kembang',
+    kode: 'E45',
+    definisi:
+      'Gangguan pertumbuhan linear yang ditandai oleh panjang/tinggi badan menurut umur (PB/U atau TB/U) <-2 SD dari median WHO Child Growth Standards. Stunting adalah indikator kronik malnutrisi akibat asupan gizi tidak adekuat dan/atau infeksi berulang da...',
+    gejala: [
+      'Tinggi badan lebih pendek dari anak seusianya',
+      'Tampak lebih muda dari usia kronologis',
+      'Pertumbuhan melambat/terhenti pada growth chart',
+      'Bisa normal weight atau overweight untuk height (stunting with normal weight-for-height)',
+    ],
+    diagnosis:
+      'Anthropometri: PB/U atau TB/U <-2 SD (stunting), <-3 SD (stunting berat). Z-score pada growth chart WHO. Growth velocity: <4-5 cm/tahun (anak 2-5 tahun) atau <5 cm/tahun (anak >5 tahun) menandakan growth failure. Evaluasi etiologi: dietary intake assessment, medical history (diare kronik, TB, celiac...',
+    terapi:
+      'Nutrisi: peningkatan asupan protein dan energi, breastfeeding promotion, complementary feeding education, micronutrient supplementation (zinc, iron, vitamin A). Sanitasi dan hygiene (WASH) untuk mengurangi infeksi. Pemberian makanan tambahan (PMT) untuk balita. Pemulihan: catch-up growth mungkin ter...',
+    rujukan:
+      'Severe stunting (<-3 SD), stunting dengan growth velocity abnormal, suspicion endocrine disorder (hypothyroidism, growth hormone deficiency), stunting dengan abnormal body proportions, stunting yang tidak responsif terhadap intervensi gizi 3-6 bulan,...',
+  },
+  {
+    id: 111,
+    nama: 'Wasting (Kurus / Gizi Buruk Akut)',
+    kategori: 'Gizi & Tumbuh Kembang',
+    kode: 'E40-E43',
+    definisi:
+      'Kekurangan gizi akut yang ditandai oleh berat badan menurut tinggi badan (BB/TB atau BB/PB) <-2 SD dari median WHO. Dapat ringan-moderat (MAM - moderate acute malnutrition) atau berat (SAM - severe acute malnutrition dengan BB/TB <-3 SD atau edema bi...',
+    gejala: [
+      'Berat badan sangat rendah untuk tinggi badan',
+      'Visible severe wasting (tulang rusuk, tulang belakang, tulang pipi menonjol)',
+      'Marasmus: severe wasting tanpa edema (skin and bones appearance)',
+      'Kwashiorkor: edema bilateral (kaki, tangan, wajah), hair changes (flag sign), skin lesions (flaky paint dermatosis), hepatomegali',
+      'Lethargy, irritability',
+      'Anoreksia',
+      'Diare, vomiting',
+      'Hypothermia, bradycardia',
+      'Infeksi berulang (IMT, diare)',
+    ],
+    diagnosis:
+      'Anthropometri: BB/TB atau BB/PB <-2 SD (wasting), <-3 SD (SAM). MUAC (mid-upper arm circumference): <11,5 cm (anak 6-59 bulan = SAM), 11,5-12,5 cm (MAM). Edema bilateral: grade + (mild) sampai +++ (severe). WHO criteria SAM: BB/TB <-3 SD atau edema bilateral atau MUAC <11,5 cm. Complications: hypogl...',
+    terapi:
+      "Inpatient (WHO protocol - bila komplikasi): F-75 (starter formula: 75 kcal/100mL, low protein, low sodium) -> stabilisasi 2-7 hari -> F-100 (100 kcal/100mL, higher protein) -> transisi -> RUTF (ready-to-use therapeutic food - Plumpy'Nut) untuk outpatient. Antibiotik: amoksisilin/ampisilin untuk semu...",
+    rujukan:
+      'SEMUA SAM dengan komplikasi ke fasilitas rujukan (hypoglycemia, hypothermia, severe infection, severe dehydration, edema grade ++/+++, shock, altered consciousness, heart failure). SAM tanpa komplikasi bisa di-manage di Puskesmas dengan OTP/RUTF prog...',
+  },
+  {
+    id: 112,
+    nama: 'Vaginitis (Keputihan)',
+    kategori: 'Reproduksi',
+    kode: 'N76-N77',
+    definisi:
+      'Inflamasi vagina yang ditandai oleh keputihan (vaginal discharge), gatal, dan iritasi. Tiga penyebab utama: bakterial vaginosis (BV - 40-50%), vulvovaginal candidiasis (VVC - 20-25%), dan trichomoniasis (15-20%). pH vagina normal 3,8-4,5 (asam - main...',
+    gejala: [
+      'Vulvar/vaginal itching',
+      'Abnormal discharge: amount, color, odor, consistency',
+      'BV: thin, gray, homogenous discharge, fishy odor (positive whiff test)',
+      'Candidiasis: thick, white, curdy (cottage cheese), odorless',
+      'Trichomoniasis: frothy, yellow-green, malodorous',
+      'Dysuria, dyspareunia',
+      'Vulvar erythema/edema (candidiasis)',
+      'Postcoital bleeding (trichomoniasis)',
+    ],
+    diagnosis:
+      'Pemeriksaan speculum: karakteristik discharge, vulvar/vaginal erythema. pH vagina: >4,5 (BV dan trichomoniasis), normal <4,5 (candidiasis). Wet mount/KOH: clue cells (BV - epithelial cells coated with bacteria), pseudohyphae/yeast (candidiasis), motile trichomonads (trichomoniasis). Whiff test (amin...',
+    terapi:
+      'BV: metronidazole 500mg 2x/hari 7 hari (oral), atau metronidazole gel 0,75% 5g intravaginal 1x/hari 5 hari, atau klindamisin krim 2% 5g intravaginal HS 7 hari. Candidiasis: azole topikal (klotrimazol 1% cream/suppositori 7 hari, mikonazol 2% 7 hari, tiokonazol 1 hari) atau fluconazol 150mg oral dosi...',
+    rujukan:
+      'Recurrent/persistent vaginitis, atrophic vaginitis (postmenopause - estrogen therapy), desquamative inflammatory vaginitis, suspicion STI (gonorrhea, chlamydia, syphilis, HIV), pelvic inflammatory disease, pregnancy dengan vaginitis berat, atau perlu...',
+  },
+  {
+    id: 113,
+    nama: 'Gonore (Kencing Nanah)',
+    kategori: 'Reproduksi',
+    kode: 'A54',
+    definisi:
+      'Infeksi menular seksual (IMS) yang disebabkan oleh Neisseria gonorrhoeae (diplococcus gram-negatif). Menyerang mukosa genital, rektal, faringeal, dan konjungtiva. Sangat menular. Prevalensi gonore di Indonesia signifikan di populasi high-risk. Dapat ...',
+    gejala: [
+      'Uretritis: dysuria, urethral discharge (purulent, yellow-green)',
+      'Servisitis: mucopurulent cervical discharge, cervical friability',
+      'Epididymitis: scrotal pain, swelling (pria)',
+      'Proktitis: anal discharge, pain, tenesmus (MSM)',
+      'Faringitis: sore throat (asymptomatic in 90%)',
+      'PID: lower abdominal pain, fever, adnexal tenderness',
+      'DGI: arthritis-dermatitis syndrome (pustular rash, migratory polyarthralgia, tenosynovitis)',
+      'Ophthalmia neonatorum: purulent conjunctivitis pada neonatus',
+    ],
+    diagnosis:
+      'NAAT (nucleic acid amplification test): gold standard - urine, urethral/cervical/rectal/pharyngeal swab (sensitivitas dan spesifisitas >95%). Gram stain: intracellular gram-negative diplococci (pria urethral - sensitivitas 90-95%, serviks - 50%). Culture: untuk antimicrobial susceptibility testing (...',
+    terapi:
+      'Dual therapy (CDC 2021): ceftriaxone 500mg IM dosis tunggal (1g bila >=150kg) + azitromisin 1g PO dosis tunggal (atau doxycycline 100mg 2x/hari 7 hari untuk klamidia cover - karena co-infection common). Alternatif bila ceftriaxone allergy: gentamicin 240mg IM + azitromisin 2g PO. NO fluorokuinolone ...',
+    rujukan:
+      'PID, DGI, epididymitis/orchitis, gonococcal arthritis, ophthalmia neonatorum, treatment failure/suspected resistance, pregnancy, severe systemic infection, atau perlu spesialis IMS/dermatovenerologi.',
+  },
+  {
+    id: 114,
+    nama: 'Sifilis',
+    kategori: 'Reproduksi',
+    kode: 'A50-A53',
+    definisi:
+      'Infeksi menular seksual kronis yang disebabkan oleh Treponema pallidum (spirochete). Diklasifikasikan berdasarkan stadium: primer (chancre), sekunder (rash, condyloma lata), laten (asymptomatik), tersier (gumma, kardiovaskular, neurosifilis). Transmi...',
+    gejala: [
+      'Primer: chancre (painless ulcer with indurated base, clean base, regional lymphadenopathy) - 3 weeks post-exposure, self-heals 3-6 weeks',
+      'Sekunder: rash makulopapular (trunk, palms, soles - pathognomonic), condyloma lata (moist wart-like lesions), mucous patches, generalized lymphadenopathy, fever, malaise',
+      'Laten: asimptomatik, seropositif',
+      'Tersier: gumma (destructive granulomatous lesions), aortitis, tabes dorsalis, general paresis',
+    ],
+    diagnosis:
+      'Non-treponemal test (screening): VDRL atau RPR (quantitative - titer reflects disease activity, monitor treatment response). Treponemal test (konfirmasi): TPPA/TPHA, FTA-ABS, EIA/CIA (lifelong positive - tidak untuk monitor). Dark-field microscopy: dari chancre (spirochetes motile - diagnosis defini...',
+    terapi:
+      'Benzatin penisilin G 2,4 juta unit IM dosis tunggal (primary, secondary, early latent <1 year). Benzatin penisilin G 2,4 juta unit IM mingguan x 3 dosis (late latent >1 year, unknown duration, tersier). Neurosifilis: aqueous penisilin G 3-4 juta unit IV 4 jam x 10-14 hari. Alergi penisilin: doxycycl...',
+    rujukan:
+      'Neurosifilis, kardiovaskular sifilis, gumma, sifilis kongenital, pregnancy (desensitization ke penisilin bila alergi - penisilin adalah satu-satunya obat yang efektif untuk prevent congenital syphilis), HIV coinfection, treatment failure (titer tidak...',
+  },
+  {
+    id: 115,
+    nama: 'Frambusia (Yaws)',
+    kategori: 'Tropis & Infeksi',
+    kode: 'A66',
+    definisi:
+      'Infeksi kronis kulit dan tulang yang disebabkan oleh Treponema pallidum subsp. pertenue (identik dengan T. pallidum tetapi non-venereal). Ditularkan melalui kontak kulit-ke-kulit, terutama pada anak-anak di daerah tropis lembab. Indonesia termasuk da...',
+    gejala: [
+      'Primer: papul/mother yaw yang membesar menjadi ulcer dengan krusta tebal kuning coklat (raspberry-like)',
+      'Papul dan nodul di sekitar mulut, hidung, tubuh (secondary yaws - contagious)',
+      'Papillomata di axillae, groin',
+      'Osteoperiostitis (tulang terasa nyeri, thickening)',
+      'Tersier: gummatous lesions, juxta-articular nodules, bone destruction (saddle nose, saber shin), gangosa (destruction nasal maxillary)',
+    ],
+    diagnosis:
+      'Pemeriksaan klinis: lesi khas. Dark-field microscopy: spirochetes dari lesi aktif. Serologi: non-treponemal (VDRL/RPR) dan treponemal (TPPA) - cross-reactive dengan sifilis (perlu history untuk differentiate). Rapid diagnostic test (RDT) untuk yaws tersedia. Differential: sifilis (venereal history),...',
+    terapi:
+      'Azitromisin 30mg/kg oral dosis tunggal (maks 2g) - WHO preferred (single oral dose, easier than IM penisilin). Alternatif: benzatin penisilin G 1,2 juta unit IM (anak) atau 2,4 juta unit IM (dewasa). Total community treatment: azitromisin untuk seluruh komunitas bila prevalence >10%. Contact tracing...',
+    rujukan:
+      'Tersier yaws dengan bone destruction, refractory lesions, diagnosis tidak pasti, atau perlu evaluasi orthopedic untuk bone deformities.',
+  },
+  {
+    id: 116,
+    nama: 'Difteri',
+    kategori: 'Tropis & Infeksi',
+    kode: 'A36',
+    definisi:
+      'Infeksi akut saluran napas atas yang disebabkan oleh Corynebacterium diphtheriae yang memproduksi eksotoksin diphtheria (potent inhibitor protein synthesis). Ditandai oleh pseudomembran abu-abu tebal di faring/tonsilar yang dapat menyebabkan obstruks...',
+    gejala: [
+      'Demam ringan',
+      'Sore throat',
+      'Pseudomembran abu-abu tebal di tonsil/faring (bisa meluas ke uvula, soft palate, larynx - membran kuat menempel, berdarah bila dicoba lepaskan)',
+      'Bull neck (edema leher akibat lymphadenopati besar)',
+      'Stridor, dyspnea (laryngeal involvement - life-threatening)',
+      'Tachycardia out of proportion to fever (myocarditis)',
+      'Neuropati (palatal palsy, paralysis akomodasi, peripheral neuropathy - 2-12 minggu)',
+    ],
+    diagnosis:
+      'Pemeriksaan: pseudomembran khas. Kultur throat swab (tellurite medium - black colonies). Toxin production test (Elek test). PCR untuk rapid detection. EKG: arrythmia, ST-T changes, AV block (myocarditis). CBC: leukocytosis. Throat swab untuk PCR/culture dari kontak erat.',
+    terapi:
+      'Antitoxin diphtheria (DAT): 20.000-80.000 unit IV/IM (dosis berdasarkan severity dan duration - semakin berat/lama, semakin tinggi dosis). WAJIB diberikan segera (tetap bermanfaat meski beberapa hari setelah onset - toxin sudah beredar). Antibiotik: eritromisin 500mg 4x/hari 14 hari, atau penisilin ...',
+    rujukan:
+      'SEMUA kasus difteri ke RS (komplikasi myocarditis dan neuropati tidak bisa diprediksi). Respiratory obstruction, severe disease, bull neck, myocarditis, neuropati, atau perlu ICU care.',
+  },
+  {
+    id: 117,
+    nama: 'Meningitis Bakteri',
+    kategori: 'Tropis & Infeksi',
+    kode: 'G00, G03',
+    definisi:
+      'Infeksi bakteri pada meninges (membran pelindung otak dan sumsum tulang belakang) yang merupakan emergency medis dengan mortality 10-30% walaupun dengan terapi adekuat. Penyebab utama: S. pneumoniae (paling umum dewasa), N. meningitidis (epidemic pot...',
+    gejala: [
+      'Sakit kepala parah dan persistent',
+      'Fever',
+      'Nuchal rigidity (kaku kuduk)',
+      'Photophobia',
+      'Altered mental status (confusion, lethargy, irritability)',
+      'Muntah proyektil',
+      'Seizures',
+      "Kernig's sign (resistance to knee extension with hip flexed)",
+      "Brudzinski's sign (hip/knee flexion on neck flexion)",
+      'Petechial/purpuric rash (meningococcal - pathognomonic)',
+      'Focal neurologic deficits',
+    ],
+    diagnosis:
+      'LP (lumbar puncture): CSF analysis - gold standard. Bakteri meningitis: CSF cloudy, opening pressure elevated, WBC >1000 (PMN predominance), protein elevated, glucose low (<40mg/dL or CSF:blood glucose ratio <0.4). Gram stain: 60-90% sensitivitas. Culture: gold standard for identification and sensit...',
+    terapi:
+      'EMPIRIC antibiotic SECEPAT MUNGKIN (sebelum LP bila delay >30 menit - do not delay antibiotics for LP/CT): ceftriaxone 2g IV 12 jam + vancomycin 15-20mg/kg IV 8-12 jam. Add ampicillin 2g IV 4 jam bila age <3 bulan atau >50 tahun atau immunocompromised (for Listeria). Add dexamethasone 0.15mg/kg IV q...',
+    rujukan:
+      'SEMUA suspected bacterial meningitis ke RS SECEPATNYA (emergency). Septic shock, decreased consciousness (GCS <12), seizures, focal neurologic deficits, signs of increased ICP, immunocompromised host, neonatal meningitis, healthcare-associated mening...',
+  },
+  {
+    id: 118,
+    nama: 'Cacar Air (Varicella)',
+    kategori: 'Tropis & Infeksi',
+    kode: 'B01',
+    definisi:
+      'Infeksi akut oleh varicella-zoster virus (VZV) yang sangat menular (R0 10-12). Primarily affects children (<10 tahun - 90% kasus). Transmisi droplet dan contact langsung dengan vesikel. Cacar air biasanya self-limiting 5-10 hari pada anak sehat, teta...',
+    gejala: [
+      'Prodrom: mild fever, malaise 1-2 hari sebelum rash (lebih prominent pada dewasa)',
+      "Rash: vesikel pada dasar eritema ('dew drop on rose petal')",
+      'Centripetal distribution (trunk, face, scalp - dense; extremities - sparse)',
+      'Crops of lesions pada berbagai tahap (papul -> vesikel -> pustul -> krusta)',
+      'Itchy',
+      'Oral mucosa lesions',
+      'Fever',
+    ],
+    diagnosis:
+      'Diagnosis klinis: rash karakteristik (vesikel pada eritematous base, centripetal, multiple stages). Tzanck smear: multinucleated giant cells (tidak membedakan HSV/VZV). PCR dari vesikel fluid: definitive. Direct fluorescent antibody (DFA). Serology IgM: untuk atypical cases. Perlu dibedakan dengan: ...',
+    terapi:
+      'Anak sehat: supportive (antihistamin untuk gatal - cetirizine, calamine lotion, oatmeal bath, nail trimming, loose clothing). Antipiretik: acetaminophen (HINDARI aspirin - Reye syndrome risk). Antiviral: acyclovir 20mg/kg (maks 800mg) 4x/hari 5 hari - untuk: dewasa, adolescents, chronic skin/lung di...',
+    rujukan:
+      'Immunocompromised, adults with severe disease, primary varicella pneumonia, encephalitis, hemorrhagic varicella, bacterial superinfection (cellulitis, sepsis), neonatal varicella (maternal rash 5 hari before to 2 hari after delivery - emergency), pre...',
+  },
+  {
+    id: 119,
+    nama: 'ISPA pada Anak',
+    kategori: 'Kesehatan Anak',
+    kode: 'J06',
+    definisi:
+      'Infeksi saluran pernapasan akut pada anak yang merupakan penyebab kunjungan ke fasilitas kesehatan paling umum pada balita. ISPA pada anak mencakup spectrum dari common cold ringan sampai pneumonia berat. Penyebab utama: virus (RSV, rhinovirus, adeno...',
+    gejala: [
+      'Batuk',
+      'Runny nose/congestion',
+      'Fever',
+      'Tachypnea (RR increased sesuai umur)',
+      'Retraksi dinding daga (subcostal, intercostal, suprasternal)',
+      'Nasal flaring',
+      'Grunting',
+      'Cyanosis',
+      'Stridor (laringitis/croup)',
+      'Wheezing (bronchiolitis/asthma)',
+      'Poor feeding',
+      'Irritability/lethargy',
+      'Vomiting',
+    ],
+    diagnosis:
+      'Pemeriksaan: tanda distress pernapasan (tachypnea, retraksi, nasal flaring, grunting). Auskultasi: crackles, wheeze, decreased breath sounds. Pulse oximetry: SpO2 <90% severe. Rontgen thoraks bila pneumonia dicurigai: infiltrat, consolidation. WHO IMCI criteria untuk pneumonia: cough + difficulty br...',
+    terapi:
+      'Batuk biasa (no pneumonia): no antibiotics, home care, fluids, continue feeding. Pneumonia (tachypnea, no chest indrawing): amoxicillin 40mg/kg 2x/hari 3 hari (first-line oral). Severe pneumonia (chest indrawing): refer to hospital for injectable antibiotics (ampicillin + gentamicin, atau ceftriaxon...',
+    rujukan:
+      'Severe pneumonia (chest indrawing), very severe disease (danger signs: cyanosis, unable to drink, convulsions, lethargy/unconsciousness, severe malnutrition), SpO2 <90%, stridor at rest, signs of heart failure, persistent fever >3 days, age <2 months...',
+  },
+  {
+    id: 120,
+    nama: 'Diare Akut pada Anak',
+    kategori: 'Kesehatan Anak',
+    kode: 'A09',
+    definisi:
+      'Penurunan konsistensi dan/atau peningkatan frekuensi buang air besar (>=3x dalam 24 jam) pada anak berusia <5 tahun, biasanya berlangsung <14 hari. Penyebab utama: virus (rotavirus - paling umum sebelum vaksinasi, norovirus, adenovirus), bakteri (E. ...',
+    gejala: [
+      'Frekuensi BAB meningkat (>=3x/24 jam)',
+      'Feses cair/encer',
+      'Vomiting',
+      'Fever',
+      'Abdominal pain/cramping',
+      'Blood/mucus in stool (dysentery - Shigella, amoeba)',
+      'Dehydration: thirsty, dry mouth, decreased urine output, sunken eyes, decreased skin turgor, irritability/lethargy',
+    ],
+    diagnosis:
+      'Evaluasi dehidrasi WHO: looking (thirsty, drinks eagerly/lethargic), skin pinch (goes back immediately/very slowly), counting (tears present/absent). Klasifikasi: no dehydration, some dehydration, severe dehydration. Stool microscopy: leukocytes, RBC, parasites. Stool culture bila bloody diarrhea at...',
+    terapi:
+      'Terapi utama: ORS (oral rehydration salts) - WHO low-osmolarity ORS 75 mL/kg dalam 4 jam untuk some dehydration, atau 100 mL/kg untuk severe dehydration (with IV/NGT). Zinc 20mg/hari (10mg untuk <6 bulan) selama 10-14 hari - reduces duration and severity. Continue feeding (breastfeeding, usual diet)...',
+    rujukan:
+      'Severe dehydration (shock, lethargy/unconscious), some dehydration yang tidak bisa minum ORS, bloody diarrhea dengan severe illness, persistent diarrhea >14 hari, severe malnutrition, age <2 months, signs of sepsis, atau failed oral rehydration.',
+  },
+  {
+    id: 121,
+    nama: 'Sindrom Iritasi Usus Besar (IBS)',
+    kategori: 'Saluran Cerna',
+    kode: 'K58',
+    definisi:
+      'Gangguan fungsional saluran cerna yang ditandai oleh nyeri perut berulang terkait dengan defekasi dan/atau perubahan frekuensi/bentuk feses, tanpa ada lesi struktural yang abnormal. Prevalensi global 10-15%. Diklasifikasikan berdasarkan tipe feses do...',
+    gejala: [
+      'Nyeri perut (kram/kolik) yang membaik setelah defekasi',
+      'Perubahan frekuensi defekasi',
+      'Perubahan bentuk/konsistensi feses (Bristol Stool Scale)',
+      'Bloating/distensi abdomen',
+      'Mucus dalam feses',
+      'Urgency',
+      'Feeling of incomplete evacuation',
+      'Symptom membaik saat tidur',
+      'Fatigue',
+    ],
+    diagnosis:
+      'Rome IV criteria: recurrent abdominal pain >=1 hari/minggu dalam 3 bulan terakhir, associated with >=2 dari: related to defekasi, associated with change in stool frequency, associated with change in stool form. Alarm features: weight loss, bleeding, anemia, fever, family history IBD/colorectal cance...',
+    terapi:
+      'Diet: low FODMAP diet (fermentable oligo-, di-, mono-saccharides and polyols - eliminate then rechallenge), fiber supplementation (soluble fiber like psyllium - insoluble fiber may worsen symptoms), regular meals, adequate hydration, limit caffeine/alcohol/spicy/fatty foods. Lifestyle: exercise, str...',
+    rujukan:
+      'Alarm features present, refractory IBS (failed dietary + pharmacologic + psychological interventions), suspicion IBD/celiac/microscopic colitis, significant weight loss, atau perlu gastroenterology evaluation.',
+  },
+  {
+    id: 122,
+    nama: 'Hernia',
+    kategori: 'Saluran Cerna',
+    kode: 'K40-K46',
+    definisi:
+      'Protrusi organ atau jaringan melalui kelemahan pada dinding otot atau jaringan ikat yang mengelilinginya. Hernia inguinalis paling umum (75% - pria 25x lebih sering), diikuti oleh femoralis, umbilikalis, insisional, dan hiatus. Hernia dapat reducible...',
+    gejala: [
+      'Benjolan di area hernia (inguinal, umbilical, femoral)',
+      'Benjolan membesar saat straining/coughing/standing',
+      'Benjolan mengecil/masuk saat lying down (reducible)',
+      'Nyeri atau discomfort (worse with activity)',
+      'Dragging sensation',
+      'Strangulated hernia: severe pain, tender, non-reducible, erythematous skin, nausea/vomiting (obstruction), fever, tachycardia (emergency!)',
+    ],
+    diagnosis:
+      'Pemeriksaan fisik: inspeksi dan palpasi benjolan, reducibility test, cough impulse. Inguinal hernia: differentiate direct (through Hesselbach triangle, medial to inferior epigastric vessels, rarely strangulates) vs indirect (through deep inguinal ring, lateral to inferior epigastric vessels, can str...',
+    terapi:
+      'Reducible hernia: elective surgical repair (herniorrhaphy - Lichtenstein tension-free mesh repair adalah gold standard, laparoscopic TEP/TAPP untuk bilateral/recurrent). Truss (hernia belt): only for patients unfit for surgery (not recommended as definitive treatment). Strangulated/incarcerated hern...',
+    rujukan:
+      'SEMUA hernia untuk evaluasi bedah. Emergency untuk: strangulated hernia (severe pain, non-reducible, erythema, signs of obstruction/peritonitis), incarcerated hernia with signs of bowel obstruction, femoral hernia (high strangulation risk), scrotal h...',
+  },
+  {
+    id: 123,
+    nama: 'Preeklamsia & Eklamsia',
+    kategori: 'Reproduksi',
+    kode: 'O14-O15',
+    definisi:
+      'Gangguan hipertensi spesifik kehamilan yang ditandai oleh hipertensi (BP >=140/90 pada >=2 kali dengan interval >=4 jam) setelah 20 minggu kehamilan + proteinuria (>=300mg/24jam atau protein/kreatinin ratio >=0,3) dan/atau organ dysfunction (thromboc...',
+    gejala: [
+      'Hipertensi',
+      'Proteinuria',
+      'Edema (wajah, tangan, kaki - meski edema bukan lagi criteria diagnostic)',
+      'Sakit kepala parah',
+      'Gangguan penglihatan (blur, flashing lights, scotomata)',
+      'Nyeri epigastrium/RUQ (stretching Glisson capsule)',
+      'Nausea, vomiting',
+      'Oliguria',
+      'Hyperreflexia',
+      'Eklamsia: kejang tonik-klonik',
+      'HELLP syndrome: Hemolysis, Elevated LFT, Low Platelet',
+    ],
+    diagnosis:
+      'BP >=140/90 (sitting, after rest, proper cuff size) x 2 measurements >=4 hours apart. Proteinuria: dipstick >=1+ (screening) confirmed dengan urine protein/creatinine ratio >=0,3 atau 24-hour urine >=300mg. Lab: CBC (platelet <100.000 = severe feature), LFT (AST/ALT >2x upper limit), creatinine (>1,...',
+    terapi:
+      'Definitif: persalinan (delivery) - timing depends on severity and gestational age. Mild preeclampsia >=37 minggu: delivery. Severe preeclampsia >=34 minggu: delivery. <34 minggu: expectant management dengan strict monitoring bila maternal-fetal condition stable (corticosteroid untuk lung maturity - ...',
+    rujukan:
+      'SEMUA preeklampsia/eklamsia ke fasilitas rujukan dengan fasilitas obstetric emergency. Eklamsia (emergency), severe preeclampsia, HELLP syndrome, eclampsia, gestational age <34 weeks, non-reassuring fetal status, DIC, pulmonary edema, acute renal fai...',
+  },
+  {
+    id: 124,
+    nama: 'Anemia pada Kehamilan',
+    kategori: 'Reproduksi',
+    kode: 'O99.0',
+    definisi:
+      'Anemia yang terjadi selama kehamilan, didefinisikan sebagai Hb <11 g/dL pada trimester pertama dan ketiga, atau <10,5 g/dL pada trimester kedua. Prevalensi anemia kehamilan di Indonesia 48,9% (RISKESDAS 2018). Penyebab utama: defisiensi besi (80%), d...',
+    gejala: [
+      'Fatigue, lemah',
+      'Pucat (konjungtiva, lidah)',
+      'Pusing, sakit kepala',
+      'Dyspnea ringan',
+      'Palpitasi',
+      'Edema',
+      'Iritabilitas',
+      'Craving non-food items (pica)',
+      'Sindrom restless legs',
+    ],
+    diagnosis:
+      'CBC: Hb <11 g/dL (T1/T3) atau <10,5 g/dL (T2), MCV <80 fL (mikrositik). Ferritin <30 ng/mL. Blood film: mikrositik hipokromik.',
+    terapi:
+      'Suplementasi besi: 30-60mg elemental iron + 400mcg folic acid 1x/hari. Bila anemia terkonfirmasi: 120mg elemental iron/hari + folat 400-500mcg/hari. Vitamin C 250mg meningkatkan absorbsi. Parenteral iron bila oral tidak toleransi.',
+    rujukan:
+      'Hb <7 g/dL, tidak responsif terapi oral 4-6 minggu, need for transfusion, hemolisis, suspicion thalassemia.',
+  },
+  {
+    id: 125,
+    nama: 'Hiperemesis Gravidarum',
+    kategori: 'Reproduksi',
+    kode: 'O21',
+    definisi:
+      'Muntah parah dan persisten selama kehamilan yang mengganggu status nutrisi dan hidrasi. Dapat menyebabkan dehidrasi, elektrolit imbalance, weight loss >5% prepregnancy weight, dan Wernicke encephalopathy.',
+    gejala: [
+      'Muntah parah persistent',
+      'Dehidrasi: dry mucosa, tachycardia, orthostatic hypotension',
+      'Weight loss >5%',
+      'Ketonuria',
+      'Elektrolit imbalance',
+      'Thiamine deficiency: Wernicke encephalopathy',
+      'Mallory-Weiss tear',
+    ],
+    diagnosis:
+      'Kriteria: persistent vomiting + weight loss >5% prepregnancy weight + ketonuria + electrolyte imbalance. Pregnancy test, ultrasound, lab: CBC, electrolytes, LFT, TSH, urinalysis.',
+    terapi:
+      'Outpatient: dietary modification, vitamin B6 10-25mg 3x/hari, doxylamine 12,5mg HS. Inpatient: IV rehydrasi (SEBELUM glucose beri thiamine 100mg IV!), electrolyte replacement, antiemetik IV (ondansetron, metoclopramide, promethazine), refeeding gradual.',
+    rujukan:
+      'Severe dehydration, weight loss >5%, intractable vomiting, electrolyte imbalance, Wernicke encephalopathy, hematemesis.',
+  },
+  {
+    id: 126,
+    nama: 'Impetigo & Ektima',
+    kategori: 'Kulit',
+    kode: 'L01',
+    definisi:
+      'Infeksi bakteri superfisial kulit yang sangat menular. Penyebab: Staphylococcus aureus (termasuk MRSA) dan Streptococcus pyogenes. Impetigo non-bullosa: vesikulopustul dengan krusta honey-colored. Ektima: ulcer deeper infection.',
+    gejala: [
+      'Lesions vesikulopustular yang pecah',
+      'Krusta honey-colored tebal',
+      'Bula (bullosa)',
+      'Gatal',
+      'Distribusi: wajah, tangan, ekstremitas',
+      'Lymphadenopati regional',
+    ],
+    diagnosis:
+      'Diagnosis klinis. Gram stain: Gram-positive cocci. Kultur: identifikasi patogen dan sensitivitas.',
+    terapi:
+      'Lokalized: mupirocin 2% ointment 3x/hari 5 hari. Extensive: oral antibiotics - dikloksasilin, sefaleksin. MRSA: TMP-SMX, klindamisin. Higiene: hand washing.',
+    rujukan:
+      'Bullous impetigo extensive, MRSA, cellulitis, sepsis, glomerulonefritis post-streptokokus.',
+  },
+  {
+    id: 127,
+    nama: 'Penyakit Kuning Neonatorum (Ikterus Neonatus)',
+    kategori: 'Kesehatan Anak',
+    kode: 'P55-P59',
+    definisi:
+      'Peningkatan bilirubin serum pada bayi baru lahir yang menyebabkan warna kuning pada kulit dan sclera. Ikterus fisiologis: onset hari 2-3, peak hari 4-5, resolve hari 7-10. Ikterus patologis: onset <24 jam, persisten >2 minggu, bilirubin meningkat ter...',
+    gejala: [
+      'Kuning pada kulit dan sclera',
+      'Progression cepat (cephalocaudal)',
+      'Lethargy, poor feeding',
+      'High-pitched cry',
+      'Opisthotonus',
+      'Dark urine, pale stools (cholestasis)',
+    ],
+    diagnosis:
+      'TcB screening. TSB: confirmatory. Direct/indirect bilirubin. Blood type, Coombs test, CBC, reticulocyte, G6PD. Thyroid function. Biliary atresia workup.',
+    terapi:
+      'Fototerapi: intensive phototherapy. Exchange transfusion bila TSB melewati threshold. IVIG 0,5-1g/kg bila hemolisis. Treat underlying cause. Breastfeeding: continue.',
+    rujukan:
+      'TSB approaching exchange level, bilirubin encephalopathy signs, hemolisis, onset <24 jam, direct hyperbilirubinemia, prematuritas.',
+  },
+  {
+    id: 128,
+    nama: 'Sindrom Nefrotik',
+    kategori: 'Ginjal & Saluran Kemih',
+    kode: 'N04',
+    definisi:
+      'Sindrom klinis dengan edema masif, proteinuria berat (>3,5g/24jam), hipalbuminemia (<3g/dL), dan hiperlipidemia. Minimal change disease paling umum pada anak (80%). Prevalensi 2-7 per 100.000 anak per tahun.',
+    gejala: [
+      'Edema periorbital (pagi hari)',
+      'Edema peripheral (anasarca)',
+      'Ascites',
+      'Pleuraleffusion',
+      'Oliguria',
+      'Foamy urine',
+      'Weight gain',
+      'Fatigue',
+      'Anoreksia',
+      'Infection susceptibility',
+    ],
+    diagnosis:
+      'Urine protein/creatinine ratio >3,5. Serum albumin <3g/dL. Hyperlipidemia. Renal biopsy untuk atypical cases.',
+    terapi:
+      'Kortikosteroid: prednison 60mg/m2/hari 4-6 minggu, lalu alternate-day taper 2-3 months. Diuretik: furosemide +/- albumin. ACE-I/ARB untuk persistent proteinuria. Steroid-sparing: cyclophosphamide, cyclosporine, tacrolimus.',
+    rujukan:
+      'Steroid-resistant, frequent relapses, steroid-dependent, atypical features, complications (peritonitis, thrombosis), atau perlu renal biopsy.',
+  },
+  {
+    id: 129,
+    nama: 'Thalasemia',
+    kategori: 'PTM Kardiovaskular',
+    kode: 'D56',
+    definisi:
+      'Gangguan genetik hemoglobin dengan reduced atau absent synthesis rantai globin. Thalasemia alpha dan beta. Indonesia memiliki prevalence carrier 3-8% di beberapa daerah.',
+    gejala: [
+      'Anemia (pucat, fatigue)',
+      'Splenomegali',
+      'Hepatomegali',
+      'Bone changes (chipmunk facies)',
+      'Growth retardation',
+      'Jaundice',
+      'Gallstones',
+      'Iron overload complications',
+    ],
+    diagnosis:
+      'CBC: MCV very low (<70 fL) dengan normal/high RBC count. Hb electrophoresis. DNA analysis. Iron studies: ferritin normal/increased.',
+    terapi:
+      'Thal trait: no treatment, genetic counseling. Thal intermedia: transfusion as needed, folic acid, splenectomy, iron chelation. Thal major: regular transfusion, iron chelation (deferasirox, deferoxamine), folic acid, splenectomy, HSCT.',
+    rujukan:
+      'Thal major/intermedia, iron overload, endocrine complications, cardiac dysfunction, consideration HSCT.',
+  },
+  {
+    id: 130,
+    nama: 'Penyakit Jantung Bawaan (PJB)',
+    kategori: 'PTM Kardiovaskular',
+    kode: 'Q20-Q28',
+    definisi:
+      'Kelainan struktural jantung atau pembuluh darah besar sejak lahir akibat gangguan perkembangan embriologi. Prevalensi 8-10 per 1000 kelahiran hidup.',
+    gejala: [
+      'Cyanosis sentral',
+      'Tachypnea, dyspnea',
+      'Poor feeding, sweating during feeding',
+      'Failure to thrive',
+      'Recurrent chest infections',
+      'Heart murmur',
+      'Hepatomegali',
+      'Shock/ductal-dependent lesion',
+    ],
+    diagnosis:
+      'Pulse oximetry screening. Echocardiography: gold standard. EKG, chest X-ray, cardiac catheterization.',
+    terapi:
+      'Prostaglandin E1 untuk ductal-dependent lesions. Heart failure management: diuretik, ACE-I, digoxin. Definitif: surgical repair. Interventional catheterization. Vaccination, endocarditis prophylaxis.',
+    rujukan:
+      'SEMUA suspected/confirmed PJB ke pediatric cardiologist. Emergency: ductal-dependent lesion, heart failure, cyanotic spell.',
+  },
+  {
+    id: 131,
+    nama: 'Retinopati Diabetik',
+    kategori: 'THT & Mata',
+    kode: 'H36.0, E11.3',
+    definisi:
+      'Komplikasi mikrovaskular diabetes yang mempengaruhi retina. Leading cause of blindness pada usia produktif. Prevalensi meningkat dengan durasi diabetes dan kontrol glikemik buruk.',
+    gejala: [
+      'Umumnya ASIMPTOMATIK pada tahap awal',
+      'Floaters',
+      'Blurred vision',
+      'Vision loss progresif',
+      'Scotoma',
+      'Metamorphopsia',
+    ],
+    diagnosis: 'Funduskopi diilatasi: gold standard. OCT: macular edema. Fluorescein angiography.',
+    terapi:
+      'Kontrol glikemia, BP, lipid. Screening tahunan. Laser photocoagulation untuk PDR. Anti-VEGF intravitreal untuk DME dan PDR. Vitrectomy untuk complications.',
+    rujukan:
+      'SEMUA diabetic patients untuk annual eye exam. Urgent: DME, severe NPDR, PDR, vitreous hemorrhage.',
+  },
+  {
+    id: 132,
+    nama: 'Nefropati Diabetik',
+    kategori: 'Ginjal & Saluran Kemih',
+    kode: 'E11.2, N08.3',
+    definisi:
+      'Komplikasi mikrovaskular diabetes dengan proteinuria progresif dan penurunan GFR. Leading cause of ESRD di dunia. Prevalensi 20-40% T1DM, 15-25% T2DM.',
+    gejala: [
+      'ASIMPTOMATIK pada tahap awal',
+      'Proteinuria mikroalbuminuria -> makroalbuminuria',
+      'Edema',
+      'Hipertensi',
+      'Oliguria (ESRD)',
+      'Uremic symptoms',
+      'Retinopathy berkoeksistensi',
+    ],
+    diagnosis:
+      'Screening: UACR annually. eGFR annually. Staging KDIGO. Renal biopsy bila atypical.',
+    terapi:
+      'Glycemic control, BP <130/80 (ACE-I/ARB first-line). SGLT2 inhibitor (empagliflozin, dapagliflozin). Finerenone. Lipid control. Diet, avoid nephrotoxins.',
+    rujukan:
+      'UACR >300mg/g, eGFR <60, rapid progression, hematuria with casts, resistant hypertension.',
+  },
+  {
+    id: 133,
+    nama: 'Luka Diabetik (Diabetic Foot Ulcer)',
+    kategori: 'Kulit',
+    kode: 'L97, E11.5',
+    definisi:
+      'Ulkus kulit pada kaki pasien diabetes akibat neuropati perifer, angiopati perifer, dan infeksi. Prevalensi lifetime 15-25%. Leading cause of non-traumatic lower extremity amputation.',
+    gejala: [
+      'Ulkus pada plantar surface',
+      'Nyeri (bisa tidak nyeri bila neuropati severe)',
+      'Kalus surrounding ulcer',
+      'Erythema, warmth, swelling (infection)',
+      'Purulent discharge',
+      'Gangrene',
+      'Crepitus (necrotizing fasciitis)',
+      'Charcot foot',
+    ],
+    diagnosis:
+      'Pemeriksaan ulcer. Neurovascular assessment. Probe-to-bone test. Wound culture. X-ray, MRI untuk osteomyelitis. Doppler/CTA untuk PAD.',
+    terapi:
+      'Offloading (TCC cast). Wound care: debridement, dressings. Infection: antibiotics. Osteomyelitis: 6 weeks antibiotics. Revascularization. Amputation bila not salvageable.',
+    rujukan:
+      'Deep ulcer, bone exposure, moderate-severe infection, suspected osteomyelitis, PAD, necrotizing fasciitis, Charcot foot, non-healing >4 weeks.',
+  },
+  {
+    id: 134,
+    nama: 'Abses Hepar (Amebiasis Hepar)',
+    kategori: 'Saluran Cerna',
+    kode: 'A06.4',
+    definisi:
+      'Abses pada hati yang disebabkan oleh invasi trofozoit Entamoeba histolytica. Abses ameba paling umum di daerah tropis. Indonesia daerah endemis amebiasis.',
+    gejala: [
+      'Demam hilang-timbul, prolonged',
+      'Nyeri kanan atas abdomen',
+      'Berkeringat malam',
+      'Malaise, weight loss',
+      'Ikterus ringan',
+      'Pleuritic chest pain',
+      'Shoulder pain',
+      'Diare (30%)',
+      'Hepatomegali',
+    ],
+    diagnosis: 'USG/CT abdomen. Serologi anti-amoeba IgG. Stool microscopy/ELISA.',
+    terapi:
+      'Metronidazole 750mg 3x/hari 7-10 hari. Luminal amebicide: paromomycin, iodoquinol, atau diloxanide. Aspirasi/drainage bila besar >5-10cm.',
+    rujukan:
+      'Abses besar (>10cm), multiple, tidak responsif 3-5 hari, threatened rupture, rupture ke pleura/pericardium/peritoneum.',
+  },
+  {
+    id: 135,
+    nama: 'Kolesistitis Kronik',
+    kategori: 'Saluran Cerna',
+    kode: 'K81.1',
+    definisi:
+      'Inflamasi berulang kantong empedu akibat batu empedu. Indikasi bedah elektif yang umum.',
+    gejala: [
+      'Nyeri epigastrium/kanan atas abdomen postprandial',
+      'Bloating, dyspepsia, heartburn',
+      'Nausea, vomiting',
+      'Intoleransi makanan berlemak',
+    ],
+    diagnosis: 'USG abdomen: batu empedu, wall thickening. HIDA scan: decreased ejection fraction.',
+    terapi:
+      'Asymptomatic: watchful waiting. Symptomatic: laparoscopic cholecystectomy (gold standard). UDCA untuk small cholesterol stones.',
+    rujukan:
+      'Symptomatic gallstones, chronic cholecystitis, biliary colic recurrent, complications.',
+  },
+  {
+    id: 136,
+    nama: 'Alergi Makanan',
+    kategori: 'Jiwa & Perilaku',
+    kode: 'T78.1, Z91.0',
+    definisi:
+      'Reaksi imunologis adverse terhadap protein makanan. IgE-mediated: urtikaria, anafilaksis. Non-IgE-mediated: FPIES, EoE. Alergi makanan umum: telur, susu, kacang, kedelai, gandum, ikan, seafood.',
+    gejala: [
+      'Urtikaria, angioedema, pruritus',
+      'Wheezing, throat tightness',
+      'Nausea, vomiting, abdominal pain, diarrhea',
+      'Anafilaksis',
+      'Oral allergy syndrome',
+    ],
+    diagnosis:
+      'Anamnesis detail. Skin prick test. Serum specific IgE. Oral food challenge: gold standard.',
+    terapi:
+      'Strict avoidance of allergen. Epinephrine auto-injector untuk anafilaksis. Antihistamin ringan. Omalizumab untuk multiple food allergies. Oral immunotherapy investigational.',
+    rujukan: 'Anafilaksis, multiple food allergies, FPIES, EoE, OIT consideration.',
+  },
+  {
+    id: 137,
+    nama: 'Sindrom Kawasaki',
+    kategori: 'Kesehatan Anak',
+    kode: 'M30.3',
+    definisi:
+      'Vasculitis sistemik akut pada anak yang menyebabkan inflamasi pembuluh darah medium terutama koroner. Prevalensi lebih tinggi pada anak Asia. Onset umumnya <5 tahun.',
+    gejala: [
+      'Demam persisten >=5 hari',
+      'Bilateral non-exudative conjunctivitis',
+      'Strawberry tongue, fissured lips',
+      'Edema/erythema palms/soles, desquamasi',
+      'Rash polymorphous',
+      'Cervical lymphadenopathy >=1,5cm',
+    ],
+    diagnosis:
+      'Kriteria AHA: fever >=5 hari + >=4 dari 5 principal features. Echocardiography: coronary artery dilation/aneurysm.',
+    terapi:
+      'IVIG 2g/kg single infusion (within 10 hari). Aspirin: high-dose then low-dose. Refractory: second IVIG, infliximab. Long-term: aspirin, anticoagulation untuk giant aneurysm.',
+    rujukan:
+      'SEMUA suspected Kawasaki ke RS dengan pediatric cardiology. Urgent untuk incomplete Kawasaki, coronary abnormalities.',
+  },
+  {
+    id: 138,
+    nama: 'Infeksi Telinga Tengah Kronik (CSOM)',
+    kategori: 'THT & Mata',
+    kode: 'H66',
+    definisi:
+      'Infeksi kronis telinga tengah dengan perforasi timpani kronis dan otorrhea >6-12 minggu. Tubotimpanik (safe) dan atticoantral (unsafe dengan kolesteatoma).',
+    gejala: [
+      'Otorrhea purulen kronis',
+      'Hearing loss progresif',
+      'Tinnitus',
+      'Perforasi timpani',
+      'Granulasi polip (unsafe)',
+      'Foul odor (kolesteatoma)',
+      'Vertigo, facial palsy, headache (komplikasi)',
+    ],
+    diagnosis: 'Otoskopi. Audiometry: conductive hearing loss. CT temporal bone. Culture.',
+    terapi:
+      'Aural toilet. Topical antibiotic-steroid drops. Systemic antibiotics bila cellulitis. Tympanoplasty untuk dry central perforation. Mastoidectomy untuk kolesteatoma.',
+    rujukan:
+      'Unsafe CSOM, kolesteatoma, intracranial complications, facial nerve palsy, mastoiditis, atau perlu surgery.',
+  },
+  {
+    id: 139,
+    nama: 'Sinusitis Kronik THT',
+    kategori: 'THT & Mata',
+    kode: 'J32',
+    definisi:
+      'Inflamasi kronis mukosa sinus paranasal >=12 minggu. Dapat dengan atau tanpa polip nasal.',
+    gejala: [
+      'Hidung tersumbat kronis',
+      'Sekret nasal purulen',
+      'Hiposmia/anosmia',
+      'Facial pressure/pain',
+      'Batuk postnasal drip',
+      'Halitosis',
+      'Fatigue',
+    ],
+    diagnosis: 'Nasal endoscopy. CT sinus paranasal: gold standard. Culture.',
+    terapi:
+      'Intranasal corticosteroid high-dose. Saline irrigation. Antibiotics bila exacerbation. Short course oral steroid untuk polip. Dupilumab/omalizumab. Surgery: FESS untuk refractory.',
+    rujukan:
+      'Refractory CRS, CRS with nasal polyps, fungal sinusitis, complications, atau perlu FESS.',
+  },
+  {
+    id: 140,
+    nama: 'Kelainan Tiroid pada Kehamilan',
+    kategori: 'Reproduksi',
+    kode: 'O99.5',
+    definisi:
+      'Gangguan fungsi tiroid selama kehamilan yang memerlukan manajemen khusus. Hipotiroidisme: risiko abortus, preeklampsia, impaired neurodevelopment fetal. Hipertiroidisme: risiko abortus, preterm delivery, thyroid storm.',
+    gejala: [
+      'Hipotiroidisme: fatigue, weight gain, cold intolerance, constipation, goiter',
+      'Hipertiroidisme: heat intolerance, palpitations, anxiety, tremor, weight loss, goiter',
+      'Bisa asimptomatik (overlap gejala kehamilan)',
+    ],
+    diagnosis:
+      'Trimester-specific TSH reference ranges. FT4. Anti-TPO, TRAb/TSI. Thyroid ultrasound.',
+    terapi:
+      'Hipotiroidisme: levothyroxine, dosis meningkat 20-30%, monitor TSH tiap 4 minggu. Hipertiroidisme: PTU trimester 1, methimazole T2-3. Beta-blocker jangka pendek. Thyroid storm: emergency.',
+    rujukan:
+      'Graves with high TRAb, thyroid storm, goiter compressive, nodule suspicious, uncontrolled thyroid dysfunction.',
+  },
+  {
+    id: 141,
+    nama: 'Kelumpuhan Serebral (Cerebral Palsy)',
+    kategori: 'Kesehatan Anak',
+    kode: 'G80',
+    definisi:
+      'Kelompok gangguan perkembangan gerak dan posture permanen yang menyebabkan limitation aktivitas. Prevalensi 2-3 per 1000 kelahiran hidup. Penyebab: prenatal (70-80%), perinatal (10-20%), postnatal (10%).',
+    gejala: [
+      'Motor impairment: spasticity (70-80%), dyskinesia, ataxic, mixed',
+      'Spastic diplegia, hemiplegia, quadriplegia',
+      'Developmental delay',
+      'Abnormal muscle tone',
+      'Contractures, deformities',
+      'Associated: intellectual disability, epilepsy, vision/hearing impairment, speech disorder, feeding difficulties',
+    ],
+    diagnosis:
+      'Diagnosis klinis. Brain MRI: 80% show abnormality. GMFCS classification. Early diagnosis: General Movement Assessment.',
+    terapi:
+      'Multidisciplinary: PT, OT, speech. Botulinum toxin A untuk spasticitas fokal. Oral: baclofen, diazepam. Intrathecal baclofen pump. SDR. Orthopedic surgery. AAC, G-tube. Seizure management.',
+    rujukan:
+      'Diagnosis tidak pasti, atypical features, SDR/baclofen pump consideration, orthopedic surgery, hip surveillance, uncontrolled seizures.',
+  },
+  {
+    id: 142,
+    nama: 'Gondong (Parotitis / Mumps)',
+    kategori: 'Tropis & Infeksi',
+    kode: 'B26',
+    definisi:
+      'Infeksi akut oleh virus Paramyxovirus. Ditandai oleh pembengkakan kelenjar parotis. Complications: orchitis (15-30% post-pubertal males), meningitis/encephalitis, deafness.',
+    gejala: [
+      'Fever, malaise, headache',
+      'Pain and swelling of parotid gland(s)',
+      'Pain worsened by chewing/sour foods',
+      'Orchitis: testicular pain and swelling',
+      'Meningismus, headache',
+      'Abdominal pain (pancreatitis)',
+      'Hearing loss',
+    ],
+    diagnosis: 'Diagnosis klinis. PCR dari saliva/throat swab. Serology IgM.',
+    terapi:
+      'Suportif: istirahat, analgesik-antipiretik, hydration, soft diet. Orcharditis: bed rest, scrotal support, analgesik. Tidak ada antiviral spesifik. MMR vaccine untuk pencegahan.',
+    rujukan: 'Encephalitis, severe orchitis, pancreatitis, sensorineural hearing loss.',
+  },
+  {
+    id: 143,
+    nama: 'Kelemahan Jantung Kongestif pada Anak',
+    kategori: 'Kesehatan Anak',
+    kode: 'I50, Q20-Q28',
+    definisi:
+      'Kegagalan jantung memompa darah adekuat untuk kebutuhan metabolik tubuh anak. Penyebab: congenital heart disease (80-90% bayi), cardiomyopathy, arrhythmia, anemia berat, sepsis.',
+    gejala: [
+      'Bayi: feeding difficulties, sweating during feeds, poor weight gain, tachypnea, retractions, grunting',
+      'Anak: fatigue, dyspnea, orthopnea',
+      'Peripheral edema',
+      'Hepatomegali',
+      'Tachycardia',
+      'Gallop rhythm',
+      'Murmur',
+      'Cyanosis',
+    ],
+    diagnosis: 'Echocardiography: gold standard. EKG, chest X-ray, BNP/NT-proBNP.',
+    terapi:
+      'Treat underlying cause. Supportive: diuretics, ACE-I, beta-blocker, digoxin. Inotropes untuk acute decompensated. Mechanical support: ECMO, VAD. Heart transplant.',
+    rujukan:
+      'SEMUA pediatric heart failure ke pediatric cardiologist. Emergency: acute decompensated HF, shock, arrhythmia.',
+  },
+  {
+    id: 144,
+    nama: 'Cacar Air pada Dewasa (Varicella Adult)',
+    kategori: 'Tropis & Infeksi',
+    kode: 'B01',
+    definisi:
+      'Infeksi primer VZV pada dewasa. Lebih berat dari anak dengan risiko komplikasi lebih tinggi (pneumonia varicella 1:400, mortality 10-30%).',
+    gejala: [
+      'Prodrom lebih berat: fever tinggi, malaise, myalgia 1-3 hari',
+      'Rash vesikel centripetal',
+      'Lesions lebih banyak dan berkerut',
+      'Pneumonia: dyspnea, cough, hemoptysis',
+      'Encephalitis, hepatitis',
+      'Purpura fulminans',
+      'Secondary bacterial infection',
+    ],
+    diagnosis: 'PCR dari vesikel fluid. Serology IgM. Chest X-ray untuk pneumonia.',
+    terapi:
+      'Acyclovir 800mg 5x/hari 7-10 hari (start within 24 jam). Valacyclovir 1g 3x/hari. Supportive. Pneumonia: O2, ventilatory support. Isolation sampai lesions crusted.',
+    rujukan:
+      'SEMUA adult varicella untuk evaluasi komplikasi. Emergency: pneumonia, encephalitis, severe disease, immunocompromised, pregnancy.',
+  },
+]
