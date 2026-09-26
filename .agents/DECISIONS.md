@@ -22,3 +22,9 @@ has a dated heading, the decision, a short rationale, and its evidence.
 - The build needs `DATABASE_URL` and `RESEND_API_KEY` at module load (on Vercel they are set).
   `scripts/with-local-env.mjs` supplies a local file database and a placeholder key only when
   they are unset, so the capsule builds and runs without credentials.
+
+## 2026-09-27 — Environment example restored
+
+- The legacy `.env.local.example` was missed by the first copy (the legacy root `.gitignore`
+  hid it from Git). It is now at `.env.example`, the only env-file name the enclosing
+  repository tracks; every value in it is an empty placeholder or a public URL.
