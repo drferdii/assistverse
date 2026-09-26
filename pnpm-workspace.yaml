@@ -1,0 +1,9 @@
+# Capsule standalone: workspace pnpm milik assistverse sendiri, lockfile di folder ini.
+packages: []
+
+# Kontrak standalone menolak symlink di pohon capsule; linker hoisted membuat
+# node_modules datar tanpa symlink.
+nodeLinker: hoisted
+
+allowBuilds:
+  sharp: true

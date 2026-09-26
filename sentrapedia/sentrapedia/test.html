@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sentrapedia TEST</title>
+  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg: oklch(96% 0.015 85); --surface: oklch(98% 0.005 85); --fg: oklch(35% 0.02 160); --muted: oklch(65% 0.01 160); --border: oklch(88% 0.01 130); --font-display: 'Epilogue', serif; --font-body: 'Open Sans', sans-serif; --font-mono: 'JetBrains Mono', monospace; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 14px; line-height: 1.6; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+    h1 { font-family: var(--font-display); font-size: 36px; margin: 20px 0; }
+    .disease-item { border-bottom: 1px solid var(--border); padding: 12px 0; cursor: pointer; }
+    .disease-item:hover { background: var(--surface); }
+    .d-name { font-family: var(--font-display); font-weight: 600; font-size: 15px; }
+    .d-code { font-family: var(--font-mono); font-size: 10px; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Sentrapedia <span id="count"></span></h1>
+    <div id="list"></div>
+  </div>
+  <script>
+const DISEASES = [
+{
+    id: 1, nama: "Common Cold (Pilek Biasa)", kategori: "ISPA", kode: "J00",
+    definisi: "Infeksi ringan pada hidung dan tenggorokan yang disebabkan oleh lebih dari 200 jenis virus, dengan rhinovirus sebagai penyebab utama (~30-50%). Merupakan penyakit ISPA paling sering di Puskesmas.",
+    gejala: ["Hidung tersumbat/meler", "Bersin-bersin", "Gatal tenggorokan", "Batuk ringan", "Sakit kepala ringan", "Demam ringan (<38.5°C)"],
+    diagnosis: "Diagnosis klinis berdasarkan anamnesis dan pemeriksaan fisik. Tidak diperlukan pemeriksaan penunjang untuk kasus ringan.",
+    terapi: "Terapi simptomatik: decongestant oral/topikal (pseudoephedrine 60mg 3x/hari), analgesik antipiretik (parasetamol 500mg 3-4x/hari), istirahat cukup, hidrasi adekuat. Tidak direkomendasikan antibiotik.",
+    rujukan: "Demam >3 hari, dispnea, nyeri dada, demam tinggi persisten, atau gejala memburuk setelah 10 hari."
+  },
+  {
+    id: 2, nama: "Faringitis Akut (Radang Tenggorokan)", kategori: "ISPA", kode: "J02-J03",
+    definisi: "Infeksi akut pada faring dan tonsil yang 70-80% disebabkan oleh virus (rhinovirus, adenovirus, EBV) dan 20-30% oleh bakteri (Streptococcus pyogenes/Grup A Streptococcus).",
+    gejala: ["Nyeri tenggorokan saat menelan", "Demam", "Eritema faring dan tonsil", "Pembesaran kelenjar getah bening servikal", "Mungkin tonsil eksudatif (bila GAS)"],
+    diagnosis: "Pemeriksaan faring: eritema, eksudat. Rapid Antigen Detection Test (RADT) untuk GAS jika skor Centor 3-4. Skor Centor: demam >38°C (1), tonsil eksudat (1), tidak ada batuk (1), limfadenopati servikal (1), usia 3-14 (1), usia >45 (-1).",
+    terapi: "Viral: terapi suportif (parasetamol, air hangat). GAS terkonfirmasi: penisilin V 250-500mg 3-4x/hari selama 10 hari, atau amoksisilin 500mg 3x/hari 10 hari, atau azitromisin 500mg 1x/hari 5 hari (bila alergi penisilin).",
+    rujukan: "Abses peritonsilar, obstruksi jalan napas, demam >39°C persisten >3 hari, tidak responsif terhadap antibiotik 48 jam, riwayat glomerulonefritis/rheumatic fever."
+  },
+  {
+    id: 3, nama: "Sinusitis Akut", kategori: "ISPA", kode: "J01",
+    definisi: "Inflamasi akut mukosa sinus paranasal yang umumnya terjadi sebagai komplikasi dari common cold. Virus menyebabkan 90-98% kasus sinusitis akut. Dikategorikan sebagai sinusitis viral (≤10 hari), akut bakteri post-viral (>10 hari), atau fulminan bakteri (≥39°C + purulen sekret ≥3-4 hari berturut).",
+    gejala: ["Nyeri tekan pada wajah (sinus frontalis, maksilaris)", "Hidung tersumbat dengan sekret purulen", "Nyeri kepala", "Hiposmia/anosmia", "Batuk post-nasal drip", "Demam (pada sinusitis bakteri)"],
+    diagnosis: "Kriteria sinusitis bakteri: durasi >10 hari tanpa perbaikan, gejala parah ≥39°C + purulen sekret/nanah ≥3-4 hari, atau 'double-worsening' (membaik lalu memburuk). CT scan sinus diperlukan hanya untuk diagnosis komplikasi atau sinusitis kronik.",
+    terapi: "Viral: nasal saline irrigation, dekongestan topikal maksimal 3 hari, analgesik. Bakteri: amoksisilin-klavulanat 875/125mg 2x/hari 5-7 hari (terapi empiris), atau doxycycline 100mg 2x/hari 5-7 hari (bila alergi penisilin).",
+    rujukan: "Periorbital/orbital cellulitis, komplikasi intracranial (meningitis, abses otak), osteomielitis frontalis, tidak responsif terhadap antibiotik, imunokompromais."
+  },
+  {
+    id: 4, nama: "Otitis Media Akut (OMA)", kategori: "ISPA", kode: "H65-H66",
+    definisi: "Infeksi akut pada telinga tengah dengan akumulasi cairan di belakang membran timpani yang terjadi akut. Merupakan salah satu diagnosis infeksi paling sering pada anak <5 tahun. 80% kasus spontan resolve dalam 2-14 hari tanpa antibiotik.",
+    gejala: ["Nyeri telinga (otalgia) — anak sering menggoyangkan telinga", "Demam", "Iritabilitas", "Gangguan pendengaran ringan", "Mungkin otorhoe (nanah dari telinga) bila perforasi timpani"],
+    diagnosis: "Otoscopy: membran timpani meneral (bulging), eritema, hilangnya landmark timpani, mobilitas berkurang. Pneumatic otoscopy adalah gold standard. Skor Kriteria AAP: otalgia berat 2 poin, otalgia ringan 1 poin, demam ≥39°C 2 poin, demam <39°C 1 poin. Skor ≥3 pertimbangkan antibiotik. Timpanometri bila diperlukan.",
+    terapi: "Wait-and-see: anak ≥2 tahun dengan otalgia ringan-demam ringan, observasi 48-72 jam dengan analgesik (parasetamol/ibuprofen). Antibiotik: amoksisilin 80-90mg/kg/hari dibagi 2 dosis 5-7 hari. Alergi penisilin: azitromisin 10mg/kg hari 1, lalu 5mg/kg hari 2-5. Analgesik: parasetamol 15mg/kg atau ibuprofen 10mg/kg.",
+    rujukan: "Mastoiditis, intracranial complication, facial nerve palsy, labyrinthitis, recurrent OMA (>3 episode/6 bulan atau >4 episode/tahun), persistent middle ear effusion >3 bulan."
+  },
+  {
+    id: 5, nama: "Otitis Eksterna", kategori: "ISPA", kode: "H60",
+    definisi: "Inflamasi pada kanalis auditivus eksternus yang sering disebabkan oleh Pseudomonas aeruginosa atau Staphylococcus aureus. Disebut juga 'swimmer's ear' karena sering terkait paparan air berlebihan.",
+    gejala: ["Nyeri telinga parah (otalgia) saat tragus atau pinna ditarik", "Gatal pada saluran telinga", "Otorhoe (sekret telinga)", "Eritema dan edema kanalis auditivus", "Gangguan pendengaran ringan akibat sumbatan"],
+    diagnosis: "Pemeriksaan otoskopi: eritema, edema, dan debris pada kanalis auditivus. Rasa nyeri parah saat tragus manipulation. Kultur bila infeksi berat atau tidak responsif terhadap terapi awal. Perlu dibedakan dengan otitis media dengan perforasi timpani.",
+    terapi: "Topikal: obat tetes telinga antibiotik-steroid (ciprofloxacin + dexamethasone) 4 tetes 2x/hari 7-10 hari, atau ofloxacin 0.3% 10 tetes 2x/hari. Bersihkan kanalis (aural toilet). Analgesik: ibuprofen 400mg 3x/hari atau parasetamol. Hindari air masuk telinga. Bila edema parah: insert wick + topikal.",
+    rujukan: "Malignant/necrotizing otitis eksterna (terutama pada diabetes/elderly), cellulitis periaurikular, osteomielitis tulang temporal, infeksi menyebar ke basis cranii, imunokompromais berat."
+  },
+  {
+    id: 6, nama: "Influenza", kategori: "ISPA", kode: "J10-J11",
+    definisi: "Infeksi akut saluran pernapasan akibat virus influenza A atau B. Karakteristik onset akut, demam tinggi, dan gejala sistemik yang lebih parah dibandingkan common cold. Virus memiliki antigenik drift dan shift yang menyebabkan pandemi periodik.",
+    gejala: ["Onset akut demam tinggi (38-40°C)", "Mialgia dan artralgia", "Sakit kepala frontal", "Nyeri retro-orbital", "Batuk kering", "Fatigue ekstrem", "Mungkin rinore dan sakit tenggorokan"],
+    diagnosis: "Diagnosis klinis berdasarkan onset akut demam tinggi + batuk + mialgia selama musim influenza. Rapid Influenza Diagnostic Test (RIDT) tersedia di Puskesmas. RT-PCR gold standard. Perlu dibedakan dengan COVID-19 dan RSV.",
+    terapi: "Antiviral: oseltamivir 75mg 2x/hari 5 hari (efektif bila diberikan <48 jam dari onset), zanamivir, atau baloxavir. Suportif: istirahat, hidrasi, parasetamol. Hanya berikan antiviral pada kelompok berisiko tinggi: usia >65, <5 tahun (terutama <2), hamil, obesitas, imunokompromais, komorbid kronik (COPD, CKD, DM, jantung).",
+    rujukan: "Pneumonia influenza, ARDS, ensefalopati, dehidrasi berat, demam persisten >5 hari, syok septik, komplikasi kardiovaskular (miokarditis)."
+  },
+  {
+    id: 7, nama: "Tonsilitis Akut", kategori: "ISPA", kode: "J03",
+    definisi: "Inflamasi akut pada tonsila palatina yang dapat disebabkan oleh virus (40-60%) atau bakteri (Grup A Streptococcus pada 15-30% kasus pada anak dan 5-10% pada dewasa). Tonsilitis kronik berulang dapat menjadi indikasi tonsilektomi.",
+    gejala: ["Nyeri tenggorokan parah", "Demam tinggi", "Eritema tonsil dengan eksudat purulen", "Dysphagia/odynophagia", "Halitosis", "Limfadenopati servikal anterior"],
+    diagnosis: "Pemeriksaan orofaring: tonsil bengkak dengan eksudat putih-kuning, eritema faring. Skor McIsaac (modifikasi Centor): demam >38°C (1), tonsil eksudat (1), tender anterior cervical node (1), onset <3 hari (1), usia 3-14 tahun (1), tidak ada batuk (1). Skor ≥4: probabilitas GAS tinggi. Rapid Strep Test bila tersedia.",
+    terapi: "Suportif: analgesik-antipiretik (parasetamol/ibuprofen), cairan hangat, istirahat. Konfirmasi GAS: penisilin V 500mg 2-3x/hari 10 hari, atau benzatin penisilin G 1,2 juta unit IM sekali dosis, atau amoksisilin 500mg 3x/hari 10 hari. Alergi penisilin: azitromisin 500mg hari 1, 250mg hari 2-5.",
+    rujukan: "Abses peritonsilar (quinsy), abses parafaringeal, obstruksi jalan napas, tonsilitis rekuren ≥7 episode/1 tahun, ≥5 episode/tahun selama 2 tahun, atau ≥3 episode/tahun selama 3 tahun."
+  },
+  {
+    id: 8, nama: "Laringitis Akut", kategori: "ISPA", kode: "J04-J05",
+    definisi: "Inflamasi akut pada laring yang menyebabkan suara serak atau afonia. Dapat disebabkan oleh infeksi viral (parainfluenza, rhinovirus), bakteri (Corynebacterium diphtheriae, Haemophilus influenzae type b), atau iritasi non-infeksius.",
+    gejala: ["Suara serak (hoarseness) atau hilang suara", "Batuk kering (barking cough pada anak)", "Sakit tenggorokan ringan", "Dyspnea ringan", "Mungkin demam"],
+    diagnosis: "Diagnosis klinis berdasarkan hoarseness akut. Laringoskopi bila tersedia: edema dan eritema pita suara. Pemberian nebulisasi epinefrin racemic bila stridor present. Perlu dibedakan dengan epiglotitis (urgensi medis) dan croup (pada anak).",
+    terapi: "Vocal rest (istirahat suara), hidrasi adekuat, humidifier, antitusif bila perlu. Antibiotik hanya bila etiologi bakteri terkonfirmasi. Kortikosteroid oral (prednison 20-40mg/hari 3-5 hari) untuk laringitis berat dengan obstruksi. Nebulisasi adrenalina 0,5mL/kg (maks 5mL) untuk stridor inspiratori.",
+    rujukan: "Stridor progresif, dispnea berat, cyanosis, drooling, tidak mampu menelan (tanda epiglotitis), symptom persisten >3 minggu (pertimbangkan keganasan)."
+  },
+  {
+    id: 9, nama: "Rinitis Alergi", kategori: "ISPA", kode: "J30",
+    definisi: "Inflamasi mukosa nasal akibat respon imun IgE-mediated terhadap alergen (debu tungau, serbuk sari, bulu hewan, jamur). Diklasifikasikan berdasarkan durasi (intermiten <4 hari/minggu atau persisten ≥4 hari/minggu) dan berat (ringan, sedang-berat).",
+    gejala: ["Rinore berair", "Hidung tersumbat (berselingan)", "Bersin beruntun", "Gatal hidung, mata, tenggorokan", "Mata merah dan berair", "Post-nasal drip"],
+    diagnosis: "Anamnesis: hubungan temporal dengan paparan alergen, pola musiman. Pemeriksaan hidung: mukosa pucat, edematosa, sekret jernih. Tes alergi: skin prick test atau serum IgE spesifik (jika tersedia). Skor ARIA untuk klasifikasi dan manajemen.",
+    terapi: "Hindari alergen. Terapi farmakologi: intranasal corticosteroid (flutikason propionat atau mometason furoate 1 semprot/hidung 1-2x/hari — lini pertama), antihistamin oral generasi-2 (cetirizine 10mg 1x/hari atau loratadine 10mg 1x/hari), decongestan topikal maksimal 7 hari, salep mata antihistamin. Imunoterapi alergen (SIT) untuk kasus refrakter.",
+    rujukan: "Rinitis persisten tidak responsif terhadap terapi maksimal 4-8 minggu, komplikasi (sinusitis, polip nasal, otitis media), asma berkorelasi, untuk evaluasi imunoterapi."
+  },
+  {
+    id: 10, nama: "Faringitis Kronik", kategori: "ISPA", kode: "J31",
+    definisi: "Inflamasi kronis pada mukosa faring dengan durasi >3 bulan. Biasanya berhubungan dengan iritasi berulang (merokok, polusi, refluks gastroesofageal), infeksi kronis, atau alergi. Sering merupakan sekuel dari ISPA berulang.",
+    gejala: ["Sensasi gatal/tidak nyaman di tenggorokan (globus sensation)", "Batuk kering kronis", "Sensasi ada lendir di tenggorokan", "Halitosis kronis", "Sakit tenggorokan ringan yang berulang"],
+    diagnosis: "Diagnosis klinis berdasarkan anamnesis dan pemeriksaan fisik. Faringoskopi: mukosa faring hiperemis, granulasi pada posterior pharyngeal wall (granular pharyngitis), tonsil cryptae dengan debris. Evaluasi faktor predisposisi: Gastroesofageal Refluks Disease (GERD), sinusitis kronis, alergi, merokok.",
+    terapi: "Tangani penyebab utama: PPI untuk GERD (omeprazole 20mg 1-2x/hari), antihistamin untuk alergi, berhenti merokok. Suportif: gargle air garam hangat, humidifier, mukolitik (ambroxol 30mg 3x/hari). Antibiotik hanya bila ada tanda infeksi bakteri superimposed.",
+    rujukan: "Suspisi keganasan (odynophagia progresif, riwayat merokok berat, penurunan BB), perlu evaluasi laringoskopi, abses berulang."
+  },
+  {
+    id: 11, nama: "Tonsilitis Kronik", kategori: "ISPA", kode: "J35",
+    definisi: "Inflamasi tonsil yang berulang atau persisten dengan tonsil kronis bengkak, eksudat pada cryptae, dan gejala yang berlangsung lebih dari 3 bulan. Tonsilitis kronis dapat menyebabkan fokus infeksi untuk glomerulonefritis atau rheumatic fever.",
+    gejala: ["Nyeri tenggorokan berulang", "Halitosis kronis", "Tonjolan putih pada tonsil (tonsillolith/debris cryptae)", "Dysphagia ringan", "Malaise", "Limfadenopati kronis"],
+    diagnosis: "Pemeriksaan orofaring: tonsil bengkak tidak simetris, eksudat pada cryptae, hipertrofi tonsilar. Riwayat tonsilitis akut berulang (≥7 episode/tahun, ≥5 episode/tahun selama 2 tahun, atau ≥3 episode/tahun selama 3 tahun). Perlu dibedakan dengan mononukleosis infeksiosa.",
+    terapi: "Antibiotik profilaksis tidak direkomendasikan. Terapi akut bila superinfeksi. Pertimbangkan tonsilektomi sesuai kriteria: ≥7 episode dalam 1 tahun, atau ≥5 episode/tahun selama 2 tahun berturut, atau ≥3 episode/tahun selama 3 tahun berturut. Tonsilektomi juga untuk abses peritonsilar berulang, obstruksi saluran napas, atau suspisi keganasan.",
+    rujukan: "Kriteria tonsilektomi terpenuhi, abses peritonsilar, obstruksi jalan napas, suspisi neoplasma, tonsil asimetri (pertimbangkan keganasan pada dewasa >40 tahun)."
+  },
+  {
+    id: 12, nama: "Sinusitis Kronik", kategori: "ISPA", kode: "J32",
+    definisi: "Inflamasi kronis mukosa sinus paranasal dengan durasi ≥12 minggu. Dapat dengan atau tanpa polip nasal. Etiologi multifaktorial: infeksi bakteri, alergi, anatomi abnormal (deviasi septum), imunodefisiensi, atau fungal infection.",
+    gejala: ["Hidung tersumbat kronis", "Sekret nasal purulen", "Hiposmia/anosmia", "Nyeri tekan wajah (bisa ringan/tidak ada pada kronik)", "Batuk post-nasal drip", "Halitosis"],
+    diagnosis: "Kriteria diagnostik: ≥2 gejala utama selama ≥12 minggu + ≥1 tanda objektif. Tanda objektif: endoskopi nasal (mukosa nasal edema, polip, sekret purulen middle meatus), atau CT scan sinus (mucosal thickening, opasifikasi, polip). Mikrobiologi: H. influenzae, S. pneumoniae, M. catarrhalis, anaerob.",
+    terapi: "Intranasal corticosteroid (flutikason atau mometason) 2 semprot/hidung 1-2x/hari — terapi lini pertama. Saline irrigation. Antibiotik: amoksisilin-klavulanat 875/125mg 2x/hari 3-5 minggu (untuk eksaserbasi akut). Mukolitik. Bila polip: kortikosteroid oral (prednison 30-40mg/hari 5-10 hari).",
+    rujukan: "Kegagalan terapi maksimal medis, komplikasi (mukocele, osteomielitis), polip nasal, deviasi septum signifikan, imunodefisiensi, untuk FESS (Functional Endoscopic Sinus Surgery)."
+  },
+
+  // ═════════════════════════════════════════════════════════════════════════════
+  // KATEGORI 2: GANGGUAN SALURAN PERNAFASAN BAWAH
+  // ═════════════════════════════════════════════════════════════════════════════
+  {
+    id: 13, nama: "Bronkitis Akut", kategori: "Pernapasan Bawah", kode: "J20",
+    definisi: "Inflamasi akut bronkus yang biasanya infeksius (90% viral) dan berlangsung <3 minggu. Disebut juga 'chest cold'. Merupakan diagnosis yang sering overdiagnosa dan di-overtreat dengan antibiotik.",
+    gejala: ["Batuk produktif (≤3 minggu)", "Sputum mukopurulen (bisa jernih, kuning, atau hijau)", "Rhonchi/wheezing", "Sakit dada saat batuk", "Mungkin demam ringan", "Malaise"],
+    diagnosis: "Diagnosis klinis: batuk akut ≤3 minggu dengan sputum. Auskultasi: rhonchi dan crackle. Tidak diperlukan rontgen thoraks kecuali untuk membedakan dengan pneumonia. Warna sputum tidak memprediksi etiologi bakteri.",
+    terapi: "Terapi simptomatik: antitusif (dextromethorphan 10-20mg 3-4x/hari) bila batuk kering mengganggu tidur, mukolitik (ambroxol 30mg 3x/hari), analgesik, hidrasi. Tidak direkomendasikan antibiotik secara rutin (efektivitas minimal). Antibiotik hanya bila pertusis terkonfirmasi, influenza dengan bakteri superinfeksi, atau komorbid berat.",
+    rujukan: "Dispnea progresif, hemoptisis, demam >38.5°C >3 hari, riwayat TB, imunokompromais, symptom persisten >3 minggu, usia >65 dengan komorbid."
+  },
+  {
+    id: 14, nama: "Pneumonia Komuniti", kategori: "Pernapasan Bawah", kode: "J12-J18",
+    definisi: "Infeksi paru-paru (alveoli) yang diperoleh di masyarakat. Penyebab utama: Streptococcus pneumoniae, Haemophilus influenzae, Moraxella catarrhalis (bakteri); Influenza, RSV, SARS-CoV-2 (virus). WHO mengestimasi pneumonia menyebabkan 14% kematian anak <5 tahun di Indonesia.",
+    gejala: ["Batuk produktif (bisa berdahak purulen/berdarah)", "Demam", "Dispnea/napas cepat", "Nyeri dada pleuritik", "Takikardia", "Kebingungan (pada lansia)", "Tirage, retraksi, cyanosis (pada anak)"],
+    diagnosis: "Pemeriksaan fisik: konsolidasi (dullness to percussion, bronchial breath sound, crackle, egophoni). Rontgen thoraks: infiltrat/consolidasi. CRB-65/CURB-65 untuk mortalitas: Confusion, Respiratory rate ≥30, Blood pressure systolic <90 atau diastolic ≤60, usia ≥65. Skor ≥2: hospitalisasi. GAT (GeneXpert MTB/RIF) untuk menyingkirkan TB.",
+    terapi: "Outpatient (CRB-65 skor 0-1): amoksisilin 500mg 3x/hari 5-7 hari, atau doxycycline 100mg 2x/hari 5-7 hari, atau makrolide (azitromycin 500mg hari 1, 250mg hari 2-5). Anak: amoksisilin 40-50mg/kg/hari 3x/hari 5 hari. Parasetamol/antipiretik, oksigen bila SpO2 <94%, hidrasi.",
+    rujukan: "CRB-65 ≥2, SpO2 <92%, RR >30, hipotensi, kebingungan, gagal napas, hidrasi oral tidak adekuat, komorbid berat (CKD, gagal jantung, imunokompromais), tidak responsif terhadap antibiotik oral 48-72 jam."
+  },
+  {
+    id: 15, nama: "Asma Bronkial", kategori: "Pernapasan Bawah", kode: "J45",
+    definisi: "Penyakit kronik saluran napas yang ditandai dengan hiperresponsivitas bronkial, inflamasi, dan variabilitas aliran udara obstruktif yang reversibel. Prevalensi asma di Indonesia diperkirakan 4-7% populasi dan meningkat.",
+    gejala: ["Dispnea", "Mengi (wheezing)", "Batuk (sering malam hari/dini hari)", "Rasa sesak di dada", "Gejala fluktuatif dan episodik", "Bangun malam karena batuk/napas"],
+    diagnosis: "Spirometri: rasio FEV1/FVC <0.70 + peningkatan FEV1 ≥12% dan ≥200mL setelah bronkodilator (reversibilitas). Bila spirometri normal: tes bronkoprovokasi (metakolin). PEFR monitoring: variabilitas diurnal >10%. Alergi testing bila tersedia. Klasifikasi berat: intermitten, persisten ringan, persisten sedang, persisten berat.",
+    terapi: "Reliever: SABA (salbutamol inhaler 100-200mcg 1-2 puff bila gejala, maksimal 8x/hari). Controller: ICS (budesonide 200-400mcg 2x/hari) untuk persisten. ICS-LABA kombinasi (budesonide/formoterol) untuk persisten sedang-berat. LTRA (montelukast 10mg 1x/malam) alternatif. Action Plan Asma: zon hijau (terkontrol), kuning (peringatan), merah (bahaya/ke RS).",
+    rujukan: "Status asmatikus, tidak responsif terhadap SABA (FEV1 <40% prediksi), SpO2 <92%, retraksi, suara napas menurun (silent chest), kelelahan napas, distres respiratori, serangan berulang >2x/seminggu, tidak stabil dengan terapi level 4."
+  },
+  {
+    id: 16, nama: "Eksaserbasi Asma Akut", kategori: "Pernapasan Bawah", kode: "J46",
+    definisi: "Peningkatan akut gejala asma di atas baseline yang memerlukan perubahan terapi. Eksaserbasi dapat disebabkan oleh infeksi virus, alergen, polusi, atau non-adherensi terapi kontroler.",
+    gejala: ["Dispnea berat/progresif", "Wheezing intens", "Batuk parah", "Retraksi dinding dada", "Kesulitan berbicara", "Takikardia", "Hipotensi"],
+    diagnosis: "PEFR <80% prediksi personal terbaik. Pemeriksaan fisik: prolonged expiration, wheezing diffus, retraksi, menggunakan otot bantu napas, cyanosis, perubahan status mental (tanda hipoksia). Arteri blood gas bila tersedia: PaCO2 meningkat tanda kelelahan napas (tidak bisa dikompensasi).",
+    terapi: "SABA (salbutamol nebulisasi 2.5-5mg setiap 20 menit x 3 dosis, lalu 1-4 jam). Ipratropium bromide neb (0.5mg 3x dalam 1 jam untuk kasus berat). Kortikosteroid sistemik: prednison 40-60mg/hari 5-7 hari (atau methylprednisolone 125mg IV untuk berat). Oksigen untuk target SpO2 93-95%. Magnesium sulfat 2g IV untuk kasus berat (tidak responsif SABA + steroid).",
+    rujukan: "Status asmatikus (gagal SABA + steroid nebul), SpO2 <92% dengan oksigen, distres respiratori, distres mental, PaCO2 meningkat, kelelahan napas, tidak responsif terhadap terapi Puskesmas 1-2 jam."
+  },
+  {
+    id: 17, nama: "COPD (Penyakit Paru Obstruktif Kronik)", kategori: "Pernapasan Bawah", kode: "J44",
+    definisi: "Penyakit kronik saluran napas yang ditandai dengan aliran udara persisten dan progresif obstruktif yang tidak sepenuhnya reversibel. Penyebab utama: merokok (85-90%), polusi udara, dan exposure biomassa. Prevalensi global ~10% pada dewasa >40 tahun.",
+    gejala: ["Dispnea progresif (awalnya saat aktivitas, kemudian saat istirahat)", "Batuk kronis produktif ≥3 bulan/tahun selama 2 tahun (bronkitis kronis)", "Mengi (tidak universal)", "Berat badan menurun", "Fatigue"],
+    diagnosis: "Spirometri: FEV1/FVC <0.70 post-bronkodilator (konfirmasi obstruksi tidak sepenuhnya reversibel). Klasifikasi GOLD berdasarkan FEV1% prediksi: GOLD 1 (≥80%), GOLD 2 (50-79%), GOLD 3 (30-49%), GOLD 4 (<30%). mMRC dyspnea scale dan CAT score untuk assess gejala. Rontgen thoraks: hyperinflasi, flattening diafragma.",
+    terapi: "Lini pertama: LABA (salmeterol/formoterol) atau LAMA (tiotropium). Kombinasi LABA+LAMA untuk GOLD B-D. ICS tambahan bila eosinofil ≥300 atau ≥2 eksaserbasi/tahun. Bronkodilator rescue: SABA atau SAMA. Rehabilitasi pulmoner. Vaksinasi: influenza dan pneumokokus. Berhenti merokok sangat penting. Oksigen jangka panjang untuk kronik hipoksemia (PaO2 ≤55 mmHg).",
+    rujukan: "Eksaserbasi berat (dapat menentukan dengan Anthonisen criteria: ↑dyspnea, ↑sputum volume, ↑sputum purulence), gagal napas, SpO2 <88%, perlu oksigen >4L/menit, distres respiratori, tidak responsif nebulisasi, komplikasi (pneumotoraks, gagal jantung)."
+  },
+  {
+    id: 18, nama: "Tuberkulosis Paru", kategori: "Pernapasan Bawah", kode: "A15-A16",
+    definisi: "Infeksi kronis Mycobacterium tuberculosis pada paru-paru. Indonesia memiliki beban TB tertinggi ketiga di dunia setelah India dan Tiongkok, dengan estimasi 969.000 kasus baru per tahun (WHO 2024). TB adalah penyebab kematian infeksius tertinggi.",
+    gejala: ["Batuk >2-3 minggu", "Dahak (bisa berdarah/hemoptisis)", "Demam hilang-timbul (afternoon fever)", "Berkeringat malam", "Penurunan berat badan", "Malaise/fatigue", "Nyeri dada pleuritik"],
+    diagnosis: "Pemeriksaan mikroskopis dahak (ZZ staining): minimal 2 spesimen (spot + morning). GeneXpert MTB/RIF (CBNAAT): sensitivitas tinggi dan deteksi resistensi rifampisin 2 jam. Rontgen thoraks: infiltrat apikal, kavitas, atau nodul. TST/IGRA untuk LTBI. Biakan Lowenstein-Jensen (gold standard, 2-8 minggu).",
+    terapi: "Regimen standar 6 bulan (kategori 1): 2HRZE/4HR (2 bulan isoniazid + rifampisin + pirazinamid + etambutol, lanjut 4 bulan isoniazid + rifampisin). Catatan DOTS (Directly Observed Treatment Short-course). Pantau fungsi hati (ALT/AST) bulanan. B suplementasi piridoksin 10mg/hari. Vaksinasi BCG untuk neonatus.",
+    rujukan: "TB-MDR/XDR (resisten rifampisin), hemoptisis masif (>100mL/24jam), komplikasi pleural/empiema, SpO2 <90%, gagal napas, miliary TB, TB extrapulmonal (meningitis, tulang), efek samping hepatotoksik (ikterus), gagal pengobatan kategori 1."
+  },
+  {
+    id: 19, nama: "Pleurisi (Pleuritis)", kategori: "Pernapasan Bawah", kode: "R09",
+    definisi: "Inflamasi pada pleura (membran yang melapisi paru-paru dan rongga dada). Dapat disebabkan oleh infeksi (TB, pneumonia), autoimun (lupus), trauma, atau neoplasma (mesothelioma, metastasis).",
+    gejala: ["Nyeri dada pleuritik (tajam, saat napas dalam/batuk)", "Dispnea", "Batuk kering", "Demam (bila infeksius)", "Bunyi gesek pleura (auskultasi)"],
+    diagnosis: "Pemeriksaan fisik: friction rub (bunyi gesekan pleura). Rontgen thoraks: efusi pleura (meniscus sign, blunting costophrenic angle). USG thoraks untuk konfirmasi efusi dan guided thoracentesis. Analisis cairan pleura: Light's criteria untuk membedakan transudat vs eksudat. ADA, protein, LDH, sel count, kultur (bakteri dan TB).",
+    terapi: "Tangani etiologi: antibiotik untuk pneumonia, anti-TB untuk TB. Analgesik: NSAID (ibuprofen 400mg 3x/hari). Bila efusi besar dan symptomatik: thoracentesis untuk menguras cairan. Kortikosteroid untuk pleuritis autoimun (prednison 0,5mg/kg/hari).",
+    rujukan: "Efusi pleura besar/berulang, empiema, hemotoraks, efusi tidak jelas etiologi (perlu pleuroskopi), komplikasi dengan kollapse paru, keganasan."
+  },
+  {
+    id: 20, nama: "Bronkiektasis", kategori: "Pernapasan Bawah", kode: "J47",
+    definisi: "Dilatasi permanen dan abnormal bronkus akibat destruksi dinding elastik dan muscularis. Disebabkan oleh infeksi berulang, obstruksi, imunodefisiensi, atau kondisi genetik (sistik fibrosis, PCD). Incidensi meningkat pada lansia.",
+    gejala: ["Batuk kronis produktif dengan sputum purulen (banyak, berlapis)", "Hemoptisis (ringan-sedang)", "Dispnea progresif", "Nyeri dada", "Recurrent respiratory infections", "Halitosis"],
+    diagnosis: "HRCT thoraks: 'signet ring sign' (diameter bronkus >diameter arteri yang menyertainya), 'tram track sign', lack of tapering. Spirometri: obstruksi (FEV1/FVC <0.70) atau mixed pattern. Kultur sputum: P. aeruginosa, H. influenzae, S. aureus, NTM. Evaluasi etiologi: Ig levels, Aspergillus spesifik IgE (ABPA), sweat chloride test.",
+    terapi: "Airway clearance: teknik oscilasi positive expiratory pressure (OPEP), postural drainage. Antibiotik: amoksisilin-klavulanat untuk eksaserbasi (7-14 hari), atau ciprofloxacin 500mg 2x/hari 14 hari (bila Pseudomonas). Bronkodilator. ICS bila asma beroverlap. Vaksinasi influenza dan pneumokokus. Surgery (lobektomi) untuk bronkiektasis lokalized yang refrakter.",
+    rujukan: "Hemoptisis masif, eksaserbasi berat, gagal napas, bronkiektasis luas yang tidak responsif, perlu evaluasi etiologi (imunodefisiensi, sistik fibrosis), pertimbangan surgery."
+  },
+]
+  </script>
+  <script>
+    const list = document.getElementById('list');
+    const count = document.getElementById('count');
+    count.textContent = '(' + DISEASES.length + ')';
+    DISEASES.forEach(d => {
+      const div = document.createElement('div');
+      div.className = 'disease-item';
+      div.innerHTML = '<div class="d-name">' + d.nama + '</div><div class="d-code">' + d.kode + ' | ' + d.kategori + '</div>';
+      list.appendChild(div);
+    });
+    console.log("Loaded", DISEASES.length, "diseases");
+  </script>
+</body>
+</html>

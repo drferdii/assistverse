@@ -1,0 +1,17 @@
+node_modules/
+.next/
+out/
+package-lock.json
+.env
+.env.local
+.env*.local
+tsconfig.tsbuildinfo
+_build.log
+docs/superpowers/
+*.log
+extract.txt
+.DS_Store
+Thumbs.db
+
+# Database lokal untuk build/run tanpa kredensial (scripts/with-local-env.mjs)
+/.data/

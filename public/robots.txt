@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /*.bak$
+
+Sitemap: https://sentrahai.com/asisten-medis/sitemap.xml
