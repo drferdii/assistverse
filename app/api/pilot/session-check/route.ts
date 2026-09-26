@@ -2,16 +2,20 @@ export const dynamic = 'force-dynamic'
 
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
-import { createClient } from '@libsql/client'
-
-const db = createClient({
-  url: process.env.DATABASE_URL!,
-  authToken: process.env.DATABASE_AUTH_TOKEN,
-})
+import { getDatabaseClient } from '@/lib/server-db'
+import { getMissingServerEnv } from '@/lib/server-env'
 
 // Extension polls ini setiap 3 detik setelah request magic link.
 // Mengembalikan session token bila user sudah klik magic link di browser.
 export async function GET(request: NextRequest) {
+  const missingEnv = getMissingServerEnv(['DATABASE_URL'])
+  if (missingEnv.length > 0) {
+    return NextResponse.json(
+      { active: false, error: `Server belum dikonfigurasi: ${missingEnv.join(', ')}` },
+      { status: 503 }
+    )
+  }
+
   const email = request.nextUrl.searchParams.get('email')
 
   if (!email?.trim()) {
@@ -19,6 +23,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    const db = getDatabaseClient()
     const result = await db.execute({
       sql: `
         SELECT s.token, s.expiresAt, u.name, u.profesi

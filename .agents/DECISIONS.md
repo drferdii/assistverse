@@ -3,6 +3,23 @@
 Append-only, newest first. Record only durable decisions that concern this capsule. Each entry
 has a dated heading, the decision, a short rationale, and its evidence.
 
+## 2026-09-27 — Standalone-repo hardening brought into the capsule
+
+- Decision (Chief, option A, R2): commit `8d5f21cb` from `drferdi/Assistverse` `master` ("harden
+  build env handling and ci checks") never reached abyss-monorepo, so the capsule lacked it. Its
+  files now come from `master`: `lib/auth.ts`, `lib/server-env.ts`, `lib/server-db.ts`, the auth
+  and pilot API routes, `proxy.ts`, layout and motion components, `eslint.config.mjs`, and
+  `.github/workflows/ci.yml` (adjusted to pnpm 11.21.0 and Node 24 to match `packageManager`
+  and `engines`). Every replaced file was unchanged since legacy, so nothing from the migration
+  was overwritten.
+- Dependency ranges follow `master`: `better-auth ^1.6.22`, `next ^16.2.11`, `postcss ^8.5.24`,
+  `eslint ^9.16.0`, `eslint-config-next ^16.0.0`; `maplibre-gl ^6.11.2` stays (newer than
+  `master`). Fresh lockfile resolves better-auth 1.7.6, next 16.3.6, postcss 8.5.28, nanoid 3.3.19.
+- The `.env.example` part of `8d5f21cb` is not applied here (agents cannot edit `.env*`).
+- ESLint now runs and reports 4 `react-hooks/set-state-in-effect` errors in capsule-only
+  components; lint stays out of the contract until they are fixed.
+- Evidence: `pnpm project:verify healthcare/assistverse` PASS on 2026-09-27.
+
 ## 2026-09-26 — Migrated from abyss-monorepo into SAFRS
 
 - Decision: The legacy folder `abyss-monorepo/apps/healthcare/assistverse` was copied as it is

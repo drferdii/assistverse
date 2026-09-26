@@ -1,9 +1,11 @@
 import type { Metadata } from 'next'
 import { headers } from 'next/headers'
+import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import SiteFooter from '@/components/SiteFooter'
 import PilotApp from '@/components/pilot/PilotApp'
-import { auth } from '@/lib/auth'
+import { getAuth } from '@/lib/auth'
+export const dynamic = 'force-dynamic'
 import { assetPath } from '@/lib/site'
 
 export const metadata: Metadata = {
@@ -13,7 +15,7 @@ export const metadata: Metadata = {
 }
 
 export default async function PilotPage() {
-  const session = await auth.api.getSession({ headers: await headers() })
+  const session = await getAuth().api.getSession({ headers: await headers() })
 
   if (!session) {
     redirect('/login')
@@ -30,9 +32,9 @@ export default async function PilotPage() {
           {user.name}
           {profesi ? ` — ${profesi}` : ''}
         </span>
-        <a href={assetPath('/api/auth/sign-out')} className="pilot-auth-signout">
+        <Link href={assetPath('/api/auth/sign-out')} className="pilot-auth-signout">
           Keluar
-        </a>
+        </Link>
       </header>
       <main
         id="main"

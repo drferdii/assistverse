@@ -3,7 +3,7 @@
 'use client'
 
 import { useReducer } from 'react'
-import type { TableState, TableAction, TableSortKey } from '@/types/pilot'
+import type { TableState, TableAction } from '@/types/pilot'
 
 const DEFAULT_PAGE_SIZE = 10
 

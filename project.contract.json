@@ -25,7 +25,7 @@
     "lint": {
       "program": null,
       "args": [],
-      "notApplicableReason": "The legacy project has no ESLint configuration, and its `next lint` script was removed in Next.js 16; type checking and the build cover static checks."
+      "notApplicableReason": "ESLint (config from the standalone repo, 2026-09-27) reports 4 react-hooks/set-state-in-effect errors in capsule-only components (CommandPrompt, TerminalTypewriterSimple, useTypewriter); lint joins the contract once they are fixed."
     },
     "typecheck": {
       "program": "node",

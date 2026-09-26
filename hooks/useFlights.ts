@@ -2,7 +2,7 @@
 
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useEffect, useState } from 'react'
 import type { Encounter } from '@/types/pilot'
 import { encounters as mockEncounters } from '@/components/pilot/data'
 
@@ -20,13 +20,13 @@ interface EncounterResult {
 export function useEncounters(): EncounterResult {
   const [state, setState] = useState<EncounterState>({
     data: [],
-    status: 'idle',
+    status: 'loading',
     error: null,
   })
 
-  const fetchEncounters = useCallback(() => {
+  const loadEncounters = () => {
     setState({ data: [], status: 'loading', error: null })
-    setTimeout(() => {
+    return window.setTimeout(() => {
       try {
         if (!Array.isArray(mockEncounters)) {
           throw new Error('Malformed response: missing encounters array')
@@ -37,11 +37,28 @@ export function useEncounters(): EncounterResult {
         setState({ data: [], status: 'error', error: message })
       }
     }, 400)
-  }, [])
+  }
 
   useEffect(() => {
-    fetchEncounters()
-  }, [fetchEncounters])
+    const timer = window.setTimeout(() => {
+      try {
+        if (!Array.isArray(mockEncounters)) {
+          throw new Error('Malformed response: missing encounters array')
+        }
+        setState({ data: mockEncounters, status: 'success', error: null })
+      } catch (err) {
+        const message = err instanceof Error ? err.message : 'Unknown error'
+        setState({ data: [], status: 'error', error: message })
+      }
+    }, 400)
 
-  return { state, refetch: fetchEncounters }
+    return () => window.clearTimeout(timer)
+  }, [])
+
+  return {
+    state,
+    refetch: () => {
+      loadEncounters()
+    },
+  }
 }

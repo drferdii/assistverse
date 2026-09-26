@@ -30,11 +30,7 @@ export default function CountUp({
   const [display, setDisplay] = useState(0)
 
   useEffect(() => {
-    if (!inView) return
-    if (reduce) {
-      setDisplay(value)
-      return
-    }
+    if (!inView || reduce) return
     const controls = animate(0, value, {
       duration,
       ease: [0.16, 1, 0.3, 1],
@@ -43,7 +39,8 @@ export default function CountUp({
     return () => controls.stop()
   }, [inView, reduce, value, duration])
 
-  const formatted = display.toLocaleString(locale, {
+  const renderedValue = reduce && inView ? value : display
+  const formatted = renderedValue.toLocaleString(locale, {
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,
   })

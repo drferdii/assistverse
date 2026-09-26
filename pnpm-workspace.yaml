@@ -7,3 +7,4 @@ nodeLinker: hoisted
 
 allowBuilds:
   sharp: true
+  unrs-resolver: true
