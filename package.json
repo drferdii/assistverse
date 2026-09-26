@@ -5,9 +5,11 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "next start --hostname 127.0.0.1 --port 4341",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
+    "test": "node --test tests/site.test.mjs tests/wiki.test.mjs",
+    "deploy:dry-run": "node scripts/deploy-dry-run.mjs",
     "check": "pnpm run lint && pnpm run typecheck && pnpm run build"
   },
   "dependencies": {
@@ -22,7 +24,7 @@
     "framer-motion": "^12.42.2",
     "lenis": "^1.3.23",
     "lucide-react": "^1.23.0",
-    "maplibre-gl": "^5.24.0",
+    "maplibre-gl": "^6.11.2",
     "motion": "^12.40.0",
     "next": "^16.2.11",
     "react": "^19.0.0",
@@ -42,5 +44,9 @@
     "postcss": "^8.5.24",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.6.3"
+  },
+  "packageManager": "pnpm@11.21.0",
+  "engines": {
+    "node": ">=24 <25"
   }
 }
